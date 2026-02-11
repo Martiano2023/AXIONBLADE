@@ -1,0 +1,472 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import {
+  Activity,
+  Search,
+  Copy,
+  Check,
+  ArrowUpRight,
+  ChevronDown,
+  Inbox,
+} from "lucide-react";
+import { TechnicalDetails } from "@/components/atoms/TechnicalDetails";
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
+type AgentId = "AEON" | "APOLLO" | "HERMES" | "Auditor" | "Service";
+type EventType = "Decision" | "Execution" | "Payment" | "Assessment" | "Report" | "Incident";
+type TimeRange = "24h" | "7d" | "30d" | "all";
+
+interface ActivityEvent {
+  id: string;
+  timestamp: number;
+  agent: AgentId;
+  type: EventType;
+  description: string;
+  txSignature?: string;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Color maps                                                         */
+/* ------------------------------------------------------------------ */
+
+const agentColors: Record<AgentId, { bg: string; text: string; dot: string }> = {
+  AEON:    { bg: "bg-purple-500/15", text: "text-purple-400", dot: "bg-purple-500" },
+  APOLLO:  { bg: "bg-cyan-500/15",   text: "text-cyan-400",   dot: "bg-cyan-500"   },
+  HERMES:  { bg: "bg-emerald-500/15",text: "text-emerald-400",dot: "bg-emerald-500" },
+  Auditor: { bg: "bg-rose-500/15",   text: "text-rose-400",   dot: "bg-rose-500"   },
+  Service: { bg: "bg-amber-500/15",  text: "text-amber-400",  dot: "bg-amber-500"  },
+};
+
+const eventColors: Record<EventType, { bg: string; text: string; dot: string }> = {
+  Decision:   { bg: "bg-purple-500/15", text: "text-purple-400", dot: "bg-purple-500" },
+  Execution:  { bg: "bg-emerald-500/15",text: "text-emerald-400",dot: "bg-emerald-500" },
+  Payment:    { bg: "bg-amber-500/15",  text: "text-amber-400",  dot: "bg-amber-500"  },
+  Assessment: { bg: "bg-cyan-500/15",   text: "text-cyan-400",   dot: "bg-cyan-500"   },
+  Report:     { bg: "bg-blue-500/15",   text: "text-blue-400",   dot: "bg-blue-500"   },
+  Incident:   { bg: "bg-rose-500/15",   text: "text-rose-400",   dot: "bg-rose-500"   },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Mock data (25 events)                                              */
+/* ------------------------------------------------------------------ */
+
+const now = Math.floor(Date.now() / 1000);
+
+const MOCK_EVENTS: ActivityEvent[] = [
+  { id: "evt-01", timestamp: now - 60,     agent: "AEON",    type: "Decision",   description: "Delegated pool monitoring task to APOLLO for Raydium SOL-USDC.",                        txSignature: "5Kx9vQ2rFg7bPdMn" },
+  { id: "evt-02", timestamp: now - 180,    agent: "APOLLO",  type: "Assessment", description: "Risk assessment completed for Orca BONK-SOL pool. Score: 72/100."                                               },
+  { id: "evt-03", timestamp: now - 300,    agent: "AEON",    type: "Execution",  description: "Executed rebalance of treasury reserve allocation.",                                     txSignature: "3Mp8nZ4wYtR6dLxF" },
+  { id: "evt-04", timestamp: now - 420,    agent: "HERMES",  type: "Report",     description: "Published weekly DeFi intelligence digest to external subscribers."                                              },
+  { id: "evt-05", timestamp: now - 600,    agent: "AEON",    type: "Payment",    description: "Processed API subscription payment: 2.5 SOL from B2B service tier.",                     txSignature: "7Rj2kL9mNfGh4ePq" },
+  { id: "evt-06", timestamp: now - 780,    agent: "Auditor", type: "Incident",   description: "Flagged anomalous liquidity drop in Marinade mSOL-SOL pool."                                                    },
+  { id: "evt-07", timestamp: now - 960,    agent: "APOLLO",  type: "Assessment", description: "MLI module recalculated manipulation likelihood for Jupiter perps."                                              },
+  { id: "evt-08", timestamp: now - 1200,   agent: "AEON",    type: "Decision",   description: "Approved HERMES report publication after proof verification.",                           txSignature: "9Wd4nH7mKp2rLfXs" },
+  { id: "evt-09", timestamp: now - 1500,   agent: "HERMES",  type: "Report",     description: "Generated pool taxonomy update for 12 newly listed Raydium pools."                                               },
+  { id: "evt-10", timestamp: now - 1800,   agent: "AEON",    type: "Execution",  description: "Updated Layer 2 operational parameter: refresh interval 30s to 15s.",                    txSignature: "2Lk5mN8pQr3sYfXg" },
+  { id: "evt-11", timestamp: now - 2400,   agent: "APOLLO",  type: "Assessment", description: "Effective APR module flagged divergence: reported 42%, effective 28%."                                           },
+  { id: "evt-12", timestamp: now - 3000,   agent: "AEON",    type: "Decision",   description: "Rejected pool addition: insufficient evidence families (1 of 2 required)."                                      },
+  { id: "evt-13", timestamp: now - 3600,   agent: "Auditor", type: "Incident",   description: "Resolved incident #47: false positive on Oracle deviation alert."                                               },
+  { id: "evt-14", timestamp: now - 4500,   agent: "HERMES",  type: "Report",     description: "Delivered A2A risk-summary payload to partner protocol agent."                                                   },
+  { id: "evt-15", timestamp: now - 5400,   agent: "AEON",    type: "Payment",    description: "CCS distribution: 12% to creator pool, 3% stipend allocation.",                         txSignature: "4Fn6kM9pLr2sHfXg" },
+  { id: "evt-16", timestamp: now - 7200,   agent: "APOLLO",  type: "Assessment", description: "Pool Taxonomy reclassified Meteora DLMM pools from Tier 2 to Tier 1."                                           },
+  { id: "evt-17", timestamp: now - 9000,   agent: "AEON",    type: "Execution",  description: "Agent lifecycle: disabled idle monitoring agent (no demand 72h).",                       txSignature: "8Gp1nK4mQr5sLfXh" },
+  { id: "evt-18", timestamp: now - 10800,  agent: "Auditor", type: "Decision",   description: "Auditor assigned truth label to incident #46: confirmed manipulation."                                          },
+  { id: "evt-19", timestamp: now - 14400,  agent: "Service", type: "Report",     description: "External API served 1,247 requests in last 4h. SLA met at 99.8%."                                               },
+  { id: "evt-20", timestamp: now - 18000,  agent: "AEON",    type: "Execution",  description: "Treasury sweep: moved 15.2 SOL from Donation PDA to main Treasury.",                    txSignature: "6Hs3nJ8mPr7sNfXi" },
+  { id: "evt-21", timestamp: now - 21600,  agent: "APOLLO",  type: "Assessment", description: "Completed batch risk scan across 47 monitored pools. All within tolerance."                                     },
+  { id: "evt-22", timestamp: now - 28800,  agent: "HERMES",  type: "Report",     description: "Generated Solana DeFi weekly report with TVL analysis across 8 protocols."                                      },
+  { id: "evt-23", timestamp: now - 43200,  agent: "AEON",    type: "Payment",    description: "Premium tier subscription renewed: 5.0 SOL quarterly payment received.",                 txSignature: "1Bx7mP3qRs9tYfWk" },
+  { id: "evt-24", timestamp: now - 64800,  agent: "Service", type: "Execution",  description: "Auto-scaled HERMES API endpoints from 2 to 4 instances based on demand.",                txSignature: "9Qw2nL5pKr8sGfXm" },
+  { id: "evt-25", timestamp: now - 86400,  agent: "Auditor", type: "Incident",   description: "Circuit breaker triggered: switched to Degraded mode after 3 consecutive proof failures."                       },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Filter options                                                     */
+/* ------------------------------------------------------------------ */
+
+const AGENT_OPTIONS: ("All" | AgentId)[] = ["All", "AEON", "APOLLO", "HERMES", "Auditor", "Service"];
+const EVENT_TYPE_OPTIONS: ("All" | EventType)[] = [
+  "All", "Decision", "Execution", "Payment", "Assessment", "Report", "Incident",
+];
+const TIME_RANGES: { key: TimeRange; label: string; seconds: number }[] = [
+  { key: "24h",  label: "24h",  seconds: 86400    },
+  { key: "7d",   label: "7d",   seconds: 604800   },
+  { key: "30d",  label: "30d",  seconds: 2592000  },
+  { key: "all",  label: "All",  seconds: Infinity },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+function formatTimeAgo(ts: number): string {
+  const seconds = Math.floor(Date.now() / 1000 - ts);
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Copy Button component                                              */
+/* ------------------------------------------------------------------ */
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="p-1 rounded hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
+      title="Copy signature"
+    >
+      {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Select dropdown component                                          */
+/* ------------------------------------------------------------------ */
+
+function SelectDropdown({
+  value,
+  onChange,
+  options,
+  label,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string }[];
+  label: string;
+}) {
+  return (
+    <div className="relative">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn(
+          "h-10 appearance-none rounded-xl border border-[#1F2937] bg-[#111827]",
+          "pl-3 pr-8 text-sm text-gray-300 cursor-pointer",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40",
+          "hover:bg-[#1F2937] hover:border-[#374151] transition-colors duration-200"
+        )}
+        aria-label={label}
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value} className="bg-gray-900 text-gray-300">
+            {opt.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
+export default function ActivityPage() {
+  const [agentFilter, setAgentFilter] = useState<string>("All");
+  const [typeFilter, setTypeFilter] = useState<string>("All");
+  const [search, setSearch] = useState("");
+  const [timeRange, setTimeRange] = useState<TimeRange>("24h");
+
+  const filteredEvents = useMemo(() => {
+    const rangeConfig = TIME_RANGES.find((t) => t.key === timeRange);
+    const cutoff = rangeConfig ? now - rangeConfig.seconds : 0;
+
+    return MOCK_EVENTS.filter((e) => {
+      if (agentFilter !== "All" && e.agent !== agentFilter) return false;
+      if (typeFilter !== "All" && e.type !== typeFilter) return false;
+      if (e.timestamp < cutoff) return false;
+      if (search.trim() !== "") {
+        const q = search.toLowerCase();
+        if (
+          !e.description.toLowerCase().includes(q) &&
+          !e.agent.toLowerCase().includes(q) &&
+          !e.type.toLowerCase().includes(q) &&
+          !(e.txSignature && e.txSignature.toLowerCase().includes(q))
+        )
+          return false;
+      }
+      return true;
+    });
+  }, [agentFilter, typeFilter, search, timeRange]);
+
+  return (
+    <div className="space-y-6">
+      {/* ---- Header ---- */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400">
+            <Activity size={20} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Activity Feed</h1>
+            <p className="text-sm text-gray-400">
+              Real-time protocol event log
+            </p>
+          </div>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="flex items-center gap-2 rounded-full bg-[#1F2937] border border-[#1F2937] px-4 py-2"
+        >
+          <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="text-sm font-medium text-gray-300">
+            {MOCK_EVENTS.length} events
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* ---- Section 1: Filter Bar ---- */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.4 }}
+        className={cn(
+          "sticky top-0 z-10 -mx-1 px-1 py-3",
+          "bg-[#111827] border border-[#1F2937] rounded-xl"
+        )}
+      >
+        <div className="flex flex-col lg:flex-row gap-3 px-4">
+          {/* Agent + Type filters */}
+          <div className="flex flex-wrap gap-3">
+            <SelectDropdown
+              value={agentFilter}
+              onChange={setAgentFilter}
+              label="Filter by agent"
+              options={AGENT_OPTIONS.map((a) => ({
+                value: a,
+                label: a === "All" ? "All Agents" : a,
+              }))}
+            />
+            <SelectDropdown
+              value={typeFilter}
+              onChange={setTypeFilter}
+              label="Filter by event type"
+              options={EVENT_TYPE_OPTIONS.map((t) => ({
+                value: t,
+                label: t === "All" ? "All Types" : t,
+              }))}
+            />
+          </div>
+
+          {/* Search input */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={cn(
+                "h-10 w-full rounded-xl border border-[#1F2937] bg-[#111827]",
+                "pl-9 pr-3 text-sm text-gray-300 placeholder:text-gray-600",
+                "focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40",
+                "hover:bg-[#1F2937] transition-colors duration-200"
+              )}
+            />
+          </div>
+
+          {/* Time range buttons */}
+          <div className="flex items-center gap-1 bg-[#111827] rounded-xl border border-[#1F2937] p-1">
+            {TIME_RANGES.map((tr) => (
+              <button
+                key={tr.key}
+                onClick={() => setTimeRange(tr.key)}
+                className={cn(
+                  "px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 cursor-pointer",
+                  timeRange === tr.key
+                    ? "bg-[#1F2937] text-white border border-[#374151]"
+                    : "text-gray-500 hover:text-gray-300 hover:bg-[#1F2937] border border-transparent"
+                )}
+              >
+                {tr.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ---- Results count ---- */}
+      <p className="text-xs text-gray-500 px-1">
+        Showing <span className="text-gray-300 font-medium">{filteredEvents.length}</span> of {MOCK_EVENTS.length} events
+      </p>
+
+      {/* ---- Section 2: Event Timeline ---- */}
+      {filteredEvents.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center justify-center py-20 gap-4"
+        >
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#111827] border border-[#1F2937]">
+            <Inbox size={28} className="text-gray-600" />
+          </div>
+          <p className="text-gray-500 text-sm">No events match the current filters</p>
+          <button
+            onClick={() => {
+              setAgentFilter("All");
+              setTypeFilter("All");
+              setSearch("");
+              setTimeRange("all");
+            }}
+            className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer transition-colors"
+          >
+            Clear all filters
+          </button>
+        </motion.div>
+      ) : (
+        <div className="relative">
+          {/* Timeline vertical line */}
+          <div className="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-[#374151] via-[#1F2937] to-transparent" />
+
+          <div className="space-y-3">
+            {filteredEvents.map((event, index) => {
+              const evtColor = eventColors[event.type];
+              const agentColor = agentColors[event.agent];
+
+              return (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.03,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
+                  className="relative flex gap-4 pl-0"
+                >
+                  {/* Timeline dot */}
+                  <div className="relative z-10 flex shrink-0 items-start pt-5">
+                    <div className={cn(
+                      "h-[10px] w-[10px] rounded-full ring-4 ring-gray-950/80",
+                      evtColor.dot
+                    )} />
+                  </div>
+
+                  {/* Event card */}
+                  <div
+                    className={cn(
+                      "flex-1 bg-[#111827] border border-[#1F2937] rounded-xl p-4",
+                      "hover:border-[#374151] transition-colors duration-200",
+                      "group"
+                    )}
+                  >
+                    {/* Top row: badges + timestamp */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Agent badge */}
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
+                            agentColor.bg, agentColor.text, "border-transparent"
+                          )}
+                        >
+                          <span className={cn("h-1.5 w-1.5 rounded-full", agentColor.dot)} />
+                          {event.agent}
+                        </span>
+
+                        {/* Event type badge */}
+                        <span
+                          className={cn(
+                            "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
+                            evtColor.bg, evtColor.text, "border-transparent"
+                          )}
+                        >
+                          {event.type}
+                        </span>
+                      </div>
+
+                      {/* Timestamp */}
+                      <span className="text-xs text-gray-500 tabular-nums">
+                        {formatTimeAgo(event.timestamp)}
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {event.description}
+                    </p>
+
+                    {/* TX Signature row */}
+                    {event.txSignature && (
+                      <>
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1F2937]">
+                          <span className="text-[11px] font-mono text-gray-500 truncate">
+                            {event.txSignature}
+                          </span>
+                          <CopyButton text={event.txSignature} />
+                          <a
+                            href={`https://solscan.io/tx/${event.txSignature}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-blue-400"
+                            title="View on Solscan"
+                          >
+                            <ArrowUpRight size={12} />
+                          </a>
+                        </div>
+                        <TechnicalDetails label="On-chain Details">
+                          <div className="space-y-1.5">
+                            <div>
+                              <span className="text-gray-600">TX Hash:</span>{" "}
+                              <span className="text-gray-400 break-all">{event.txSignature}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Block:</span>{" "}
+                              <span className="text-gray-400">#{(248_000_000 + Math.abs(event.timestamp % 200_000)).toLocaleString()}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Proof:</span>{" "}
+                              <a
+                                href={`https://solscan.io/tx/${event.txSignature}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 transition-colors"
+                              >
+                                View decision proof on Solscan
+                              </a>
+                            </div>
+                          </div>
+                        </TechnicalDetails>
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

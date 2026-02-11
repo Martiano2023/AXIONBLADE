@@ -1,0 +1,21 @@
+[package]
+name = "noumen-proof"
+version = "0.1.0"
+edition = "2021"
+description = "Proof-of-Agency immutable decision logging"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "noumen_proof"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = "0.30.1"
+shared-types = { path = "../../crates/shared-types" }
