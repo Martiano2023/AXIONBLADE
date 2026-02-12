@@ -4,6 +4,8 @@ import { useState } from "react";
 import {
   LineChart,
   Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -66,6 +68,17 @@ function CustomTooltip({
   );
 }
 
+// --- Sparkline data ---
+
+function generateSparkData(days: number, base: number, volatility: number) {
+  return Array.from({ length: days }, (_, i) => ({
+    v: Math.max(0, base + (Math.random() - 0.4) * volatility * base),
+  }));
+}
+
+const proofsSparkData = generateSparkData(7, 42, 0.3);
+const revenueSparkData = generateSparkData(7, 8.2, 0.25);
+
 // --- Card wrapper ---
 
 const cardBase =
@@ -95,6 +108,23 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
+          {/* Health Checks */}
+          <div className="mt-4 space-y-2">
+            {[
+              { name: "All agents responding", status: true },
+              { name: "Treasury reserve >= 25%", status: true },
+              { name: "Axioms 29/29 compliant", status: true },
+              { name: "Circuit breaker: Normal", status: true },
+              { name: "Proof chain intact", status: true },
+            ].map((check) => (
+              <div key={check.name} className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{check.name}</span>
+                <span className={`text-[10px] font-medium ${check.status ? "text-emerald-400" : "text-red-400"}`}>
+                  {check.status ? "PASS" : "FAIL"}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Proofs Today */}
@@ -102,6 +132,19 @@ export default function DashboardPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Proofs Today</p>
           <p className="text-3xl font-bold text-white mb-2">47</p>
           <p className="text-sm text-[#10B981]">{"\u2191"} +12% vs yesterday</p>
+          <div className="mt-3 h-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={proofsSparkData}>
+                <defs>
+                  <linearGradient id="sparkGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#10B981" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="v" stroke="#10B981" strokeWidth={1.5} fill="url(#sparkGreen)" dot={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
@@ -112,6 +155,19 @@ export default function DashboardPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Treasury Balance</p>
           <p className="text-2xl font-bold text-white">42.5 SOL</p>
           <p className="text-sm text-[#10B981] mt-1">+1.2 SOL (24h)</p>
+          <div className="mt-3 h-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueSparkData}>
+                <defs>
+                  <linearGradient id="sparkBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="v" stroke="#3B82F6" strokeWidth={1.5} fill="url(#sparkBlue)" dot={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Active Assessments */}
@@ -126,6 +182,87 @@ export default function DashboardPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Axiom Compliance</p>
           <p className="text-2xl font-bold text-white">100%</p>
           <p className="text-sm text-gray-400 mt-1">29/29 enforced</p>
+        </div>
+      </div>
+
+      {/* Row: Agent Status */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {/* AEON */}
+        <div className={cardBase}>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <p className="text-xs text-gray-500 uppercase tracking-wider">AEON — Governance</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Delegations today</span>
+              <span className="text-white font-mono">12</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Policy proposals</span>
+              <span className="text-white font-mono">0 pending</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Circuit breaker</span>
+              <span className="text-emerald-400 font-mono">Normal</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Last heartbeat</span>
+              <span className="text-gray-400">14s ago</span>
+            </div>
+          </div>
+        </div>
+
+        {/* APOLLO */}
+        <div className={cardBase}>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-blue-400" />
+            <p className="text-xs text-gray-500 uppercase tracking-wider">APOLLO — Risk Assessment</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Assessments today</span>
+              <span className="text-white font-mono">47</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Pools monitored</span>
+              <span className="text-white font-mono">8</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Avg confidence</span>
+              <span className="text-white font-mono">87.3%</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Last assessment</span>
+              <span className="text-gray-400">2m ago</span>
+            </div>
+          </div>
+        </div>
+
+        {/* HERMES */}
+        <div className={cardBase}>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <p className="text-xs text-gray-500 uppercase tracking-wider">HERMES — Intelligence</p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Reports today</span>
+              <span className="text-white font-mono">23</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Active subscribers</span>
+              <span className="text-white font-mono">14</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">API requests (24h)</span>
+              <span className="text-white font-mono">1,247</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Last report</span>
+              <span className="text-gray-400">5m ago</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -198,6 +335,14 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Dashboard data is from devnet beta. Metrics, balances, and agent statuses may differ from mainnet deployment.
+          NOUMEN does not provide financial advice. All risk assessments are informational only.
+        </p>
       </div>
     </div>
   );

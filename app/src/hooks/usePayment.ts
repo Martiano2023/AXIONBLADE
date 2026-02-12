@@ -1,18 +1,12 @@
 "use client";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  Transaction,
-  SystemProgram,
-  PublicKey,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
 import { useState, useCallback } from "react";
+import { findTreasuryVaultPDA } from "@/lib/pda";
+import { processServicePayment } from "@/lib/transactions";
 
-// Treasury PDA address (this is the noumen_treasury program's PDA)
-const TREASURY_ADDRESS = new PublicKey(
-  "11111111111111111111111111111111",
-); // placeholder
+// Treasury vault PDA (derived from program seeds)
+const [TREASURY_VAULT] = findTreasuryVaultPDA();
 
 export interface PaymentResult {
   success: boolean;
@@ -23,27 +17,40 @@ export interface PaymentResult {
 
 export function usePayment() {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, connected } = useWallet();
+  const { publicKey, signTransaction, connected } = useWallet();
   const [processing, setProcessing] = useState(false);
 
   const pay = useCallback(
-    async (amountSOL: number, memo?: string): Promise<PaymentResult> => {
+    async (amountSOL: number, serviceId: number = 0, memo?: string): Promise<PaymentResult> => {
       if (!publicKey || !connected) {
         return { success: false, error: "Wallet not connected" };
       }
 
+      if (amountSOL <= 0 || amountSOL > 1000) {
+        return { success: false, error: "Invalid payment amount" };
+      }
+
+      if (!signTransaction) {
+        return { success: false, error: "Wallet does not support signing" };
+      }
+
       setProcessing(true);
       try {
-        const transaction = new Transaction().add(
-          SystemProgram.transfer({
-            fromPubkey: publicKey,
-            toPubkey: TREASURY_ADDRESS,
-            lamports: Math.round(amountSOL * LAMPORTS_PER_SOL),
-          }),
+        // Build proper treasury program instruction via processServicePayment
+        const signature = await processServicePayment(
+          connection,
+          { publicKey, signTransaction },
+          serviceId,
+          amountSOL,
         );
 
-        const signature = await sendTransaction(transaction, connection);
-        await connection.confirmTransaction(signature, "confirmed");
+        // Confirm with "finalized" commitment for payment safety
+        const { blockhash, lastValidBlockHeight } =
+          await connection.getLatestBlockhash();
+        await connection.confirmTransaction(
+          { signature, blockhash, lastValidBlockHeight },
+          "finalized",
+        );
 
         // Generate proof hash from signature
         const proofHash = "0x" + signature.slice(0, 40);
@@ -65,7 +72,7 @@ export function usePayment() {
         return { success: false, error: message };
       }
     },
-    [publicKey, connected, connection, sendTransaction],
+    [publicKey, connected, connection, signTransaction],
   );
 
   return {
@@ -73,5 +80,6 @@ export function usePayment() {
     processing,
     connected,
     walletAddress: publicKey?.toBase58() || null,
+    treasuryVault: TREASURY_VAULT,
   };
 }

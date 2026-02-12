@@ -21,6 +21,12 @@ pub mod noumen_proof {
         config.bump = ctx.bumps.proof_config;
         config._reserved = [0u8; 32];
 
+        emit!(ProofInitialized {
+            authority: ctx.accounts.authority.key(),
+            keeper_authority: args.keeper_authority,
+            timestamp: Clock::get()?.unix_timestamp,
+        });
+
         msg!("noumen_proof: initialized");
         Ok(())
     }
@@ -336,6 +342,14 @@ pub struct InitializeProof<'info> {
 #[derive(Accounts)]
 #[instruction(args: LogDecisionArgs)]
 pub struct LogDecision<'info> {
+    /// C-PROOF-1: Verify signer is the keeper_authority from ProofConfig
+    #[account(
+        seeds = [b"proof_config"],
+        bump = proof_config.bump,
+        constraint = proof_config.is_initialized @ ProofError::NotInitialized,
+        constraint = agent_authority.key() == proof_config.keeper_authority @ ProofError::Unauthorized,
+    )]
+    pub proof_config: Account<'info, ProofConfig>,
     #[account(
         init,
         payer = agent_authority,
@@ -355,7 +369,23 @@ pub struct LogDecision<'info> {
 
 #[derive(Accounts)]
 pub struct ConfirmExecution<'info> {
-    #[account(mut)]
+    /// C-PROOF-2: Verify signer is the keeper_authority from ProofConfig
+    #[account(
+        seeds = [b"proof_config"],
+        bump = proof_config.bump,
+        constraint = proof_config.is_initialized @ ProofError::NotInitialized,
+        constraint = executor.key() == proof_config.keeper_authority @ ProofError::Unauthorized,
+    )]
+    pub proof_config: Account<'info, ProofConfig>,
+    #[account(
+        mut,
+        seeds = [
+            b"decision",
+            decision_log.agent_id.to_le_bytes().as_ref(),
+            decision_log.nonce.to_le_bytes().as_ref(),
+        ],
+        bump = decision_log.bump,
+    )]
     pub decision_log: Account<'info, DecisionLog>,
     #[account(
         init,
@@ -376,6 +406,14 @@ pub struct ConfirmExecution<'info> {
 #[derive(Accounts)]
 #[instruction(args: SubmitBatchProofArgs)]
 pub struct SubmitBatchProof<'info> {
+    /// C-PROOF-3: Verify signer is the keeper_authority from ProofConfig
+    #[account(
+        seeds = [b"proof_config"],
+        bump = proof_config.bump,
+        constraint = proof_config.is_initialized @ ProofError::NotInitialized,
+        constraint = agent_authority.key() == proof_config.keeper_authority @ ProofError::Unauthorized,
+    )]
+    pub proof_config: Account<'info, ProofConfig>,
     #[account(
         init,
         payer = agent_authority,
@@ -422,6 +460,13 @@ pub struct CloseExpiredBatch<'info> {
 // ──────────────────────────────────────────────
 // Events
 // ──────────────────────────────────────────────
+
+#[event]
+pub struct ProofInitialized {
+    pub authority: Pubkey,
+    pub keeper_authority: Pubkey,
+    pub timestamp: i64,
+}
 
 #[event]
 pub struct DecisionLogged {

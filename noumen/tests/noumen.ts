@@ -225,11 +225,11 @@ describe("NOUMEN Protocol Integration Tests", () => {
       // super_authority at offset 8
       expect(new PublicKey(acct!.subarray(8, 40)).equals(superAuthority.publicKey)).to.be.true;
 
-      // aeon_authority at offset 40
-      expect(new PublicKey(acct!.subarray(40, 72)).equals(aeonAuthority.publicKey)).to.be.true;
+      // aeon_authority at offset 72 (after pending_super_authority at 40-71)
+      expect(new PublicKey(acct!.subarray(72, 104)).equals(aeonAuthority.publicKey)).to.be.true;
 
-      // keeper_authority at offset 72
-      expect(new PublicKey(acct!.subarray(72, 104)).equals(keeperAuthority.publicKey)).to.be.true;
+      // keeper_authority at offset 104
+      expect(new PublicKey(acct!.subarray(104, 136)).equals(keeperAuthority.publicKey)).to.be.true;
     });
 
     it("initialize_aeon: double-init is rejected", async () => {
@@ -416,8 +416,8 @@ describe("NOUMEN Protocol Integration Tests", () => {
       await sendTx(provider, ix, [aeonAuthority]);
 
       const acct = await getAccountData(provider, aeonConfigPda);
-      // circuit_breaker_mode at offset 8+32+32+32+32+32+2 = 170
-      const cbOffset = 8 + 32 + 32 + 32 + 32 + 32 + 2;
+      // circuit_breaker_mode at offset 8 + 32*6 + 2 = 202 (after 6 pubkeys + active_agent_count)
+      const cbOffset = 8 + 32 + 32 + 32 + 32 + 32 + 32 + 2;
       expect(acct!.readUInt8(cbOffset)).to.equal(1); // Cautious
     });
 
@@ -464,7 +464,7 @@ describe("NOUMEN Protocol Integration Tests", () => {
       await sendTx(provider, ix, [keeperAuthority]);
 
       const acct = await getAccountData(provider, aeonConfigPda);
-      const cbOffset = 8 + 32 + 32 + 32 + 32 + 32 + 2;
+      const cbOffset = 8 + 32 + 32 + 32 + 32 + 32 + 32 + 2;
       expect(acct!.readUInt8(cbOffset)).to.equal(2); // Restricted
     });
   });
@@ -532,14 +532,15 @@ describe("NOUMEN Protocol Integration Tests", () => {
       const ix = new TransactionInstruction({
         programId: PROOF_PROGRAM_ID,
         keys: [
+          { pubkey: proofConfigPda, isSigner: false, isWritable: false },
           { pubkey: decisionLogPda, isSigner: false, isWritable: true },
-          { pubkey: aeonAuthority.publicKey, isSigner: true, isWritable: true },
+          { pubkey: keeperAuthority.publicKey, isSigner: true, isWritable: true },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,
       });
 
-      await sendTx(provider, ix, [aeonAuthority]);
+      await sendTx(provider, ix, [keeperAuthority]);
 
       const acct = await getAccountData(provider, decisionLogPda);
       expect(acct).to.not.be.null;
@@ -572,15 +573,16 @@ describe("NOUMEN Protocol Integration Tests", () => {
       const ix = new TransactionInstruction({
         programId: PROOF_PROGRAM_ID,
         keys: [
+          { pubkey: proofConfigPda, isSigner: false, isWritable: false },
           { pubkey: decisionLogPda, isSigner: false, isWritable: true },
-          { pubkey: aeonAuthority.publicKey, isSigner: true, isWritable: true },
+          { pubkey: keeperAuthority.publicKey, isSigner: true, isWritable: true },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,
       });
 
       try {
-        await sendTx(provider, ix, [aeonAuthority]);
+        await sendTx(provider, ix, [keeperAuthority]);
         expect.fail("Should have thrown InsufficientEvidenceFamilies");
       } catch (err: any) {
         expect(err.toString()).to.contain("custom program error");
@@ -612,14 +614,15 @@ describe("NOUMEN Protocol Integration Tests", () => {
       const ix = new TransactionInstruction({
         programId: PROOF_PROGRAM_ID,
         keys: [
+          { pubkey: proofConfigPda, isSigner: false, isWritable: false },
           { pubkey: decisionLogPda, isSigner: false, isWritable: true },
-          { pubkey: aeonAuthority.publicKey, isSigner: true, isWritable: true },
+          { pubkey: keeperAuthority.publicKey, isSigner: true, isWritable: true },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,
       });
 
-      await sendTx(provider, ix, [aeonAuthority]);
+      await sendTx(provider, ix, [keeperAuthority]);
 
       const acct = await getAccountData(provider, decisionLogPda);
       expect(acct).to.not.be.null;
@@ -649,15 +652,16 @@ describe("NOUMEN Protocol Integration Tests", () => {
       const ix = new TransactionInstruction({
         programId: PROOF_PROGRAM_ID,
         keys: [
+          { pubkey: proofConfigPda, isSigner: false, isWritable: false },
           { pubkey: decisionLogPda, isSigner: false, isWritable: true },
           { pubkey: executionResultPda, isSigner: false, isWritable: true },
-          { pubkey: aeonAuthority.publicKey, isSigner: true, isWritable: true },
+          { pubkey: keeperAuthority.publicKey, isSigner: true, isWritable: true },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         ],
         data,
       });
 
-      await sendTx(provider, ix, [aeonAuthority]);
+      await sendTx(provider, ix, [keeperAuthority]);
 
       const acct = await getAccountData(provider, executionResultPda);
       expect(acct).to.not.be.null;
@@ -1544,8 +1548,8 @@ describe("NOUMEN Protocol Integration Tests", () => {
   describe("cross-cutting axiom validations", () => {
     it("A0-9: operational_agent_cap <= 100 (hard limit)", async () => {
       const acct = await getAccountData(provider, aeonConfigPda);
-      // operational_agent_cap at: 8 + 32*5 + 2 + 1 + 1 = 172
-      const opCapOffset = 8 + 32 + 32 + 32 + 32 + 32 + 2 + 1 + 1;
+      // operational_agent_cap at: 8 + 32*6 + 2 + 1 + 1 = 204 (6 pubkeys, not 5)
+      const opCapOffset = 8 + 32 + 32 + 32 + 32 + 32 + 32 + 2 + 1 + 1;
       const opCap = acct!.readUInt32LE(opCapOffset);
       expect(opCap).to.equal(50);
       expect(opCap).to.be.at.most(100);

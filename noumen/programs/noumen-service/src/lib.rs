@@ -29,7 +29,9 @@ pub mod noumen_service {
         config.bump = ctx.bumps.service_config;
         config._reserved = [0u8; 32];
 
+        // C-SVC-1: Emit initialization event with deployer key for auditability
         emit!(ServiceConfigInitialized {
+            deployer: ctx.accounts.super_authority.key(),
             aeon_authority,
             keeper_authority,
         });
@@ -47,10 +49,10 @@ pub mod noumen_service {
         price_lamports: u64,
         cost_lamports: u64,
     ) -> Result<()> {
-        require!(
-            ctx.accounts.aeon_authority.key() == ctx.accounts.service_config.aeon_authority,
-            NoumenServiceError::Unauthorized
-        );
+        // H-SVC-1: Authority check moved to account constraint (has_one = aeon_authority)
+
+        // H-SVC-2: Validate service_tier range (0=Entry, 1=Premium, 2=B2B)
+        require!(service_tier <= 2, NoumenServiceError::InvalidTier);
 
         // A0-8: price >= cost * 12000 / 10000 (i.e., cost + 20% margin minimum)
         let min_price = cost_lamports
@@ -113,11 +115,7 @@ pub mod noumen_service {
         new_price: u64,
         new_cost: u64,
     ) -> Result<()> {
-        let config = &ctx.accounts.service_config;
-        require!(
-            ctx.accounts.aeon_authority.key() == config.aeon_authority,
-            NoumenServiceError::Unauthorized
-        );
+        // H-SVC-1: Authority check moved to account constraint (has_one = aeon_authority)
 
         // A0-8: revalidate margin
         let min_price = new_cost
@@ -155,11 +153,7 @@ pub mod noumen_service {
         _service_id: u16,
         new_level: u8,
     ) -> Result<()> {
-        let config = &ctx.accounts.service_config;
-        require!(
-            ctx.accounts.aeon_authority.key() == config.aeon_authority,
-            NoumenServiceError::Unauthorized
-        );
+        // H-SVC-1: Authority check moved to account constraint (has_one = aeon_authority)
 
         let entry = &mut ctx.accounts.service_entry;
         let old_level = entry.level;
@@ -193,11 +187,7 @@ pub mod noumen_service {
         request_count_7d: u16,
         revenue_7d_lamports: u64,
     ) -> Result<()> {
-        let config = &ctx.accounts.service_config;
-        require!(
-            ctx.accounts.keeper_authority.key() == config.keeper_authority,
-            NoumenServiceError::Unauthorized
-        );
+        // H-SVC-1: Authority check moved to account constraint (has_one = keeper_authority)
 
         let clock = Clock::get()?;
         let entry = &mut ctx.accounts.service_entry;
@@ -275,10 +265,12 @@ pub struct InitializeServiceConfig<'info> {
 #[derive(Accounts)]
 #[instruction(service_id: u16)]
 pub struct RegisterService<'info> {
+    /// H-SVC-1: Authority check moved to has_one constraint
     #[account(
         mut,
         seeds = [b"service_config"],
         bump = service_config.bump,
+        has_one = aeon_authority @ NoumenServiceError::Unauthorized,
     )]
     pub service_config: Account<'info, ServiceConfig>,
 
@@ -303,6 +295,7 @@ pub struct UpdateServicePrice<'info> {
     #[account(
         seeds = [b"service_config"],
         bump = service_config.bump,
+        has_one = aeon_authority @ NoumenServiceError::Unauthorized,
     )]
     pub service_config: Account<'info, ServiceConfig>,
 
@@ -322,6 +315,7 @@ pub struct UpdateServiceLevel<'info> {
     #[account(
         seeds = [b"service_config"],
         bump = service_config.bump,
+        has_one = aeon_authority @ NoumenServiceError::Unauthorized,
     )]
     pub service_config: Account<'info, ServiceConfig>,
 
@@ -341,6 +335,7 @@ pub struct UpdateServiceMetrics<'info> {
     #[account(
         seeds = [b"service_config"],
         bump = service_config.bump,
+        has_one = keeper_authority @ NoumenServiceError::Unauthorized,
     )]
     pub service_config: Account<'info, ServiceConfig>,
 
@@ -360,6 +355,7 @@ pub struct UpdateServiceMetrics<'info> {
 
 #[event]
 pub struct ServiceConfigInitialized {
+    pub deployer: Pubkey,
     pub aeon_authority: Pubkey,
     pub keeper_authority: Pubkey,
 }
@@ -419,4 +415,7 @@ pub enum NoumenServiceError {
 
     #[msg("Math overflow in checked arithmetic")]
     MathOverflow,
+
+    #[msg("Invalid service tier: must be 0 (Entry), 1 (Premium), or 2 (B2B)")]
+    InvalidTier,
 }

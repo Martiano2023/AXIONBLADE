@@ -5,6 +5,15 @@ use shared_types::*;
 declare_id!("EMNF5A4cpqusBuUajMv3FUzjbwR7GQMFyJ7JDi4FjLFu");
 
 // ──────────────────────────────────────────────
+// Revenue split percentages (basis points)
+// 40% Operations + 30% Treasury Reserve + 15% Dev Fund + 15% Creator = 100%
+// ──────────────────────────────────────────────
+const OPERATIONS_SPLIT_BPS: u16 = 4000;    // 40%
+const TREASURY_RESERVE_BPS: u16 = 3000;    // 30%
+const DEV_FUND_SPLIT_BPS: u16 = 1500;      // 15%
+const CREATOR_SPLIT_BPS: u16 = 1500;       // 15%
+
+// ──────────────────────────────────────────────
 // Program
 // ──────────────────────────────────────────────
 
@@ -43,9 +52,11 @@ pub mod noumen_treasury {
         vault.daily_spend_lamports = 0;
         vault.daily_spend_reset_at = now;
         vault.total_donations_swept = 0;
+        vault.dev_fund_lamports = 0;
+        vault.operations_lamports = 0;
         vault.updated_at = now;
         vault.bump = ctx.bumps.treasury_vault;
-        vault._reserved = [0u8; 64];
+        vault._reserved = [0u8; 48];
 
         emit!(TreasuryInitialized {
             super_authority: ctx.accounts.super_authority.key(),
@@ -118,9 +129,13 @@ pub mod noumen_treasury {
         Ok(())
     }
 
-    /// Processes an incoming service payment. Splits revenue between creator (CCS)
-    /// and treasury. Creator portion transferred immediately to creator_wallet via
-    /// SystemProgram. Treasury portion stays in vault.
+    /// Processes an incoming service payment with a 4-way revenue split:
+    ///   40% Operations (stays in vault, tracked separately)
+    ///   30% Treasury Reserve (marked as reserved in vault)
+    ///   15% Development Fund (stays in vault, tracked separately)
+    ///   15% Creator wallet (transferred via CPI)
+    /// The creator split uses the FIXED 15% (CREATOR_SPLIT_BPS), not the CCS band system.
+    /// CCS bands remain available for additional creator compensation mechanics.
     /// Signer: payer (any external user paying for a service).
     pub fn process_service_payment(
         ctx: Context<ProcessServicePayment>,
@@ -129,45 +144,57 @@ pub mod noumen_treasury {
     ) -> Result<()> {
         require!(amount_lamports > 0, TreasuryError::ZeroAmount);
 
-        // Read CCS band data before any mutable borrows
-        let avg_7d = ctx.accounts.ccs_config.avg_7d_revenue;
-        let bands = ctx.accounts.ccs_config.bands;
+        // ── 4-way revenue split (basis points) ──
+        // Operations:        40% (4000 bps) — stays in vault for operational use
+        // Treasury Reserve:  30% (3000 bps) — marked as reserved in vault
+        // Development Fund:  15% (1500 bps) — stays in vault, tracked separately
+        // Creator:           15% (1500 bps) — transferred to creator_wallet via CPI
 
-        // Determine the active CCS band from avg_7d_revenue.
-        // Walk bands in reverse (highest threshold first); pick the first band
-        // whose threshold <= avg_7d_revenue. Default to band 0.
-        let mut active_band_idx: usize = 0;
-        for i in (0..4).rev() {
-            if avg_7d >= bands[i].threshold_lamports {
-                active_band_idx = i;
-                break;
-            }
-        }
-        let band = &bands[active_band_idx];
-
-        // CCS math: creator_split = amount * base_split_bps / 10000
-        // Truncation (integer division) favors treasury.
-        let creator_split = amount_lamports
-            .checked_mul(band.base_split_bps as u64)
+        let operations_amount = amount_lamports
+            .checked_mul(OPERATIONS_SPLIT_BPS as u64)
             .ok_or(TreasuryError::ArithmeticOverflow)?
             .checked_div(10_000)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
-        let treasury_split = amount_lamports
-            .checked_sub(creator_split)
+        let treasury_reserve_amount = amount_lamports
+            .checked_mul(TREASURY_RESERVE_BPS as u64)
+            .ok_or(TreasuryError::ArithmeticOverflow)?
+            .checked_div(10_000)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
-        // Invariant: creator + treasury == amount (guaranteed by subtraction)
+        let dev_fund_amount = amount_lamports
+            .checked_mul(DEV_FUND_SPLIT_BPS as u64)
+            .ok_or(TreasuryError::ArithmeticOverflow)?
+            .checked_div(10_000)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        // Creator gets the remainder to absorb any truncation dust,
+        // ensuring operations + treasury_reserve + dev_fund + creator == total_amount
+        let vault_total = operations_amount
+            .checked_add(treasury_reserve_amount)
+            .ok_or(TreasuryError::ArithmeticOverflow)?
+            .checked_add(dev_fund_amount)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        let creator_amount = amount_lamports
+            .checked_sub(vault_total)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        // Invariant check: operations + treasury_reserve + dev_fund + creator == total_amount
         require!(
-            creator_split
-                .checked_add(treasury_split)
+            operations_amount
+                .checked_add(treasury_reserve_amount)
+                .ok_or(TreasuryError::ArithmeticOverflow)?
+                .checked_add(dev_fund_amount)
+                .ok_or(TreasuryError::ArithmeticOverflow)?
+                .checked_add(creator_amount)
                 .ok_or(TreasuryError::ArithmeticOverflow)?
                 == amount_lamports,
             TreasuryError::SplitMismatch
         );
 
         // Transfer creator portion from payer -> creator_wallet via SystemProgram
-        if creator_split > 0 {
+        if creator_amount > 0 {
             system_program::transfer(
                 CpiContext::new(
                     ctx.accounts.system_program.to_account_info(),
@@ -176,12 +203,12 @@ pub mod noumen_treasury {
                         to: ctx.accounts.creator_wallet.to_account_info(),
                     },
                 ),
-                creator_split,
+                creator_amount,
             )?;
         }
 
-        // Transfer treasury portion from payer -> treasury_vault PDA
-        if treasury_split > 0 {
+        // Transfer vault portion (operations + treasury_reserve + dev_fund) from payer -> treasury_vault PDA
+        if vault_total > 0 {
             system_program::transfer(
                 CpiContext::new(
                     ctx.accounts.system_program.to_account_info(),
@@ -190,7 +217,7 @@ pub mod noumen_treasury {
                         to: ctx.accounts.treasury_vault.to_account_info(),
                     },
                 ),
-                treasury_split,
+                vault_total,
             )?;
         }
 
@@ -200,11 +227,27 @@ pub mod noumen_treasury {
         let vault = &mut ctx.accounts.treasury_vault;
         vault.total_balance_lamports = vault
             .total_balance_lamports
-            .checked_add(treasury_split)
+            .checked_add(vault_total)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
         vault.total_revenue_lifetime = vault
             .total_revenue_lifetime
             .checked_add(amount_lamports)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        // Track reserved lamports (treasury reserve portion)
+        vault.reserved_lamports = vault
+            .reserved_lamports
+            .checked_add(treasury_reserve_amount)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        // Track dev fund and operations separately
+        vault.dev_fund_lamports = vault
+            .dev_fund_lamports
+            .checked_add(dev_fund_amount)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+        vault.operations_lamports = vault
+            .operations_lamports
+            .checked_add(operations_amount)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
         // Recalculate free balance: total - reserved
@@ -214,23 +257,24 @@ pub mod noumen_treasury {
             .ok_or(TreasuryError::ArithmeticOverflow)?;
         vault.updated_at = now;
 
-        // Update CCS creator accumulated
+        // Update CCS creator accumulated (tracks total creator payouts)
         let ccs = &mut ctx.accounts.ccs_config;
         ccs.total_creator_paid = ccs
             .total_creator_paid
-            .checked_add(creator_split)
+            .checked_add(creator_amount)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
         ccs.creator_accumulated = ccs
             .creator_accumulated
-            .checked_add(creator_split)
+            .checked_add(creator_amount)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
         emit!(ServicePaymentProcessed {
             service_id,
             amount_lamports,
-            creator_split,
-            treasury_split,
-            band_index: active_band_idx as u8,
+            creator_split: creator_amount,
+            treasury_reserve_split: treasury_reserve_amount,
+            dev_fund_split: dev_fund_amount,
+            operations_split: operations_amount,
             timestamp: now,
         });
 
@@ -441,6 +485,28 @@ pub mod noumen_treasury {
             TreasuryError::InsufficientTreasuryBalance
         );
 
+        // H-TREAS-4: Daily spend limit enforcement
+        // daily_spend_lamports + amount <= free_balance * DAILY_SPEND_CAP_BPS / 10000
+        let now = Clock::get()?.unix_timestamp;
+        let daily_spend_reset_at = ctx.accounts.treasury_vault.daily_spend_reset_at;
+        let mut current_daily_spend = ctx.accounts.treasury_vault.daily_spend_lamports;
+
+        // Reset daily spend counter if a new day has started (86400 seconds)
+        if now - daily_spend_reset_at >= 86400 {
+            current_daily_spend = 0;
+        }
+
+        let daily_limit = free_balance
+            .checked_mul(DAILY_SPEND_CAP_BPS as u64)
+            .ok_or(TreasuryError::ArithmeticOverflow)?
+            .checked_div(10_000)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        require!(
+            current_daily_spend.checked_add(amount).ok_or(TreasuryError::ArithmeticOverflow)? <= daily_limit,
+            TreasuryError::DailySpendCapExceeded
+        );
+
         // Transfer SOL from treasury_vault PDA -> creator_wallet
         let seeds: &[&[u8]] = &[b"treasury_vault", &[vault_bump]];
         let signer_seeds: &[&[&[u8]]] = &[seeds];
@@ -457,7 +523,7 @@ pub mod noumen_treasury {
             amount,
         )?;
 
-        let now = Clock::get()?.unix_timestamp;
+        let withdrawal_time = Clock::get()?.unix_timestamp;
 
         // Update vault (mutable borrow after CPI)
         let vault = &mut ctx.accounts.treasury_vault;
@@ -470,7 +536,18 @@ pub mod noumen_treasury {
             .total_balance_lamports
             .checked_sub(vault.reserved_lamports)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
-        vault.updated_at = now;
+
+        // H-TREAS-4: Update daily spend tracking
+        if withdrawal_time - vault.daily_spend_reset_at >= 86400 {
+            vault.daily_spend_lamports = amount;
+            vault.daily_spend_reset_at = withdrawal_time;
+        } else {
+            vault.daily_spend_lamports = current_daily_spend
+                .checked_add(amount)
+                .ok_or(TreasuryError::ArithmeticOverflow)?;
+        }
+
+        vault.updated_at = withdrawal_time;
 
         // Update CCS
         let ccs = &mut ctx.accounts.ccs_config;
@@ -488,8 +565,48 @@ pub mod noumen_treasury {
         Ok(())
     }
 
+    /// H-TREAS-2: Updates an existing agent budget allocation without resetting spent fields.
+    /// Signer: aeon_authority. Only modifies allocated and daily_cap.
+    pub fn update_agent_budget(
+        ctx: Context<UpdateAgentBudget>,
+        _agent_id: u16,
+        new_allocated: u64,
+        new_daily_cap: u64,
+    ) -> Result<()> {
+        // Validate: new_allocated <= free_balance * AGENT_BUDGET_CAP_BPS / 10000
+        let free_balance = ctx.accounts.treasury_vault.free_balance_lamports;
+        let max_allocation = free_balance
+            .checked_mul(AGENT_BUDGET_CAP_BPS as u64)
+            .ok_or(TreasuryError::ArithmeticOverflow)?
+            .checked_div(10_000)
+            .ok_or(TreasuryError::ArithmeticOverflow)?;
+
+        require!(
+            new_allocated <= max_allocation,
+            TreasuryError::AgentBudgetCapExceeded
+        );
+
+        let now = Clock::get()?.unix_timestamp;
+        let budget = &mut ctx.accounts.budget_allocation;
+
+        // Only update allocation and cap; do NOT reset spent/daily_spent
+        budget.allocated = new_allocated;
+        budget.daily_cap = new_daily_cap;
+        budget.updated_at = now;
+
+        emit!(BudgetUpdated {
+            agent_id: budget.agent_id,
+            new_allocated,
+            new_daily_cap,
+            timestamp: now,
+        });
+
+        Ok(())
+    }
+
     /// Updates the 7-day and 30-day rolling revenue averages used for CCS band selection.
     /// Signer: keeper_authority.
+    /// L-TREAS-2: Now emits RevenueAveragesUpdated event for auditability.
     pub fn update_revenue_averages(
         ctx: Context<UpdateRevenueAverages>,
         avg_7d_revenue: u64,
@@ -498,6 +615,12 @@ pub mod noumen_treasury {
         let ccs = &mut ctx.accounts.ccs_config;
         ccs.avg_7d_revenue = avg_7d_revenue;
         ccs.avg_30d_revenue = avg_30d_revenue;
+
+        emit!(RevenueAveragesUpdated {
+            avg_7d_revenue,
+            avg_30d_revenue,
+            timestamp: Clock::get()?.unix_timestamp,
+        });
 
         Ok(())
     }
@@ -539,9 +662,11 @@ pub struct TreasuryVault {
     pub daily_spend_lamports: u64,
     pub daily_spend_reset_at: i64,
     pub total_donations_swept: u64,
+    pub dev_fund_lamports: u64,
+    pub operations_lamports: u64,
     pub updated_at: i64,
     pub bump: u8,
-    pub _reserved: [u8; 64],
+    pub _reserved: [u8; 48],
 }
 
 impl TreasuryVault {
@@ -554,9 +679,11 @@ impl TreasuryVault {
         + 8   // daily_spend_lamports
         + 8   // daily_spend_reset_at
         + 8   // total_donations_swept
+        + 8   // dev_fund_lamports
+        + 8   // operations_lamports
         + 8   // updated_at
         + 1   // bump
-        + 64; // _reserved
+        + 48; // _reserved
 }
 
 #[account]
@@ -801,8 +928,9 @@ pub struct AllocateAgentBudget<'info> {
     )]
     pub treasury_vault: Account<'info, TreasuryVault>,
 
+    /// H-TREAS-2: Changed from init_if_needed to init to prevent silent resets
     #[account(
-        init_if_needed,
+        init,
         payer = aeon_authority,
         space = BudgetAllocation::LEN,
         seeds = [b"budget", agent_id.to_le_bytes().as_ref()],
@@ -811,6 +939,36 @@ pub struct AllocateAgentBudget<'info> {
     pub budget_allocation: Account<'info, BudgetAllocation>,
 
     pub system_program: Program<'info, System>,
+}
+
+/// H-TREAS-2: Separate context for updating an existing budget allocation
+#[derive(Accounts)]
+#[instruction(_agent_id: u16)]
+pub struct UpdateAgentBudget<'info> {
+    #[account(
+        constraint = aeon_authority.key() == treasury_config.aeon_authority @ TreasuryError::UnauthorizedAeon,
+    )]
+    pub aeon_authority: Signer<'info>,
+
+    #[account(
+        seeds = [b"treasury_config"],
+        bump = treasury_config.bump,
+        constraint = treasury_config.is_initialized @ TreasuryError::NotInitialized,
+    )]
+    pub treasury_config: Account<'info, TreasuryConfig>,
+
+    #[account(
+        seeds = [b"treasury_vault"],
+        bump = treasury_vault.bump,
+    )]
+    pub treasury_vault: Account<'info, TreasuryVault>,
+
+    #[account(
+        mut,
+        seeds = [b"budget", _agent_id.to_le_bytes().as_ref()],
+        bump = budget_allocation.bump,
+    )]
+    pub budget_allocation: Account<'info, BudgetAllocation>,
 }
 
 #[derive(Accounts)]
@@ -949,8 +1107,9 @@ pub struct ServicePaymentProcessed {
     pub service_id: u16,
     pub amount_lamports: u64,
     pub creator_split: u64,
-    pub treasury_split: u64,
-    pub band_index: u8,
+    pub treasury_reserve_split: u64,
+    pub dev_fund_split: u64,
+    pub operations_split: u64,
     pub timestamp: i64,
 }
 
@@ -984,6 +1143,21 @@ pub struct CreatorWithdrawal {
     pub timestamp: i64,
 }
 
+#[event]
+pub struct BudgetUpdated {
+    pub agent_id: u16,
+    pub new_allocated: u64,
+    pub new_daily_cap: u64,
+    pub timestamp: i64,
+}
+
+#[event]
+pub struct RevenueAveragesUpdated {
+    pub avg_7d_revenue: u64,
+    pub avg_30d_revenue: u64,
+    pub timestamp: i64,
+}
+
 // ──────────────────────────────────────────────
 // Errors
 // ──────────────────────────────────────────────
@@ -996,7 +1170,7 @@ pub enum TreasuryError {
     ArithmeticOverflow,
     #[msg("Amount must be greater than zero")]
     ZeroAmount,
-    #[msg("Creator + treasury split does not equal total amount")]
+    #[msg("Operations + treasury reserve + dev fund + creator split does not equal total amount")]
     SplitMismatch,
     #[msg("Invalid creator wallet")]
     InvalidCreatorWallet,
@@ -1014,4 +1188,6 @@ pub enum TreasuryError {
     ReserveRatioBreach,
     #[msg("Insufficient treasury balance for withdrawal")]
     InsufficientTreasuryBalance,
+    #[msg("Daily spend cap exceeded (A0-3: daily treasury spend <= 3% of free balance)")]
+    DailySpendCapExceeded,
 }

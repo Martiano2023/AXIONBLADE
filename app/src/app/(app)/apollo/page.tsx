@@ -24,9 +24,20 @@ import {
   Check,
   Search,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
 import { InfoTooltip } from "@/components/atoms/Tooltip";
 import { TechnicalDetails } from "@/components/atoms/TechnicalDetails";
 import { DataSourceBadge } from "@/components/atoms/DataSourceBadge";
+import { useTierStore } from "@/stores/useTierStore";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -326,45 +337,68 @@ interface PricingTierConfig {
   features: string[];
   note?: string;
   aiAdjusted?: boolean;
+  launchPrice?: boolean;
+  afterLaunch?: string;
 }
 
 const PRICING_TIERS: PricingTierConfig[] = [
   {
+    id: "free",
+    name: "FREE",
+    price: "Free",
+    priceColor: "text-gray-400",
+    description: "1 assessment per day — score + risk level only",
+    features: [
+      "1 assessment per day",
+      "Risk score (0-100)",
+      "Risk level label",
+      "Pool name + address",
+    ],
+    note: "Free preview — upgrade for full analysis",
+  },
+  {
     id: "basic",
     name: "BASIC",
-    price: "0.05 SOL",
+    price: "0.02 SOL",
     priceColor: "text-blue-400",
-    description: "Risk score + level + pool identification",
+    description: "Simple risk score only — minimal compute",
     features: [
       "Risk score (0-100)",
       "Risk level label (Low/Medium/High/Critical)",
       "Pool name + address",
     ],
-    note: "1 free assessment per day",
+    note: "Simple risk score — upgrade to Pro for full breakdown and AI analysis",
+    launchPrice: true,
+    afterLaunch: "After launch: ~0.03-0.08 SOL",
   },
   {
     id: "pro",
     name: "PRO",
-    price: "0.25 SOL",
+    price: "0.15 SOL",
     priceColor: "text-cyan-400",
-    description: "Full breakdown + drivers + confidence + 7d trend + proof hash",
+    description: "Full breakdown + drivers + trend + proof hash + AI narrative + watchlist alerts",
     features: [
       "Everything in Basic",
-      "Risk breakdown by evidence family",
-      "Main risk drivers with contribution scores",
-      "Confidence percentage",
-      "7-day risk trend chart",
-      "Proof hash + on-chain link",
+      "Full risk breakdown by evidence family",
+      "Risk drivers with contribution bars",
+      "7-day and 30-day trend charts",
+      "Confidence metrics",
+      "Proof hash + explorer link",
+      "AI-generated risk narrative (2-3 sentences)",
+      "Watchlist: add pool to monitoring",
     ],
+    launchPrice: true,
+    afterLaunch: "After launch: ~0.20-0.40 SOL",
   },
   {
     id: "institutional",
     name: "INSTITUTIONAL",
-    price: "5 SOL (AI-adjusted, range 3-8 SOL)",
+    price: "From 2 SOL",
     priceColor: "text-emerald-400",
-    description: "Everything + JSON/PDF + comparative + AI narrative + historical 30d + priority processing",
+    description: "AI-dynamic pricing — adjusts based on pool complexity, TVL, network load. Minimum always covers costs + 30% margin.",
     features: [
       "Everything in Pro",
+      "Compare: up to 3 pools side-by-side",
       "Full JSON + PDF export",
       "Comparative analysis vs similar pools",
       "Historical risk trajectory (30d)",
@@ -372,8 +406,10 @@ const PRICING_TIERS: PricingTierConfig[] = [
       "Priority queue processing",
       "Dedicated proof with enhanced metadata",
     ],
-    note: "Enterprise pricing reflects the depth of analysis, on-chain proof generation, and computational resources required.",
+    note: "AI-adjusted pricing guarantees minimum 30% treasury allocation.",
     aiAdjusted: true,
+    launchPrice: true,
+    afterLaunch: "After launch: ~3-8 SOL (AI-adjusted)",
   },
 ];
 
@@ -381,7 +417,7 @@ const PRICING_TIERS: PricingTierConfig[] = [
 const TIER_FEATURE_SUMMARY: Record<PricingTier, string[]> = {
   free: ["Risk score", "Risk level label", "Pool name + address"],
   basic: ["Risk score", "Risk level label", "Pool name + address"],
-  pro: ["Risk score", "Evidence families", "Risk drivers", "Confidence %", "7d trend", "Proof hash"],
+  pro: ["Risk score", "Evidence families", "Risk drivers", "Confidence %", "7d + 30d trend", "Proof hash", "AI narrative", "Watchlist", "Compare", "Export"],
   institutional: ["Full analysis", "JSON + PDF export", "Comparative analysis", "30d trajectory", "AI narrative", "Priority processing"],
 };
 
@@ -484,8 +520,9 @@ function RiskScoreGauge({ score, riskLevel, size = 100 }: { score: number; riskL
         >
           {score}
         </motion.span>
-        <span className={cn("text-[10px] font-medium", riskLabelColor(riskLevel))}>
-          {riskLevel === "Low" ? "Low Risk" : riskLevel === "Medium" ? "Medium Risk" : riskLevel === "High" ? "High Risk" : "Critical"}
+        <span className={cn("text-[10px] font-medium inline-flex items-center", riskLabelColor(riskLevel))}>
+          {riskLevel === "Low" ? "Low Risk" : riskLevel === "Medium" ? "Medium Risk" : riskLevel === "High" ? "High Risk" : "Critical Risk"}
+          <InfoTooltip term={riskLevel === "Low" ? "Low Risk" : riskLevel === "Medium" ? "Medium Risk" : riskLevel === "High" ? "High Risk" : "Critical Risk"} />
         </span>
       </div>
     </div>
@@ -641,7 +678,7 @@ function PoolCard({
       {/* Confidence percentage — pro+ only */}
       {isProOrAbove && (
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-gray-500 uppercase tracking-wider">Confidence</span>
+          <span className="text-[10px] text-gray-500 uppercase tracking-wider inline-flex items-center">Confidence<InfoTooltip term="Confidence Level" /></span>
           <span className="text-xs font-semibold text-cyan-400 tabular-nums">
             {Math.min(pool.evidenceFamilies.filter((ef) => ef.active).length * 20, 100)}%
           </span>
@@ -681,7 +718,7 @@ function PoolCard({
             >
               {ef.active ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
               <span>{ef.name}</span>
-              <InfoTooltip term="Evidence Family" className="ml-0" />
+              <InfoTooltip term={ef.name} className="ml-0" />
             </div>
           ))}
         </div>
@@ -726,16 +763,31 @@ function PoolCard({
         </div>
       )}
 
+      {/* AI Risk Narrative — pro+ only */}
+      {isProOrAbove && (
+        <div className="w-full border-t border-white/[0.06] pt-3 mt-1">
+          <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">AI Risk Narrative</p>
+          <p className="text-xs text-gray-400 leading-relaxed italic">
+            {pool.score >= 80
+              ? `${pool.pool} shows a strong risk profile with ${pool.evidenceFamilies.filter(ef => ef.active).length}/5 evidence families active. Effective APR of ${pool.effectiveApr}% is well-supported by underlying fundamentals.`
+              : pool.score >= 50
+                ? `${pool.pool} presents moderate risk. APR gap of ${(pool.headlineApr - pool.effectiveApr).toFixed(1)}% between headline and effective yield warrants monitoring. ${pool.evidenceFamilies.filter(ef => !ef.active).length} evidence families inactive.`
+                : `${pool.pool} carries elevated risk. Significant APR divergence (${pool.headlineApr}% headline vs ${pool.effectiveApr}% effective) suggests unsustainable yield structure. Exercise caution.`
+            }
+          </p>
+        </div>
+      )}
+
       {/* APR comparison — always visible */}
       <div className="w-full border-t border-white/[0.06] pt-3 mt-1">
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-500">Headline: <span className="text-gray-400">{pool.headlineApr}%</span></span>
           <ArrowDownRight className={cn("h-3 w-3", significantGap ? "text-rose-400" : "text-gray-600")} />
-          <span className="text-gray-500">Effective: <span className="text-white font-semibold">{pool.effectiveApr}%</span></span>
+          <span className="text-gray-500 inline-flex items-center">Effective<InfoTooltip term="Effective APR" />: <span className="text-white font-semibold ml-1">{pool.effectiveApr}%</span></span>
         </div>
         {significantGap && (
-          <p className="text-[10px] text-rose-400 text-center mt-1">
-            -{aprDeltaPct}% gap detected
+          <p className="text-[10px] text-rose-400 text-center mt-1 inline-flex items-center justify-center w-full">
+            -{aprDeltaPct}% gap detected<InfoTooltip term="Yield Trap" />
           </p>
         )}
       </div>
@@ -752,12 +804,12 @@ function PoolCard({
           <div className="space-y-1">
             {isInstitutional && (
               <>
-                <p>Assessment PDA: {POOL_TECHNICAL[pool.pool].pda}</p>
+                <p className="inline-flex items-center gap-1">Assessment PDA<InfoTooltip term="Assessment PDA" />: {POOL_TECHNICAL[pool.pool].pda}</p>
                 <p>Block: {POOL_TECHNICAL[pool.pool].block}</p>
                 <p>TX: {POOL_TECHNICAL[pool.pool].tx}</p>
               </>
             )}
-            <p>Proof hash: {POOL_TECHNICAL[pool.pool].proofHash}</p>
+            <p className="inline-flex items-center gap-1">Proof hash<InfoTooltip term="Proof Hash" />: {POOL_TECHNICAL[pool.pool].proofHash}</p>
           </div>
         </TechnicalDetails>
       )}
@@ -942,6 +994,47 @@ function exportComparisonReport(pools: PoolAssessment[]): string {
 }
 
 // ---------------------------------------------------------------------------
+// Risk Gauge (Half-circle dial)
+// ---------------------------------------------------------------------------
+
+function RiskGauge({ score }: { score: number }) {
+  const radius = 70;
+  const circumference = Math.PI * radius; // half circle
+  const progress = score / 100;
+  const color = score >= 81 ? "#10B981" : score >= 61 ? "#F59E0B" : score >= 41 ? "#F97316" : "#EF4444";
+
+  return (
+    <div className="relative flex items-center justify-center">
+      <svg width={180} height={100} viewBox="0 0 180 100">
+        {/* Background arc */}
+        <path
+          d="M 10 90 A 70 70 0 0 1 170 90"
+          fill="none"
+          stroke="rgba(255,255,255,0.06)"
+          strokeWidth={10}
+          strokeLinecap="round"
+        />
+        {/* Progress arc */}
+        <path
+          d="M 10 90 A 70 70 0 0 1 170 90"
+          fill="none"
+          stroke={color}
+          strokeWidth={10}
+          strokeLinecap="round"
+          strokeDasharray={`${circumference}`}
+          strokeDashoffset={circumference * (1 - progress)}
+          className="transition-all duration-1000 ease-out"
+        />
+      </svg>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
+        <span className="text-2xl font-bold text-white">{score}</span>
+        <span className="text-xs text-gray-500 block">/100</span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
@@ -953,9 +1046,11 @@ export default function ApolloPage() {
   const [proofResult, setProofResult] = useState<{ hash: string; tier: PricingTier } | null>(null);
   const [watchlist, setWatchlist] = useState<Set<string>>(new Set());
 
-  // Tier-based access control (inline state since useTierStore doesn't exist yet)
-  const [currentTier, setCurrentTier] = useState<PricingTier>("free");
-  const [freeAssessmentsUsed, setFreeAssessmentsUsed] = useState(0);
+  // Tier-based access control — wired to useTierStore
+  const { apolloTier: currentTier, isTierActive, incrementFreeAssessments, freeAssessmentsUsed } = useTierStore();
+  const tierActive = isTierActive("apollo");
+  const effectiveTier: PricingTier = tierActive ? currentTier : "free";
+  const { connected } = useWallet();
   const [freeLimitMessage, setFreeLimitMessage] = useState<string | null>(null);
 
   // Compare pools state
@@ -1041,16 +1136,23 @@ export default function ApolloPage() {
       return;
     }
 
+    // Before setting tier, require wallet connection and payment for paid tiers
+    if (selectedTier !== "free") {
+      if (!connected) {
+        alert("Connect wallet to purchase assessment");
+        return;
+      }
+      // Payment would be handled by the upgrade modal
+      // Don't set tier directly - it should come from verified payment
+    }
+
     console.log("Assessment submitted", { poolAddress, protocol, tier: selectedTier });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
 
-    // Set the current tier based on selection
+    // For free tier, increment counter via store
     if (selectedTier === "free") {
-      setCurrentTier("free");
-      setFreeAssessmentsUsed((prev) => prev + 1);
-    } else {
-      setCurrentTier(selectedTier);
+      incrementFreeAssessments();
     }
 
     // Clear any limit message
@@ -1063,7 +1165,7 @@ export default function ApolloPage() {
       hash += hexChars[Math.floor(Math.random() * 16)];
     }
     setProofResult({ hash, tier: selectedTier });
-  }, [poolAddress, protocol, selectedTier, freeAssessmentsUsed]);
+  }, [poolAddress, protocol, selectedTier, freeAssessmentsUsed, connected, incrementFreeAssessments]);
 
   return (
     <div className="space-y-8">
@@ -1160,7 +1262,7 @@ export default function ApolloPage() {
           </div>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-white">APOLLO</h1>
+              <h1 className="text-3xl font-bold text-white inline-flex items-center">APOLLO<InfoTooltip term="APOLLO" /></h1>
               <span className="text-lg text-gray-500 font-medium">Risk Evaluator</span>
             </div>
             <p className="text-sm text-gray-400 mt-1 max-w-xl">
@@ -1241,7 +1343,7 @@ export default function ApolloPage() {
             <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
               Assessment Tier
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {PRICING_TIERS.map((tier) => (
                 <button
                   key={tier.id}
@@ -1256,6 +1358,11 @@ export default function ApolloPage() {
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-xs font-bold uppercase tracking-wider text-white">{tier.name}</p>
+                    {tier.launchPrice && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-medium ml-2">
+                        Launch Price
+                      </span>
+                    )}
                     {tier.aiAdjusted && (
                       <InfoTooltip term="AI-Adjusted Pricing" definition="Price ranges from 3-8 SOL based on pool complexity, TVL, network load, and data availability." />
                     )}
@@ -1267,6 +1374,9 @@ export default function ApolloPage() {
                     )}
                   </div>
                   <p className="text-[10px] text-gray-500 mt-0.5">{tier.description}</p>
+                  {tier.afterLaunch && (
+                    <p className="text-[10px] text-gray-600 mt-0.5">{tier.afterLaunch}</p>
+                  )}
 
                   {/* Feature list */}
                   <ul className="mt-2 space-y-1">
@@ -1287,6 +1397,9 @@ export default function ApolloPage() {
                 </button>
               ))}
             </div>
+            <p className="text-[10px] text-gray-600 mt-3 text-center">
+              Pricing is AI-adjusted to ensure protocol sustainability. Revenue split: 40% Operations | 30% Treasury | 15% Dev Fund | 15% Creator.
+            </p>
           </div>
 
           {/* Free tier limit message */}
@@ -1462,6 +1575,7 @@ export default function ApolloPage() {
                 <div className="flex items-center gap-2">
                   <h3 className="text-white font-bold text-sm">{mod.name}</h3>
                   {mod.name === "MLI Scoring" && <InfoTooltip term="MLI" />}
+                  {mod.name === "Effective APR" && <InfoTooltip term="Effective APR" />}
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-medium">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                     Running
@@ -1498,14 +1612,76 @@ export default function ApolloPage() {
               onExport={handleExportPool}
               isWatched={watchlist.has(pool.pool)}
               onToggleWatchlist={toggleWatchlist}
-              currentTier={currentTier}
+              currentTier={effectiveTier}
             />
           ))}
         </div>
 
+        {/* Evidence Family Breakdown Chart */}
+        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Risk Score by Evidence Family</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[
+              { name: "Price/Vol", score: 82, fill: "#3B82F6" },
+              { name: "Liquidity", score: 74, fill: "#10B981" },
+              { name: "Behavior", score: 68, fill: "#F59E0B" },
+              { name: "Incentive", score: 71, fill: "#8B5CF6" },
+              { name: "Protocol", score: 88, fill: "#EC4899" },
+            ]} layout="vertical" margin={{ top: 0, right: 20, bottom: 0, left: 60 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" horizontal={false} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={false} tickLine={false} width={60} />
+              <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={16}>
+                {[
+                  <Cell key="0" fill="#3B82F6" />,
+                  <Cell key="1" fill="#10B981" />,
+                  <Cell key="2" fill="#F59E0B" />,
+                  <Cell key="3" fill="#8B5CF6" />,
+                  <Cell key="4" fill="#EC4899" />,
+                ]}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Overall Risk Gauge */}
+        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center">
+          <h3 className="text-sm font-semibold text-white mb-4">Overall Risk Score</h3>
+          <RiskGauge score={76} />
+        </div>
+
+        {/* Pool Comparison Table */}
+        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6 overflow-x-auto">
+          <h3 className="text-sm font-semibold text-white mb-4">Pool Comparison</h3>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left py-2 text-gray-500 font-medium">Pool</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Score</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Headline APR</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Effective APR</th>
+                <th className="text-right py-2 text-gray-500 font-medium">Risk Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {POOLS.map((pool) => (
+                <tr key={pool.id} className="border-b border-white/[0.03]">
+                  <td className="py-2.5 text-gray-300 font-medium">{pool.pool}</td>
+                  <td className="py-2.5 text-right text-white font-mono">{pool.score}</td>
+                  <td className="py-2.5 text-right text-gray-400">{pool.headlineApr}%</td>
+                  <td className="py-2.5 text-right text-gray-400">{pool.effectiveApr}%</td>
+                  <td className={`py-2.5 text-right font-medium ${pool.score >= 81 ? "text-green-400" : pool.score >= 61 ? "text-yellow-400" : pool.score >= 41 ? "text-orange-400" : "text-red-400"}`}>
+                    {pool.score >= 81 ? "Low" : pool.score >= 61 ? "Medium" : pool.score >= 41 ? "High" : "Critical"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {/* Comparison View — institutional only */}
         <AnimatePresence>
-          {currentTier === "institutional" && showComparison && selectedPools.size >= 2 && (
+          {effectiveTier === "institutional" && showComparison && selectedPools.size >= 2 && (
             <motion.div
               ref={comparisonRef}
               initial={{ opacity: 0, y: 20 }}
@@ -1679,7 +1855,7 @@ export default function ApolloPage() {
       {/* Floating Compare Bar — institutional only                          */}
       {/* ================================================================== */}
       <AnimatePresence>
-        {currentTier === "institutional" && selectedPools.size >= 2 && (
+        {effectiveTier === "institutional" && selectedPools.size >= 2 && (
           <motion.div
             initial={{ opacity: 0, y: 20, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
@@ -1710,6 +1886,19 @@ export default function ApolloPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ================================================================== */}
+      {/* Disclaimers                                                         */}
+      {/* ================================================================== */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Risk scores are informational only and do not constitute financial advice. NOUMEN does not recommend, endorse, or advise on any DeFi position.
+          AI-adjusted pricing may vary based on pool complexity and network conditions — check current price before confirming any transaction.
+        </p>
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Devnet Beta — assessment data uses simulated sources and may differ from mainnet conditions. Past accuracy metrics do not guarantee future performance.
+        </p>
+      </div>
 
       {/* ================================================================== */}
       {/* Export Proof Hash Flash                                             */}

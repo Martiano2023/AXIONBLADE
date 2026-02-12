@@ -356,6 +356,102 @@ export default function AlertsPage() {
         </div>
       </motion.div>
 
+      {/* Alert Analytics */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.03 }}
+        className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+      >
+        {[
+          { label: "Critical", count: MOCK_ALERTS.filter(a => a.severity === "critical").length, color: "text-red-400", bg: "bg-red-400/10" },
+          { label: "Warning", count: MOCK_ALERTS.filter(a => a.severity === "warning").length, color: "text-yellow-400", bg: "bg-yellow-400/10" },
+          { label: "Info", count: MOCK_ALERTS.filter(a => a.severity === "info").length, color: "text-blue-400", bg: "bg-blue-400/10" },
+          { label: "Stable", count: MOCK_ALERTS.filter(a => a.severity === "stable").length, color: "text-emerald-400", bg: "bg-emerald-400/10" },
+        ].map((stat) => (
+          <div key={stat.label} className={`${stat.bg} border border-white/[0.06] rounded-lg p-3 text-center`}>
+            <p className={`text-2xl font-bold ${stat.color}`}>{stat.count}</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">{stat.label}</p>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Most Affected Pools */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.07 }}
+        className="bg-[#111827] border border-[#1F2937] rounded-xl p-4"
+      >
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Most Affected Pools</h3>
+        <div className="space-y-2">
+          {(() => {
+            const poolCounts: Record<string, { total: number; critical: number }> = {};
+            MOCK_ALERTS.forEach((a) => {
+              if (!poolCounts[a.pool]) poolCounts[a.pool] = { total: 0, critical: 0 };
+              poolCounts[a.pool].total++;
+              if (a.severity === "critical") poolCounts[a.pool].critical++;
+            });
+            return Object.entries(poolCounts)
+              .sort((a, b) => b[1].total - a[1].total)
+              .slice(0, 5)
+              .map(([pool, counts]) => (
+                <div key={pool} className="flex items-center justify-between">
+                  <span className="text-xs text-gray-300 font-medium">{pool}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-gray-500">{counts.total} alerts</span>
+                    {counts.critical > 0 && (
+                      <span className="text-[10px] text-red-400 font-medium">{counts.critical} critical</span>
+                    )}
+                    <div className="w-16 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-red-400/60"
+                        style={{ width: `${(counts.total / MOCK_ALERTS.length) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ));
+          })()}
+        </div>
+      </motion.div>
+
+      {/* Alert Frequency (24h) */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.09 }}
+        className="bg-[#111827] border border-[#1F2937] rounded-xl p-4"
+      >
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Alert Frequency (24h)</h3>
+        <div className="flex items-end gap-1 h-16">
+          {Array.from({ length: 24 }, (_, h) => {
+            const count = MOCK_ALERTS.filter(a => {
+              const hoursAgo = (Date.now() / 1000 - a.timestamp) / 3600;
+              return hoursAgo >= h && hoursAgo < h + 1;
+            }).length;
+            const maxCount = 4;
+            const height = count > 0 ? Math.max(8, (count / maxCount) * 64) : 2;
+            const hasCritical = MOCK_ALERTS.some(a => {
+              const hoursAgo = (Date.now() / 1000 - a.timestamp) / 3600;
+              return hoursAgo >= h && hoursAgo < h + 1 && a.severity === "critical";
+            });
+            return (
+              <div
+                key={h}
+                className={`flex-1 rounded-sm ${hasCritical ? "bg-red-400/60" : count > 0 ? "bg-blue-400/40" : "bg-white/[0.04]"}`}
+                style={{ height: `${height}px` }}
+                title={`${h}h ago: ${count} alerts`}
+              />
+            );
+          })}
+        </div>
+        <div className="flex justify-between mt-1">
+          <span className="text-[9px] text-gray-600">24h ago</span>
+          <span className="text-[9px] text-gray-600">now</span>
+        </div>
+      </motion.div>
+
       {/* Filter bar */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -487,6 +583,14 @@ export default function AlertsPage() {
           Upgrade to Pro
         </button>
       </motion.div>
+
+      {/* Disclaimer */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Alert thresholds are configurable at Policy Layer 2 (24h delay). Critical alerts trigger immediate notification.
+          Alert data shown is from devnet beta and may differ from mainnet conditions.
+        </p>
+      </div>
     </div>
   );
 }

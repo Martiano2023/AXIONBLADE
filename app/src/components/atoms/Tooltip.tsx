@@ -7,16 +7,49 @@ import { cn } from "@/lib/utils";
 
 // ── Glossary of key terms ──────────────────────────────────
 export const GLOSSARY: Record<string, string> = {
-  CCS: "Cost-Contribution Split — how revenue is divided between creators and treasury",
-  Axiom: "An immutable rule enforced at the smart contract level that can never be changed",
+  CCS: "Cost-Contribution Split — how revenue is divided between creators and treasury. Separate from the base 15% creator allocation in the revenue split",
+  Axiom: "One of 29 active immutable rules (A0-1 through A0-30, with A0-2 deprecated) enforced at the smart contract level that cannot be changed without contract redeployment",
   "Evidence Family": "A category of data used to evaluate risk (e.g., liquidity, volatility)",
   "Brier Score": "Measures prediction accuracy — lower is better, 0 is perfect",
-  HTL: "Headline-to-Liquidation — measures gap between advertised and real APR",
+  HTL: "Hit-to-Loss ratio: percentage of risk predictions that correctly identified the outcome",
   PDA: "Program Derived Address — a deterministic account on Solana owned by a program",
   MLI: "Multi-Layered Incentive — analysis framework for evaluating yield sustainability",
   TTL: "Time-To-Live — how long before an agent or data point expires",
-  "Reserve Ratio": "Percentage of treasury held in reserve — minimum 25% per Axiom A0-3",
+  "Reserve Ratio": "Percentage of treasury held in reserve — minimum 25% per Axiom A0-17",
   "Circuit Breaker": "Emergency mechanism that halts execution when anomalies are detected",
+
+  // Evidence families - explain what each measures
+  "Price/Volume": "Measures price stability, trading volume consistency, and oracle reliability for the pool's token pair",
+  "Liquidity": "Evaluates TVL depth, LP concentration (Herfindahl index), and liquidity flow trends over 24h",
+  "Behavior": "Detects wash trading, MEV exploitation, and abnormal transaction patterns from linked wallets",
+  "Incentive": "Analyzes headline vs effective APR gap, reward token sustainability, and emission schedule decay rate",
+  "Protocol": "Assesses team identity, audit history, governance model, and TVL rank within the protocol's category",
+
+  // Risk score ranges
+  "Low Risk": "Score 81-100: Strong fundamentals across most evidence families. Suitable for conservative strategies",
+  "Medium Risk": "Score 61-80: Some risk factors present but manageable. Monitor actively",
+  "High Risk": "Score 41-60: Multiple risk factors detected. Only for risk-tolerant participants with active monitoring",
+  "Critical Risk": "Score 0-40: Severe risk indicators. Potential yield trap or exploit conditions. ALERT-ONLY mode activated",
+
+  // Additional terms
+  "Effective APR": "The real yield after accounting for impermanent loss, fee decay, reward token depreciation, and gas costs",
+  "Yield Trap": "A pool where headline APR significantly exceeds effective APR, misleading participants about true returns",
+  "Proof Hash": "SHA-256 hash of the assessment data stored on-chain, enabling cryptographic verification of the result",
+  "Assessment PDA": "Program Derived Address storing the immutable risk assessment record on Solana",
+  "Treasury Reserve": "30% of revenue held as protocol safety net (minimum 25% reserve ratio per Axiom A0-17)",
+  "Development Fund": "15% of revenue allocated to future protocol development and improvements",
+  "Operations": "40% of revenue allocated to compute, RPC nodes, storage, and infrastructure costs",
+  "Creator Allocation": "15% of revenue allocated to protocol founder/creator (capped by Axiom A0-27)",
+  "Confidence Level": "Percentage of data fields available for the assessment. Higher confidence = more complete data input",
+  "AEON": "Sovereign governor agent — delegates tasks, coordinates agents, makes governance decisions. Never executes directly",
+  "APOLLO": "DeFi risk evaluator agent with 3 modules: Pool Taxonomy, Multi-Layered Incentive (MLI), and Effective APR",
+  "HERMES": "DeFi intelligence agent providing 5 report types for external consumption. Output is terminal — never enters execution chain",
+
+  // Revenue and pricing terms
+  "Launch Price": "Introductory pricing for the first 30 days of protocol operation. Prices may adjust after the launch period based on the AI Pricing Stabilizer",
+  "AI Pricing Stabilizer": "Automated pricing engine with 3 phases: Launch (fixed), Calibration (±10%/week), Stable (±5%/week). Ensures protocol sustainability",
+  "Smart Safeguards": "Automatic rules that protect protocol economics: treasury reserve monitoring, volume-based pricing, SOL volatility adjustment",
+  "Revenue Split": "Protocol revenue is split: 40% Operations, 30% Treasury Reserve, 15% Development Fund, 15% Creator Allocation",
 };
 
 // ── Base Tooltip ───────────────────────────────────────────

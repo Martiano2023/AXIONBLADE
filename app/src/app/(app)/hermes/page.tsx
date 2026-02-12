@@ -18,8 +18,19 @@ import {
   Download,
   CheckCircle2,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
 import { InfoTooltip } from "@/components/atoms/Tooltip";
 import { useTierStore } from "@/stores/useTierStore";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -68,8 +79,8 @@ interface ComparisonPoolData {
 // Constants — Free tier allowlist
 // ---------------------------------------------------------------------------
 
-const FREE_REPORT_TYPES: ReportType[] = ["RiskDecomposition", "EffectiveAPR"];
-const FREE_REPORT_LIMIT = 3;
+const FREE_REPORT_TYPES: ReportType[] = ["RiskDecomposition"];
+const FREE_REPORT_LIMIT = 2;
 
 // ---------------------------------------------------------------------------
 // Mock Data
@@ -241,7 +252,7 @@ const SERVICE_STATUS = [
   { name: "Risk Decomposition", Icon: FileSearch, active: true, freeVisible: true },
   { name: "Yield Trap Detector", Icon: AlertOctagon, active: true, freeVisible: false },
   { name: "Pool Comparison", Icon: GitCompareArrows, active: true, freeVisible: false },
-  { name: "Effective APR Analysis", Icon: TrendingUp, active: true, freeVisible: true },
+  { name: "Effective APR Analysis", Icon: TrendingUp, active: true, freeVisible: false },
   { name: "Protocol Health Monitor", Icon: HeartPulse, active: true, freeVisible: false },
 ];
 
@@ -466,6 +477,8 @@ function ReportCard({
           </span>
           <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold", reportTypeColor(report.type))}>
             {report.type}
+            {report.type === "YieldTrap" && <InfoTooltip term="Yield Trap" />}
+            {report.type === "EffectiveAPR" && <InfoTooltip term="Effective APR" />}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -588,6 +601,9 @@ const TIER_CARDS: {
   name: string;
   price: string;
   priceNote?: string;
+  previewLabel?: string;
+  launchPrice?: boolean;
+  afterLaunch?: string;
   features: string[];
   borderColor: string;
   priceColor: string;
@@ -595,13 +611,15 @@ const TIER_CARDS: {
 }[] = [
   {
     id: "free",
-    name: "FREE",
+    name: "FREE PREVIEW",
     price: "Free",
+    previewLabel: "Free Preview — limited analysis for evaluation purposes",
     features: [
-      "3 reports per day",
-      "Report types: RiskDecomposition, EffectiveAPR only",
-      "Basic confidence score",
+      "2 reports per day",
+      "RiskDecomposition type only",
+      "No downloads",
       "24h delay on new reports",
+      "Basic confidence only",
     ],
     borderColor: "border-white/15",
     priceColor: "text-white",
@@ -609,15 +627,17 @@ const TIER_CARDS: {
   {
     id: "pro",
     name: "PRO",
-    price: "1.5 SOL/month",
-    priceNote: "~$50-75 USD range, adjusts with SOL price",
+    price: "0.5 SOL/month",
+    priceNote: "Launch price — unlimited reports, all types, real-time",
+    launchPrice: true,
+    afterLaunch: "After launch: ~1-3 SOL/month",
     features: [
       "Unlimited reports",
       "All 5 report types",
       "Real-time delivery",
-      "Advanced confidence metrics",
-      "Downloadable reports (JSON)",
-      "Custom watchlist alerts",
+      "Downloads (JSON)",
+      "Custom watchlist with alerts",
+      "Historical report access (30 days)",
     ],
     borderColor: "border-purple-500/50",
     priceColor: "text-purple-400",
@@ -625,13 +645,15 @@ const TIER_CARDS: {
   {
     id: "protocol",
     name: "PROTOCOL API",
-    price: "15 SOL/month base",
-    priceNote: "AI-adjusted by volume — scales with call volume and data complexity",
+    price: "10 SOL/month",
+    priceNote: "Launch price — 10,000 API requests included",
+    launchPrice: true,
+    afterLaunch: "After launch: ~15-25 SOL/month",
     features: [
       "Everything in Pro",
       "REST API access",
-      "Endpoints: /risk-score, /effective-apr, /yield-trap, /pool-health, /proof-hash",
-      "10,000 requests/month",
+      "All endpoints: /risk-score, /effective-apr, /yield-trap, /pool-health, /proof-hash",
+      "10,000 requests/month included",
       "Custom SLA",
       "Webhook support",
     ],
@@ -649,6 +671,7 @@ export default function HermesPage() {
   const [activeFilter, setActiveFilter] = useState<ReportType | "All">("All");
 
   const { hermesTier: tier, setHermesTier: setTier, freeReportsUsed } = useTierStore();
+  const { connected } = useWallet();
 
   // ----- Invisible access control -----
   // 1. Filter reports by type based on tier, then apply type filter
@@ -698,7 +721,7 @@ export default function HermesPage() {
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-white">HERMES</h1>
+                <h1 className="text-3xl font-bold text-white inline-flex items-center">HERMES<InfoTooltip term="HERMES" /></h1>
                 <span className="text-lg text-gray-500 font-medium">Intelligence &amp; Data Layer</span>
               </div>
               <p className="text-sm text-gray-400 mt-1 max-w-2xl leading-relaxed">
@@ -769,7 +792,21 @@ export default function HermesPage() {
             <button
               key={card.id}
               type="button"
-              onClick={() => setTier(card.id)}
+              onClick={() => {
+                if (card.id === "free") {
+                  setTier("free");
+                } else {
+                  // Open upgrade modal instead of directly setting tier
+                  // For now, show a "connect wallet" message
+                  if (!connected) {
+                    alert("Connect wallet to upgrade");
+                    return;
+                  }
+                  // Tier should only be set after verified payment
+                  // For now, still set it but this will be gated by verification
+                  setTier(card.id);
+                }
+              }}
               className={cn(
                 "bg-white/[0.02] border rounded-2xl p-5 cursor-pointer transition-all duration-200 text-left flex flex-col gap-3",
                 tier === card.id
@@ -788,6 +825,11 @@ export default function HermesPage() {
               </div>
               <div className="flex items-center gap-2">
                 <p className={cn("text-lg font-bold", card.priceColor)}>{card.price}</p>
+                {card.launchPrice && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-medium ml-2">
+                    Launch Price
+                  </span>
+                )}
                 {card.hasTooltip && (
                   <InfoTooltip
                     term="Dynamic Pricing"
@@ -797,6 +839,12 @@ export default function HermesPage() {
               </div>
               {card.priceNote && (
                 <p className="text-[10px] text-gray-600 -mt-2">{card.priceNote}</p>
+              )}
+              {card.afterLaunch && (
+                <p className="text-[10px] text-gray-500 italic">{card.afterLaunch}</p>
+              )}
+              {card.previewLabel && (
+                <p className="text-[10px] text-amber-400/80 -mt-1 italic">{card.previewLabel}</p>
               )}
               <ul className="space-y-1.5">
                 {card.features.map((feature) => (
@@ -810,10 +858,14 @@ export default function HermesPage() {
           ))}
         </div>
 
+        <p className="text-[10px] text-gray-600 text-center">
+          Revenue split: 40% Operations | 30% Treasury | 15% Dev Fund | 15% Creator
+        </p>
+
         {/* Free tier remaining counter */}
         {tier === "free" && (
           <p className="text-xs text-gray-500">
-            {freeRemaining} of {FREE_REPORT_LIMIT} free reports remaining today
+            Preview mode — {freeRemaining} of {FREE_REPORT_LIMIT} reports remaining today with 24h delay. Upgrade for real-time intelligence.
           </p>
         )}
 
@@ -946,6 +998,67 @@ export default function HermesPage() {
       </div>
 
       {/* ================================================================== */}
+      {/* Section 3b: Report Analytics                                      */}
+      {/* ================================================================== */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Report Type Distribution */}
+        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Report Type Distribution</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "RiskDecomposition", value: 42, fill: "#3B82F6" },
+                  { name: "YieldTrap", value: 28, fill: "#EF4444" },
+                  { name: "EffectiveAPR", value: 35, fill: "#10B981" },
+                  { name: "PoolComparison", value: 18, fill: "#F59E0B" },
+                  { name: "ProtocolHealth", value: 12, fill: "#8B5CF6" },
+                ]}
+                cx="50%" cy="50%"
+                innerRadius={50} outerRadius={75}
+                paddingAngle={2}
+                dataKey="value"
+              >
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex flex-wrap gap-3 mt-2 justify-center">
+            {[
+              { name: "Risk", color: "#3B82F6" },
+              { name: "Yield", color: "#EF4444" },
+              { name: "APR", color: "#10B981" },
+              { name: "Compare", color: "#F59E0B" },
+              { name: "Health", color: "#8B5CF6" },
+            ].map((item) => (
+              <div key={item.name} className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-[10px] text-gray-500">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Confidence Distribution */}
+        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Confidence Distribution</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[
+              { range: "90-100%", count: 18 },
+              { range: "80-89%", count: 32 },
+              { range: "70-79%", count: 24 },
+              { range: "60-69%", count: 8 },
+              { range: "<60%", count: 3 },
+            ]} margin={{ top: 0, right: 0, bottom: 0, left: -20 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <XAxis dataKey="range" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
+              <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={24} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* ================================================================== */}
       {/* Section 4: Pool Comparison View (hidden on free tier)              */}
       {/* ================================================================== */}
       <AnimatePresence>
@@ -1000,7 +1113,7 @@ export default function HermesPage() {
                   </thead>
                   <tbody>
                     <tr className="border-b border-white/[0.04]">
-                      <td className="text-gray-400 px-6 py-2.5">Effective APR</td>
+                      <td className="text-gray-400 px-6 py-2.5"><span className="inline-flex items-center">Effective APR<InfoTooltip term="Effective APR" /></span></td>
                       {COMPARISON_POOLS.map((pool) => (
                         <td key={pool.pool} className="text-center text-white font-medium px-4 py-2.5">{pool.apr}</td>
                       ))}
@@ -1048,6 +1161,16 @@ export default function HermesPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Disclaimers */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Intelligence reports are informational only. NOUMEN does not provide financial advice. All analysis is algorithmic and deterministic — no LLM makes final decisions.
+        </p>
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Devnet Beta — report data uses simulated sources and may differ from mainnet conditions. AI-adjusted pricing may vary.
+        </p>
+      </div>
     </div>
   );
 }

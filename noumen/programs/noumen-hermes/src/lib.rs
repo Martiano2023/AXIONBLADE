@@ -30,7 +30,9 @@ pub mod noumen_hermes {
         config.bump = ctx.bumps.hermes_config;
         config._reserved = [0u8; 48];
 
+        // C-HERMES-1: Emit initialization event with deployer key for auditability
         emit!(HermesInitialized {
+            deployer: ctx.accounts.aeon_authority.key(),
             authority: config.authority,
             aeon_authority: config.aeon_authority,
             timestamp: clock.unix_timestamp,
@@ -51,12 +53,10 @@ pub mod noumen_hermes {
         args: PublishReportArgs,
     ) -> Result<()> {
         // Validate report_type is within range (0-4)
-        require!(args.report_type <= 4, HermesError::InvalidReportType);
-
         // A0-30: HERMES report types exclude operational risk signals.
         // All valid ReportType variants (0-4) are intelligence outputs, not risk signals.
         // Any value > 4 would be a risk signal type and is prohibited.
-        require!(args.report_type <= 4, HermesError::RiskSignalProhibited);
+        require!(args.report_type <= 4, HermesError::InvalidReportType);
 
         // Validate confidence_score is within range (0-100)
         require!(
@@ -65,6 +65,13 @@ pub mod noumen_hermes {
         );
 
         let clock = Clock::get()?;
+
+        // H-HERMES-2: Validate expiry is in the future
+        require!(
+            args.expiry > clock.unix_timestamp,
+            HermesError::ExpiredReport
+        );
+
         let config = &mut ctx.accounts.hermes_config;
 
         let report = &mut ctx.accounts.intelligence_report;
@@ -299,6 +306,7 @@ pub struct PublishPoolComparison<'info> {
 
 #[event]
 pub struct HermesInitialized {
+    pub deployer: Pubkey,
     pub authority: Pubkey,
     pub aeon_authority: Pubkey,
     pub timestamp: i64,
@@ -336,4 +344,6 @@ pub enum HermesError {
     InvalidPoolCount,
     #[msg("Math overflow")]
     MathOverflow,
+    #[msg("Report expiry must be in the future")]
+    ExpiredReport,
 }

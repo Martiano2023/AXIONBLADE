@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  getCorsHeaders,
+  checkRateLimit,
+  validateApiKey,
+  isValidProofHash,
+  getTierFromKey,
+} from "../_shared/middleware";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, x-api-key",
-  "X-RateLimit-Remaining": "99",
-};
-
-export async function OPTIONS() {
-  return NextResponse.json(null, { status: 204, headers: corsHeaders });
+export async function OPTIONS(request: NextRequest) {
+  return NextResponse.json(null, {
+    status: 204,
+    headers: getCorsHeaders(request),
+  });
 }
 
 export async function GET(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request);
   const hash = request.nextUrl.searchParams.get("hash");
 
   if (!hash) {
@@ -21,13 +25,36 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const apiKey = request.headers.get("x-api-key");
-  if (!apiKey) {
+  if (!isValidProofHash(hash)) {
     return NextResponse.json(
-      { error: "API key required. Get one at noumen.app/settings" },
+      { error: "Invalid proof hash. Expected format: 0x followed by 40-64 hex characters." },
+      { status: 400, headers: corsHeaders }
+    );
+  }
+
+  const apiKey = request.headers.get("x-api-key");
+  if (!validateApiKey(apiKey)) {
+    return NextResponse.json(
+      { error: "Invalid or missing API key. Get one at noumen.app/settings" },
       { status: 401, headers: corsHeaders }
     );
   }
+
+  const tier = getTierFromKey(apiKey!);
+
+  // Rate limit by API key (tier-aware)
+  const rateCheck = checkRateLimit(apiKey!, tier);
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      {
+        status: 429,
+        headers: { ...corsHeaders, "X-RateLimit-Remaining": "0" },
+      }
+    );
+  }
+
+  // Proofs are public -- available to all tiers
 
   // Mock but realistic data
   // In production this would look up the proof PDA on-chain
@@ -48,6 +75,11 @@ export async function GET(request: NextRequest) {
       blockNumber: 284_521_337,
       explorer: `https://explorer.solana.com/tx/${mockTxSig}`,
     },
-    { headers: corsHeaders }
+    {
+      headers: {
+        ...corsHeaders,
+        "X-RateLimit-Remaining": String(rateCheck.remaining),
+      },
+    }
   );
 }

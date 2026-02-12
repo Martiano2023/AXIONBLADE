@@ -20,9 +20,25 @@ pub mod noumen_core {
             CoreError::AgentCapExceedsHardLimit
         );
 
+        // M-CORE-1: All three authority keys must be distinct from each other
+        let super_key = ctx.accounts.super_authority.key();
+        require!(
+            super_key != args.aeon_authority,
+            CoreError::AuthoritiesMustBeDistinct
+        );
+        require!(
+            super_key != args.keeper_authority,
+            CoreError::AuthoritiesMustBeDistinct
+        );
+        require!(
+            args.aeon_authority != args.keeper_authority,
+            CoreError::AuthoritiesMustBeDistinct
+        );
+
         let clock = Clock::get()?;
 
-        config.super_authority = ctx.accounts.super_authority.key();
+        config.super_authority = super_key;
+        config.pending_super_authority = Pubkey::default();
         config.aeon_authority = args.aeon_authority;
         config.keeper_authority = args.keeper_authority;
         config.treasury_program = args.treasury_program;
@@ -48,6 +64,7 @@ pub mod noumen_core {
     }
 
     /// Update system actors (authority keys). Only super_authority can call.
+    /// C-CORE-1: super_authority changes use two-step transfer (pending + accept).
     pub fn update_system_actors(
         ctx: Context<UpdateSystemActors>,
         args: UpdateSystemActorsArgs,
@@ -55,17 +72,61 @@ pub mod noumen_core {
         let config = &mut ctx.accounts.aeon_config;
         let clock = Clock::get()?;
 
+        let old_aeon = config.aeon_authority;
+        let old_keeper = config.keeper_authority;
+
         if let Some(new_aeon) = args.new_aeon_authority {
             config.aeon_authority = new_aeon;
         }
         if let Some(new_keeper) = args.new_keeper_authority {
             config.keeper_authority = new_keeper;
         }
+        // C-CORE-1: Two-step transfer — store as pending, do NOT apply immediately
         if let Some(new_super) = args.new_super_authority {
-            config.super_authority = new_super;
+            config.pending_super_authority = new_super;
         }
 
         config.updated_at = clock.unix_timestamp;
+
+        emit!(SystemActorsUpdated {
+            old_aeon,
+            new_aeon: config.aeon_authority,
+            old_keeper,
+            new_keeper: config.keeper_authority,
+            timestamp: clock.unix_timestamp,
+        });
+
+        Ok(())
+    }
+
+    /// Accept a pending super_authority transfer. Must be signed by the pending authority.
+    /// C-CORE-1: Completes the two-step super_authority transfer.
+    pub fn accept_super_authority(
+        ctx: Context<AcceptSuperAuthority>,
+    ) -> Result<()> {
+        let config = &mut ctx.accounts.aeon_config;
+        let clock = Clock::get()?;
+
+        require!(
+            config.pending_super_authority != Pubkey::default(),
+            CoreError::NoPendingSuperAuthority
+        );
+        require!(
+            ctx.accounts.new_super_authority.key() == config.pending_super_authority,
+            CoreError::Unauthorized
+        );
+
+        let old_super = config.super_authority;
+        config.super_authority = config.pending_super_authority;
+        config.pending_super_authority = Pubkey::default();
+        config.updated_at = clock.unix_timestamp;
+
+        emit!(SuperAuthorityTransferred {
+            old_super_authority: old_super,
+            new_super_authority: config.super_authority,
+            timestamp: clock.unix_timestamp,
+        });
+
         Ok(())
     }
 
@@ -354,6 +415,28 @@ pub mod noumen_core {
         Ok(())
     }
 
+    /// H-CORE-1: Reset the circuit breaker to Normal mode.
+    /// Only super_authority can reset. This allows recovery from any escalated state.
+    pub fn reset_circuit_breaker(
+        ctx: Context<ResetCircuitBreaker>,
+        reason_hash: [u8; 32],
+    ) -> Result<()> {
+        let config = &mut ctx.accounts.aeon_config;
+        let clock = Clock::get()?;
+
+        let old_mode = config.circuit_breaker_mode;
+        config.circuit_breaker_mode = CircuitBreakerMode::Normal as u8;
+        config.updated_at = clock.unix_timestamp;
+
+        emit!(CircuitBreakerReset {
+            old_mode,
+            reason_hash,
+            timestamp: clock.unix_timestamp,
+        });
+
+        Ok(())
+    }
+
     /// Record a heartbeat from the keeper to prove liveness.
     pub fn record_heartbeat(ctx: Context<RecordHeartbeat>) -> Result<()> {
         let config = &mut ctx.accounts.aeon_config;
@@ -377,6 +460,7 @@ pub mod noumen_core {
 #[account]
 pub struct AeonConfig {
     pub super_authority: Pubkey,
+    pub pending_super_authority: Pubkey,
     pub aeon_authority: Pubkey,
     pub keeper_authority: Pubkey,
     pub treasury_program: Pubkey,
@@ -390,7 +474,7 @@ pub struct AeonConfig {
     pub created_at: i64,
     pub updated_at: i64,
     pub bump: u8,
-    pub _reserved: [u8; 128],
+    pub _reserved: [u8; 96],
 }
 
 #[account]
@@ -500,7 +584,7 @@ pub struct TriggerCircuitBreakerArgs {
 // Account Contexts
 // ──────────────────────────────────────────────
 
-const AEON_CONFIG_SIZE: usize = 8 + 32 + 32 + 32 + 32 + 32 + 2 + 1 + 1 + 4 + 8 + 8 + 8 + 8 + 1 + 128;
+const AEON_CONFIG_SIZE: usize = 8 + 32 + 32 + 32 + 32 + 32 + 32 + 2 + 1 + 1 + 4 + 8 + 8 + 8 + 8 + 1 + 96;
 const AGENT_MANIFEST_SIZE: usize = 8 + 2 + 32 + 1 + 1 + 1 + 2 + 8 + 8 + 8 + 8 + 8 + 32 + 8 + 8 + 8 + 8 + 1 + 64;
 const POLICY_PROPOSAL_SIZE: usize = 8 + 4 + 32 + 1 + 1 + 32 + 8 + 8 + 8 + 8 + 8 + 1 + 64;
 
@@ -646,6 +730,18 @@ pub struct ExecutePolicyChange<'info> {
 }
 
 #[derive(Accounts)]
+pub struct AcceptSuperAuthority<'info> {
+    #[account(
+        mut,
+        seeds = [b"aeon_config"],
+        bump = aeon_config.bump,
+    )]
+    pub aeon_config: Account<'info, AeonConfig>,
+    /// The pending super_authority who must sign to accept the transfer.
+    pub new_super_authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
 pub struct TriggerCircuitBreaker<'info> {
     #[account(
         mut,
@@ -662,6 +758,18 @@ pub struct TriggerCircuitBreaker<'info> {
         ) @ CoreError::Unauthorized
     )]
     pub authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ResetCircuitBreaker<'info> {
+    #[account(
+        mut,
+        seeds = [b"aeon_config"],
+        bump = aeon_config.bump,
+        has_one = super_authority @ CoreError::Unauthorized,
+    )]
+    pub aeon_config: Account<'info, AeonConfig>,
+    pub super_authority: Signer<'info>,
 }
 
 #[derive(Accounts)]
@@ -735,6 +843,29 @@ pub struct HeartbeatRecorded {
     pub timestamp: i64,
 }
 
+#[event]
+pub struct SystemActorsUpdated {
+    pub old_aeon: Pubkey,
+    pub new_aeon: Pubkey,
+    pub old_keeper: Pubkey,
+    pub new_keeper: Pubkey,
+    pub timestamp: i64,
+}
+
+#[event]
+pub struct SuperAuthorityTransferred {
+    pub old_super_authority: Pubkey,
+    pub new_super_authority: Pubkey,
+    pub timestamp: i64,
+}
+
+#[event]
+pub struct CircuitBreakerReset {
+    pub old_mode: u8,
+    pub reason_hash: [u8; 32],
+    pub timestamp: i64,
+}
+
 // ──────────────────────────────────────────────
 // Errors
 // ──────────────────────────────────────────────
@@ -773,6 +904,10 @@ pub enum CoreError {
     InvalidModeTransition,
     #[msg("Math overflow")]
     MathOverflow,
+    #[msg("Super authority, AEON authority, and keeper authority must all be distinct")]
+    AuthoritiesMustBeDistinct,
+    #[msg("No pending super authority transfer to accept")]
+    NoPendingSuperAuthority,
 }
 
 // Constants for delay enforcement

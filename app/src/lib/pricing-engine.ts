@@ -32,9 +32,16 @@ export interface PricingResult {
 // ---------------------------------------------------------------------------
 
 const BASE_PRICES: Record<PricingFactors["baseTier"], number> = {
-  basic: 0.05,
-  pro: 0.25,
-  institutional: 5.0,
+  basic: 0.02,        // Launch price (was 0.05)
+  pro: 0.15,          // Launch price (was 0.3)
+  institutional: 2.0, // Launch price, AI-adjusted (was 5.0)
+};
+
+// Cost estimates per operation (in SOL)
+const ESTIMATED_COSTS: Record<PricingFactors["baseTier"], number> = {
+  basic: 0.002,
+  pro: 0.008,
+  institutional: 0.04,
 };
 
 // ---------------------------------------------------------------------------
@@ -45,6 +52,17 @@ export function calculatePrice(
   factors: PricingFactors,
   solPrice: number
 ): PricingResult {
+  // Input validation
+  if (solPrice <= 0 || !Number.isFinite(solPrice)) {
+    throw new Error("Invalid SOL price");
+  }
+  if (factors.networkCongestion < 0 || factors.networkCongestion > 1) {
+    throw new Error("Network congestion must be 0-1");
+  }
+  if (factors.batchSize < 1) {
+    throw new Error("Batch size must be >= 1");
+  }
+
   const basePrice = BASE_PRICES[factors.baseTier];
   const adjustments: PriceAdjustment[] = [];
 
@@ -89,7 +107,17 @@ export function calculatePrice(
     (product, adj) => product * (1 + adj.factor),
     1
   );
-  const finalPrice = roundSol(basePrice * multiplier);
+
+  // Enforce cost floor: cost + 20% margin (axiom A0-19)
+  const costFloor = ESTIMATED_COSTS[factors.baseTier];
+  const minPrice = costFloor * 1.2; // cost + 20% margin
+
+  // Revenue split enforcement: 15% creator transferred out, 85% retained
+  // So price must cover: cost / 0.85 * 1.2 to ensure retained portion covers costs
+  const sustainableMinPrice = (costFloor / 0.85) * 1.2;
+
+  const effectiveFloor = Math.max(minPrice, sustainableMinPrice);
+  const finalPrice = Math.max(roundSol(basePrice * multiplier), effectiveFloor);
   const usdEquivalent = roundUsd(finalPrice * solPrice);
 
   return {

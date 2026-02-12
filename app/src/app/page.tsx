@@ -3,7 +3,27 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  ShieldCheck,
+  BarChart3,
+  Search,
+  Lock,
+  CheckCircle2,
+  Shield,
+  Plug,
+  Target,
+  ScrollText,
+  Upload,
+  Link2,
+  Rocket,
+  Globe,
+  Vote,
+  Coins,
+  Twitter,
+  Github,
+  MessageCircle,
+} from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Particle Grid — Canvas neural-network background                   */
@@ -22,9 +42,9 @@ function ParticleGrid() {
     let w = 0;
     let h = 0;
     const particles: { x: number; y: number; vx: number; vy: number }[] = [];
-    const COUNT = 50;
-    const CONNECT_DIST = 140;
-    const MAX_OPACITY = 0.12;
+    const COUNT = 80;
+    const CONNECT_DIST = 150;
+    const MAX_OPACITY = 0.25;
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -42,8 +62,8 @@ function ParticleGrid() {
         particles.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
         });
       }
     };
@@ -58,7 +78,6 @@ function ParticleGrid() {
         if (p.y < 0 || p.y > h) p.vy *= -1;
       }
 
-      // Connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -70,17 +89,16 @@ function ParticleGrid() {
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
-            ctx.lineWidth = 0.5;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
       }
 
-      // Dots
       for (const p of particles) {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${MAX_OPACITY})`;
+        ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(59, 130, 246, ${MAX_OPACITY * 0.8})`;
         ctx.fill();
       }
 
@@ -89,7 +107,7 @@ function ParticleGrid() {
 
     init();
     draw();
-    window.addEventListener("resize", () => { resize(); });
+    window.addEventListener("resize", resize);
     return () => {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
@@ -105,7 +123,85 @@ function ParticleGrid() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Animated Counter — counts up from 0 on scroll into view            */
+/*  Hero Shield SVG — animated shield with network pattern             */
+/* ------------------------------------------------------------------ */
+
+function HeroShield() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+    >
+      <svg
+        viewBox="0 0 400 460"
+        className="w-[340px] h-[390px] md:w-[440px] md:h-[500px] opacity-[0.08]"
+      >
+        <defs>
+          <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="50%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#06B6D4" />
+          </linearGradient>
+          <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#8B5CF6" />
+          </linearGradient>
+        </defs>
+        {/* Shield outline */}
+        <motion.path
+          d="M200 20 L370 100 L370 260 C370 340 300 420 200 450 C100 420 30 340 30 260 L30 100 Z"
+          fill="none"
+          stroke="url(#shieldGrad)"
+          strokeWidth="2"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+        />
+        {/* Network nodes inside shield */}
+        {[
+          [200, 120], [140, 180], [260, 180], [120, 260], [200, 240],
+          [280, 260], [160, 330], [240, 330], [200, 380],
+        ].map(([cx, cy], i) => (
+          <motion.circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r="6"
+            fill="url(#nodeGrad)"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.8 + i * 0.08, duration: 0.4 }}
+          />
+        ))}
+        {/* Network connections */}
+        {[
+          [200, 120, 140, 180], [200, 120, 260, 180], [140, 180, 120, 260],
+          [140, 180, 200, 240], [260, 180, 200, 240], [260, 180, 280, 260],
+          [120, 260, 160, 330], [200, 240, 160, 330], [200, 240, 240, 330],
+          [280, 260, 240, 330], [160, 330, 200, 380], [240, 330, 200, 380],
+        ].map(([x1, y1, x2, y2], i) => (
+          <motion.line
+            key={`l${i}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="url(#shieldGrad)"
+            strokeWidth="1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ delay: 1.2 + i * 0.05, duration: 0.5 }}
+          />
+        ))}
+      </svg>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Animated Counter                                                    */
 /* ------------------------------------------------------------------ */
 
 function AnimatedCounter({
@@ -130,7 +226,7 @@ function AnimatedCounter({
     const start = performance.now();
     const animate = (now: number) => {
       const progress = Math.min((now - start) / (duration * 1000), 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
       const current = eased * value;
       if (decimals > 0) {
         setDisplay(current.toFixed(decimals));
@@ -152,25 +248,31 @@ function AnimatedCounter({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Risk Ticker — horizontal scrolling live risk updates               */
+/*  Risk Ticker                                                         */
 /* ------------------------------------------------------------------ */
 
 const TICKER_ITEMS = [
-  { pool: "RAY-USDC", score: 78, level: "Low", change: "+2.1%", direction: "up" as const },
-  { pool: "BONK-SOL", score: 45, level: "High", change: "-8.3%", direction: "down" as const },
-  { pool: "mSOL-SOL", score: 91, level: "Low", change: "0.0%", direction: "flat" as const },
-  { pool: "JTO-SOL", score: 67, level: "Med", change: "-1.2%", direction: "down" as const },
-  { pool: "JUP-USDC", score: 82, level: "Low", change: "+1.8%", direction: "up" as const },
-  { pool: "ORCA-SOL", score: 73, level: "Med", change: "+0.5%", direction: "up" as const },
-  { pool: "DRIFT-USDC", score: 56, level: "Med", change: "-3.7%", direction: "down" as const },
-  { pool: "MNDE-SOL", score: 88, level: "Low", change: "+0.2%", direction: "up" as const },
+  { pool: "RAY-USDC", icon: "\uD83D\uDD35", score: 78, level: "Low" as const, change: "+2.1%", direction: "up" as const },
+  { pool: "BONK-SOL", icon: "\uD83D\uDFE3", score: 45, level: "High" as const, change: "-8.3%", direction: "down" as const },
+  { pool: "mSOL-SOL", icon: "\uD83D\uDFE2", score: 91, level: "Low" as const, change: "0.0%", direction: "flat" as const },
+  { pool: "JTO-SOL", icon: "\uD83D\uDFE1", score: 67, level: "Med" as const, change: "-1.2%", direction: "down" as const },
+  { pool: "JUP-USDC", icon: "\uD83D\uDFE0", score: 82, level: "Low" as const, change: "+1.8%", direction: "up" as const },
+  { pool: "ORCA-SOL", icon: "\u26AB", score: 73, level: "Med" as const, change: "+0.5%", direction: "up" as const },
+  { pool: "DRIFT-USDC", icon: "\uD83D\uDD34", score: 56, level: "Med" as const, change: "-3.7%", direction: "down" as const },
+  { pool: "MNDE-SOL", icon: "\uD83D\uDFE2", score: 88, level: "Low" as const, change: "+0.2%", direction: "up" as const },
 ];
 
+const LEVEL_STYLES = {
+  Low: { dot: "bg-emerald-400", text: "text-emerald-400", bg: "bg-emerald-500/8" },
+  Med: { dot: "bg-amber-400", text: "text-amber-400", bg: "bg-amber-500/8" },
+  High: { dot: "bg-rose-400", text: "text-rose-400", bg: "bg-rose-500/8" },
+};
+
 function RiskTicker() {
-  const levelColor = (level: string) => {
-    if (level === "Low") return "text-emerald-400";
-    if (level === "High") return "text-rose-400";
-    return "text-amber-400";
+  const arrow = (dir: string) => {
+    if (dir === "up") return "\u2191";
+    if (dir === "down") return "\u2193";
+    return "\u2192";
   };
 
   const changeColor = (dir: string) => {
@@ -179,61 +281,64 @@ function RiskTicker() {
     return "text-gray-500";
   };
 
-  const arrow = (dir: string) => {
-    if (dir === "up") return "\u2191";
-    if (dir === "down") return "\u2193";
-    return "\u2192";
-  };
-
   const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <div className="w-full overflow-hidden border-y border-[#1F2937] bg-[#111827]/60">
+    <div className="w-full overflow-hidden border-y border-[#1F2937] bg-[#0D1117]">
       <div className="flex animate-ticker whitespace-nowrap">
-        {items.map((item, i) => (
-          <div key={i} className="inline-flex items-center gap-2 px-6 py-3 text-sm shrink-0">
-            <span className="text-white font-medium">{item.pool}:</span>
-            <span className="text-white font-bold tabular-nums">{item.score}</span>
-            <span className={`text-xs font-medium ${levelColor(item.level)}`}>
-              ({item.level})
-            </span>
-            <span className={`text-xs tabular-nums ${changeColor(item.direction)}`}>
-              {arrow(item.direction)}{item.change}
-            </span>
-            <span className="text-[#374151] mx-2">|</span>
-          </div>
-        ))}
+        {items.map((item, i) => {
+          const style = LEVEL_STYLES[item.level];
+          return (
+            <div key={i} className={`inline-flex items-center gap-2.5 px-5 py-3.5 text-[15px] shrink-0 ${style.bg}`}>
+              <span className={`w-2 h-2 rounded-full ${style.dot}`} />
+              <span className="text-gray-300">{item.icon}</span>
+              <span className="text-white font-semibold">{item.pool}</span>
+              <span className="text-white font-bold tabular-nums">{item.score}</span>
+              <span className={`text-sm font-semibold ${style.text}`}>
+                ({item.level})
+              </span>
+              <span className={`text-sm font-medium tabular-nums ${changeColor(item.direction)}`}>
+                {arrow(item.direction)}{item.change}
+              </span>
+              <span className="text-[#1F2937] mx-1 text-lg">|</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Sparkline SVG — mini chart behind metric numbers                   */
+/*  Sparkline SVG                                                       */
 /* ------------------------------------------------------------------ */
 
-function Sparkline({ data, color = "#3B82F6" }: { data: number[]; color?: string }) {
-  const w = 80;
-  const h = 24;
+function Sparkline({ data, color = "#3B82F6", width = 100, height = 32 }: { data: number[]; color?: string; width?: number; height?: number }) {
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
 
   const points = data
     .map((v, i) => {
-      const x = (i / (data.length - 1)) * w;
-      const y = h - ((v - min) / range) * h;
+      const x = (i / (data.length - 1)) * width;
+      const y = height - ((v - min) / range) * (height * 0.8) - height * 0.1;
       return `${x},${y}`;
     })
     .join(" ");
 
   return (
-    <svg width={w} height={h} className="opacity-20">
+    <svg width={width} height={height} className="opacity-30">
+      <defs>
+        <linearGradient id={`spark-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
       <polyline
         points={points}
         fill="none"
         stroke={color}
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -242,7 +347,7 @@ function Sparkline({ data, color = "#3B82F6" }: { data: number[]; color?: string
 }
 
 /* ------------------------------------------------------------------ */
-/*  Animated Checkmark — pops in when scrolled into view               */
+/*  Animated Checkmark / X mark                                         */
 /* ------------------------------------------------------------------ */
 
 function AnimatedCheck({ delay = 0 }: { delay?: number }) {
@@ -255,11 +360,60 @@ function AnimatedCheck({ delay = 0 }: { delay?: number }) {
         initial={{ scale: 0, opacity: 0 }}
         animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
         transition={{ type: "spring", stiffness: 500, damping: 15, delay }}
-        className="inline-block text-emerald-500 font-bold"
+        className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold"
+        style={{ textShadow: "0 0 8px rgba(16, 185, 129, 0.5)" }}
       >
         &#10003;
       </motion.span>
     </span>
+  );
+}
+
+function AnimatedX({ delay = 0 }: { delay?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-30px" });
+
+  return (
+    <span ref={ref}>
+      <motion.span
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 500, damping: 15, delay }}
+        className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/20 text-rose-400 text-sm"
+      >
+        &#10007;
+      </motion.span>
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Gradient Section Title                                              */
+/* ------------------------------------------------------------------ */
+
+function SectionTitle({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.h2
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5 }}
+      className={`text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent ${className}`}
+    >
+      {children}
+    </motion.h2>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section Divider                                                     */
+/* ------------------------------------------------------------------ */
+
+function SectionDivider({ color = "from-blue-500/20 via-purple-500/20 to-cyan-500/20" }: { color?: string }) {
+  return (
+    <div className="max-w-4xl mx-auto px-6">
+      <div className={`h-px bg-gradient-to-r ${color}`} />
+    </div>
   );
 }
 
@@ -273,7 +427,7 @@ const fade = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Sparkline data seeds                                                */
+/*  Sparkline data                                                      */
 /* ------------------------------------------------------------------ */
 
 const sparklines = {
@@ -296,12 +450,16 @@ export default function LandingPage() {
   const timelineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div className="min-h-screen bg-[#0B0F1A] font-sans text-white">
+    <div className="min-h-screen bg-[#0B0F1A] font-sans text-white overflow-x-hidden">
       {/* ============================================================ */}
       {/*  HERO                                                        */}
       {/* ============================================================ */}
       <section className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center overflow-hidden">
         <ParticleGrid />
+        <HeroShield />
+
+        {/* Ambient glow orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-500/[0.06] blur-[120px] pointer-events-none" />
 
         <motion.div
           initial="hidden"
@@ -309,18 +467,33 @@ export default function LandingPage() {
           variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
           className="max-w-3xl relative z-10"
         >
+          <motion.div
+            variants={fade}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-center gap-2 mb-6"
+          >
+            <span className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-sm text-blue-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Live on Devnet
+            </span>
+          </motion.div>
+
           <motion.h1
             variants={fade}
             transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
-            className="text-5xl md:text-6xl font-bold text-white tracking-tight"
+            className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent"
           >
-            Risk Infrastructure for Solana
+            Risk Infrastructure
+            <br />
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              for Solana
+            </span>
           </motion.h1>
 
           <motion.p
             variants={fade}
             transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
-            className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            className="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
           >
             Verifiable risk assessment with on-chain proof. Every decision
             logged. Every outcome auditable.
@@ -332,13 +505,13 @@ export default function LandingPage() {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link href="/apollo">
-              <button className="bg-[#3B82F6] hover:bg-[#2563EB] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 cursor-pointer">
+              <button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)]">
                 Start Assessment
                 <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
             <Link href="/integrations">
-              <button className="border border-[#374151] text-gray-300 hover:border-[#3B82F6] px-6 py-3 rounded-lg font-medium transition-colors duration-200 cursor-pointer">
+              <button className="border border-[#374151] text-gray-300 hover:border-blue-500/50 hover:text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 cursor-pointer">
                 Request Integration
               </button>
             </Link>
@@ -359,80 +532,104 @@ export default function LandingPage() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
+          {/* For Protocols */}
           <motion.div
             variants={fade}
             transition={{ duration: 0.5 }}
-            whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
-            className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 hover:border-[#374151] transition-colors duration-200"
+            whileHover={{ y: -6 }}
+            className="group relative bg-[#111827] border border-[#1F2937] rounded-2xl p-10 hover:border-blue-500/30 transition-all duration-300 overflow-hidden"
           >
-            <h3 className="text-xl font-bold text-white mb-3">
-              For Protocols
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Embed verified risk scores in your UI. API + Widget included.
-            </p>
-            <Link href="/integrations">
-              <span className="text-[#3B82F6] hover:text-[#2563EB] text-sm font-medium inline-flex items-center gap-1 transition-colors duration-200">
-                Request Integration <ArrowRight className="w-4 h-4" />
-              </span>
-            </Link>
+            {/* Abstract decoration */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -translate-y-8 translate-x-8" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/3 rounded-full blur-xl translate-y-6 -translate-x-6" />
+
+            <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center mb-6">
+                <Shield className="w-7 h-7 text-blue-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">
+                For Protocols
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Embed verified risk scores in your UI. Full API access with embeddable widget included. White-label ready.
+              </p>
+              <Link href="/integrations">
+                <span className="text-blue-400 hover:text-blue-300 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors duration-200 group-hover:gap-2.5">
+                  Request Integration <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </div>
           </motion.div>
 
+          {/* For LPs & Traders */}
           <motion.div
             variants={fade}
             transition={{ duration: 0.5 }}
-            whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
-            className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 hover:border-[#374151] transition-colors duration-200"
+            whileHover={{ y: -6 }}
+            className="group relative bg-[#111827] border border-[#1F2937] rounded-2xl p-10 hover:border-emerald-500/30 transition-all duration-300 overflow-hidden"
           >
-            <h3 className="text-xl font-bold text-white mb-3">
-              For LPs &amp; Traders
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Assess any pool before you deposit. Starting at 0.05 SOL.
-            </p>
-            <Link href="/apollo">
-              <span className="text-[#3B82F6] hover:text-[#2563EB] text-sm font-medium inline-flex items-center gap-1 transition-colors duration-200">
-                Start Assessment <ArrowRight className="w-4 h-4" />
-              </span>
-            </Link>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -translate-y-8 translate-x-8" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/3 rounded-full blur-xl translate-y-6 -translate-x-6" />
+
+            <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center mb-6">
+                <BarChart3 className="w-7 h-7 text-emerald-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">
+                For LPs &amp; Traders
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Assess any pool before you deposit. Real-time risk scoring powered by 5 evidence families. Starting at 0.02 SOL.
+              </p>
+              <Link href="/apollo">
+                <span className="text-emerald-400 hover:text-emerald-300 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors duration-200 group-hover:gap-2.5">
+                  Start Assessment <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </div>
           </motion.div>
         </motion.div>
       </section>
 
+      <SectionDivider />
+
       {/* ============================================================ */}
       {/*  METRICS ROW                                                 */}
       {/* ============================================================ */}
-      <section className="px-6 py-16">
+      <section className="px-6 py-20">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto"
         >
           {[
-            { label: "Proofs Minted", value: 1247, sparkline: sparklines.proofs, color: "#3B82F6" },
-            { label: "Protocol Pilots", value: 5, sparkline: sparklines.pilots, color: "#3B82F6" },
-            { label: "Model Accuracy", value: 91.2, suffix: "%", sparkline: sparklines.accuracy, color: "#10B981", decimals: 1 },
-            { label: "Axioms Enforced", value: 29, sparkline: sparklines.axioms, color: "#10B981" },
+            { label: "Proofs Minted", value: 1247, sparkline: sparklines.proofs, color: "#3B82F6", borderColor: "border-t-blue-500", icon: <ShieldCheck className="w-5 h-5 text-blue-400" />, iconBg: "bg-blue-500/15" },
+            { label: "Protocol Pilots", value: 5, sparkline: sparklines.pilots, color: "#8B5CF6", borderColor: "border-t-purple-500", icon: <Plug className="w-5 h-5 text-purple-400" />, iconBg: "bg-purple-500/15" },
+            { label: "Model Accuracy", value: 91.2, suffix: "%", sparkline: sparklines.accuracy, color: "#10B981", decimals: 1, borderColor: "border-t-emerald-500", icon: <Target className="w-5 h-5 text-emerald-400" />, iconBg: "bg-emerald-500/15" },
+            { label: "Axioms Enforced", value: 29, sparkline: sparklines.axioms, color: "#F59E0B", borderColor: "border-t-amber-500", icon: <ScrollText className="w-5 h-5 text-amber-400" />, iconBg: "bg-amber-500/15" },
           ].map((metric) => (
             <motion.div
               key={metric.label}
               variants={fade}
               transition={{ duration: 0.4 }}
-              whileHover={{ y: -2, boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}
-              className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 text-center relative overflow-hidden hover:border-[#374151] transition-colors duration-200"
+              whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
+              className={`bg-[#111827] border border-[#1F2937] border-t-2 ${metric.borderColor} rounded-xl p-6 text-center relative overflow-hidden hover:border-[#374151] transition-all duration-200`}
             >
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
-                <Sparkline data={metric.sparkline} color={metric.color} />
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                <Sparkline data={metric.sparkline} color={metric.color} width={100} height={32} />
               </div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+              <div className={`w-10 h-10 rounded-xl ${metric.iconBg} flex items-center justify-center mx-auto mb-3`}>
+                {metric.icon}
+              </div>
+              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-medium">
                 {metric.label}
               </p>
-              <p className="text-3xl font-bold text-white relative z-10">
+              <p className="text-4xl font-extrabold text-white relative z-10">
                 <AnimatedCounter
                   value={metric.value}
                   suffix={metric.suffix || ""}
@@ -445,31 +642,27 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      <SectionDivider color="from-purple-500/20 via-blue-500/20 to-emerald-500/20" />
+
       {/* ============================================================ */}
       {/*  HOW IT WORKS                                                */}
       {/* ============================================================ */}
-      <section className="px-6 py-24">
-        <div className="max-w-5xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={fade}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-bold text-white text-center mb-16"
-          >
-            How NOUMEN Protects Capital
-          </motion.h2>
+      <section className="px-6 py-24 relative">
+        {/* Subtle background panel */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/[0.02] to-transparent pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          <SectionTitle>How NOUMEN Protects Capital</SectionTitle>
 
           <div className="relative">
-            {/* Connecting line — draws itself */}
-            <div className="hidden md:block absolute top-8 left-0 right-0 h-px">
+            {/* Animated connecting gradient line */}
+            <div className="hidden md:block absolute top-10 left-[16.67%] right-[16.67%] h-0.5">
               <motion.div
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-                className="h-px bg-gradient-to-r from-transparent via-[#3B82F6]/30 to-transparent origin-left"
+                transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                className="h-full bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-emerald-500/40 origin-left rounded-full"
               />
             </div>
 
@@ -478,44 +671,55 @@ export default function LandingPage() {
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
               variants={{ visible: { transition: { staggerChildren: 0.25 } } }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              className="grid grid-cols-1 md:grid-cols-3 gap-10"
             >
               {[
                 {
                   num: "01",
                   title: "Submit",
-                  desc: "Submit any Solana pool address for risk evaluation",
+                  desc: "Enter any Solana pool address. Our engine identifies the protocol, tokens, and risk parameters automatically.",
+                  icon: <Upload className="w-7 h-7 text-blue-400" />,
+                  iconBg: "bg-blue-500/15 border-blue-500/25",
+                  numColor: "text-blue-400",
                 },
                 {
                   num: "02",
                   title: "Prove",
-                  desc: "APOLLO analyzes 5 evidence families and mints an on-chain proof",
+                  desc: "APOLLO analyzes 5 evidence families and mints a verifiable on-chain proof. No black boxes.",
+                  icon: <Lock className="w-7 h-7 text-purple-400" />,
+                  iconBg: "bg-purple-500/15 border-purple-500/25",
+                  numColor: "text-purple-400",
                 },
                 {
                   num: "03",
                   title: "Verify",
-                  desc: "Results are immutable, auditable, and transparent",
+                  desc: "Results are immutable, auditable, and transparent. Anyone can verify the proof on-chain.",
+                  icon: <CheckCircle2 className="w-7 h-7 text-emerald-400" />,
+                  iconBg: "bg-emerald-500/15 border-emerald-500/25",
+                  numColor: "text-emerald-400",
                 },
               ].map((step, i) => (
                 <motion.div
                   key={step.num}
                   variants={fade}
                   transition={{ duration: 0.5 }}
-                  className="text-center md:text-left"
+                  className="text-center"
                 >
-                  {/* Step circle with pulse ring */}
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#111827] border border-[#1F2937] mb-4 relative">
+                  <div className="relative inline-flex">
+                    <div className={`w-20 h-20 rounded-2xl ${step.iconBg} border flex items-center justify-center mb-5`}>
+                      {step.icon}
+                    </div>
                     <motion.div
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
                       transition={{ repeat: Infinity, duration: 3, delay: i * 0.6, ease: "easeInOut" }}
-                      className="absolute inset-0 rounded-full border border-[#3B82F6]/20"
+                      className={`absolute -inset-1 rounded-2xl border ${step.iconBg} opacity-50`}
                     />
-                    <span className="text-lg font-bold text-[#3B82F6]">{step.num}</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
+                  <p className={`text-sm font-bold ${step.numColor} mb-1`}>STEP {step.num}</p>
+                  <h3 className="text-xl font-bold text-white mb-2">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                  <p className="text-sm text-gray-400 leading-relaxed max-w-xs mx-auto">
                     {step.desc}
                   </p>
                 </motion.div>
@@ -525,79 +729,88 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <SectionDivider color="from-emerald-500/20 via-cyan-500/20 to-blue-500/20" />
+
       {/* ============================================================ */}
       {/*  COMPARISON TABLE                                            */}
       {/* ============================================================ */}
       <section className="px-6 py-24">
         <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={fade}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-bold text-white text-center mb-12"
-          >
-            Built Different
-          </motion.h2>
+          <SectionTitle>Built Different</SectionTitle>
 
           <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            variants={fade}
             transition={{ duration: 0.5 }}
             className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden"
           >
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1F2937]">
-                  <th className="text-left text-gray-400 font-medium px-6 py-4" />
-                  <th className="text-left text-white font-semibold px-6 py-4">
-                    NOUMEN
+                <tr className="bg-[#1a2332] border-b border-[#1F2937]">
+                  <th className="text-left text-gray-500 font-medium px-6 py-5 w-40" />
+                  <th className="text-left px-6 py-5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center">
+                        <Shield className="w-3.5 h-3.5 text-blue-400" />
+                      </div>
+                      <span className="text-white font-bold">NOUMEN</span>
+                    </div>
                   </th>
-                  <th className="text-left text-gray-400 font-medium px-6 py-4">
-                    Traditional Audits
+                  <th className="text-left px-6 py-5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-gray-500/20 flex items-center justify-center">
+                        <Search className="w-3.5 h-3.5 text-gray-400" />
+                      </div>
+                      <span className="text-gray-400 font-medium">Traditional Audits</span>
+                    </div>
                   </th>
-                  <th className="text-left text-gray-400 font-medium px-6 py-4">
-                    Risk Dashboards
+                  <th className="text-left px-6 py-5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-gray-500/20 flex items-center justify-center">
+                        <BarChart3 className="w-3.5 h-3.5 text-gray-400" />
+                      </div>
+                      <span className="text-gray-400 font-medium">Risk Dashboards</span>
+                    </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  { feature: "Real-time", noumen: true, audits: null, dashboards: "Partial" },
-                  { feature: "On-chain proof", noumen: true, audits: null, dashboards: null },
-                  { feature: "Per-assessment", noumen: "0.05 SOL", audits: "$50,000+", dashboards: "Free (no scoring)" },
-                  { feature: "Verifiable AI", noumen: true, audits: null, dashboards: null },
-                  { feature: "API available", noumen: true, audits: null, dashboards: "Some" },
+                  { feature: "Real-time", noumen: true, audits: false, dashboards: "Partial" },
+                  { feature: "On-chain proof", noumen: true, audits: false, dashboards: false },
+                  { feature: "Per-assessment", noumen: "0.02 SOL", audits: "$50,000+", dashboards: "Free (no scoring)" },
+                  { feature: "Verifiable AI", noumen: true, audits: false, dashboards: false },
+                  { feature: "API available", noumen: true, audits: false, dashboards: "Some" },
                 ].map((row, i) => (
                   <tr
                     key={row.feature}
-                    className={`${i % 2 === 0 ? "bg-[#111827]" : "bg-[#0B0F1A]"} hover:bg-[#1F2937]/50 transition-colors duration-150`}
+                    className={`${i % 2 === 0 ? "bg-[#111827]" : "bg-[#0E1420]"} hover:bg-[#1F2937]/40 transition-colors duration-150`}
                   >
-                    <td className="px-6 py-4 text-gray-300 font-medium">
+                    <td className="px-6 py-4 text-gray-300 font-semibold">
                       {row.feature}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 bg-blue-500/[0.04]">
                       {row.noumen === true ? (
-                        <AnimatedCheck delay={i * 0.1} />
+                        <AnimatedCheck delay={i * 0.08} />
                       ) : (
-                        <span className="text-white">{row.noumen}</span>
+                        <span className="text-blue-400 font-semibold">{row.noumen}</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {row.audits === null ? (
-                        <span className="text-gray-600">&mdash;</span>
+                      {row.audits === false ? (
+                        <AnimatedX delay={i * 0.08 + 0.05} />
                       ) : (
                         <span className="text-gray-400">{row.audits}</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {row.dashboards === null ? (
-                        <span className="text-gray-600">&mdash;</span>
+                      {row.dashboards === false ? (
+                        <AnimatedX delay={i * 0.08 + 0.1} />
                       ) : (
-                        <span className="text-gray-400">{row.dashboards}</span>
+                        <span className={row.dashboards === "Partial" || row.dashboards === "Some" ? "text-amber-400 font-medium" : "text-gray-400"}>
+                          {row.dashboards}
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -608,77 +821,134 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <SectionDivider color="from-blue-500/20 via-amber-500/15 to-purple-500/20" />
+
       {/* ============================================================ */}
       {/*  ROADMAP                                                     */}
       {/* ============================================================ */}
       <section className="px-6 py-24">
         <div className="max-w-3xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={fade}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-bold text-white text-center mb-12"
-          >
-            Roadmap
-          </motion.h2>
+          <SectionTitle>Roadmap</SectionTitle>
 
-          <div ref={roadmapRef} className="relative pl-8">
+          <div ref={roadmapRef} className="relative pl-10">
             {/* Background track */}
-            <div className="absolute left-[11px] top-0 bottom-0 w-px bg-[#1F2937]" />
-            {/* Animated fill — draws as user scrolls */}
+            <div className="absolute left-[15px] top-0 bottom-0 w-px bg-[#1F2937]" />
+            {/* Animated gradient fill */}
             <motion.div
-              className="absolute left-[11px] top-0 w-px bg-gradient-to-b from-[#3B82F6] to-[#10B981]"
+              className="absolute left-[15px] top-0 w-px bg-gradient-to-b from-emerald-500 via-blue-500 via-purple-500 to-amber-500"
               style={{ height: timelineHeight }}
             />
 
-            <div className="space-y-8">
+            <div className="space-y-10">
               {[
-                { phase: "Phase 1", title: "Devnet MVP + Risk Engine", badge: "NOW", active: true },
-                { phase: "Phase 2", title: "Mainnet Launch + Protocol Integrations", badge: "Q2 2025", active: false },
-                { phase: "Phase 3", title: "Agent Marketplace + Cross-chain", badge: "Q4 2025", active: false },
-                { phase: "Phase 4", title: "Governance Token", badge: "2026", active: false, note: "(only with proven revenue)" },
+                {
+                  phase: "Phase 1",
+                  title: "Core Infrastructure + Risk Engine",
+                  badge: "Q1 2026 — NOW",
+                  active: true,
+                  dotColor: "bg-emerald-400 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]",
+                  icon: <Rocket className="w-4 h-4 text-emerald-400" />,
+                  iconBg: "bg-emerald-500/15",
+                  borderClass: "border-emerald-500/20",
+                  shadowClass: "shadow-[0_0_20px_rgba(16,185,129,0.08)]",
+                  badgeClass: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
+                  statusLabel: "Live",
+                  items: ["Core infrastructure and APOLLO risk engine", "On-chain proof system", "5 evidence families operational"],
+                },
+                {
+                  phase: "Phase 2",
+                  title: "HERMES Intelligence + Subscriptions",
+                  badge: "February 2026",
+                  active: true,
+                  dotColor: "bg-blue-400 border-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.4)]",
+                  icon: <Globe className="w-4 h-4 text-blue-400" />,
+                  iconBg: "bg-blue-500/15",
+                  borderClass: "border-blue-500/20",
+                  shadowClass: "shadow-[0_0_20px_rgba(59,130,246,0.08)]",
+                  badgeClass: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
+                  statusLabel: "February 2026",
+                  items: ["HERMES intelligence layer", "Subscription system", "Public API + widget system"],
+                },
+                {
+                  phase: "Phase 3",
+                  title: "A2A Marketplace + Multi-Agent Coordination",
+                  badge: "Q2-Q3 2026",
+                  active: false,
+                  dotColor: "bg-purple-400 border-purple-400",
+                  icon: <Link2 className="w-4 h-4 text-purple-400" />,
+                  iconBg: "bg-purple-500/15",
+                  borderClass: "border-transparent",
+                  shadowClass: "",
+                  badgeClass: "",
+                  items: ["A2A marketplace", "Multi-agent coordination", "Advanced ML models"],
+                },
+                {
+                  phase: "Phase 4",
+                  title: "Cross-chain Expansion + Institutional Partnerships",
+                  badge: "Q4 2026+",
+                  active: false,
+                  dotColor: "bg-amber-400 border-amber-400",
+                  icon: <Vote className="w-4 h-4 text-amber-400" />,
+                  iconBg: "bg-amber-500/15",
+                  borderClass: "border-transparent",
+                  shadowClass: "",
+                  badgeClass: "",
+                  items: ["Cross-chain expansion", "Institutional partnerships", "Community-driven axiom proposals"],
+                },
               ].map((item, i) => (
                 <motion.div
                   key={item.phase}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -16 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-30px" }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="relative pl-6"
+                  className="relative"
                 >
                   {/* Dot */}
-                  <div
-                    className={`absolute left-0 top-1.5 w-[9px] h-[9px] rounded-full border-2 ${
-                      item.active
-                        ? "bg-[#10B981] border-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.4)]"
-                        : "bg-[#0B0F1A] border-[#374151]"
-                    }`}
-                  />
+                  <div className={`absolute -left-10 top-1 w-[11px] h-[11px] rounded-full border-2 ${item.dotColor}`} />
 
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-                      {item.phase}
-                    </span>
-                    <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded ${
-                        item.active
-                          ? "bg-[#10B981]/10 text-[#10B981]"
-                          : "bg-[#1F2937] text-gray-400"
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  </div>
-                  <p className="text-white font-medium mt-1">
-                    {item.title}
-                    {item.note && (
-                      <span className="text-gray-500 text-sm ml-2">
-                        {item.note}
+                  <div className={`bg-[#111827] border ${item.active ? item.borderClass : "border-[#1F2937]"} rounded-xl p-5 ${item.active && item.shadowClass ? item.shadowClass : ""}`}>
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <div className={`w-7 h-7 rounded-lg ${item.iconBg} flex items-center justify-center`}>
+                        {item.icon}
+                      </div>
+                      <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">
+                        {item.phase}
                       </span>
-                    )}
-                  </p>
+                      <span
+                        className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                          item.active && item.badgeClass
+                            ? item.badgeClass
+                            : "bg-[#1F2937] text-gray-400"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    </div>
+                    <p className="text-white font-semibold text-lg">
+                      {item.title}
+                      {(item as { note?: string }).note && (
+                        <span className="text-gray-500 text-sm font-normal ml-2">{(item as { note?: string }).note}</span>
+                      )}
+                      {(item as { statusLabel?: string }).statusLabel && (
+                        <span className={`ml-2 text-xs font-bold px-2 py-0.5 rounded-full ${
+                          (item as { statusLabel?: string }).statusLabel === "Live"
+                            ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                            : "bg-blue-500/15 text-blue-400 border border-blue-500/30"
+                        }`}>
+                          {(item as { statusLabel?: string }).statusLabel}
+                        </span>
+                      )}
+                    </p>
+                    <ul className="mt-3 space-y-1">
+                      {item.items.map((bullet) => (
+                        <li key={bullet} className="text-sm text-gray-400 flex items-start gap-2">
+                          <span className="w-1 h-1 rounded-full bg-gray-600 mt-2 shrink-0" />
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -686,42 +956,234 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <SectionDivider color="from-amber-500/20 via-blue-500/20 to-purple-500/20" />
+
+      {/* ============================================================ */}
+      {/*  PRICING                                                     */}
+      {/* ============================================================ */}
+      <section className="px-6 py-24">
+        <div className="max-w-5xl mx-auto">
+          <SectionTitle>Pricing</SectionTitle>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
+            {/* APOLLO Pricing */}
+            <motion.div
+              variants={fade}
+              transition={{ duration: 0.5 }}
+              className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8 hover:border-blue-500/30 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">APOLLO</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">Launch Price</span>
+              </div>
+              <p className="text-sm text-gray-400 mb-6">DeFi Risk Assessment Engine</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Basic</p>
+                    <p className="text-xs text-gray-500">Single pool assessment</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-400">0.02 SOL</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Pro</p>
+                    <p className="text-xs text-gray-500">Full report + monitoring</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-400">0.15 SOL</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Institutional</p>
+                    <p className="text-xs text-gray-500">Custom integrations + SLA</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-blue-400">from 2 SOL</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* HERMES Pricing */}
+            <motion.div
+              variants={fade}
+              transition={{ duration: 0.5 }}
+              className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8 hover:border-cyan-500/30 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
+                  <Search className="w-5 h-5 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white">HERMES</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">Launch Price</span>
+              </div>
+              <p className="text-sm text-gray-400 mb-6">DeFi Intelligence Layer</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Free Preview</p>
+                    <p className="text-xs text-gray-500">Basic intelligence reports</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-emerald-400">Free</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Pro</p>
+                    <p className="text-xs text-gray-500">Full reports + notifications</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-cyan-400">0.5 SOL/mo</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Protocol</p>
+                    <p className="text-xs text-gray-500">API access + white-label</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-cyan-400">10 SOL/mo</p>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <p className="text-center text-xs text-gray-600 mt-6">
+            Launch prices valid for the first 30 days. Prices may adjust after the launch period via the AI Pricing Stabilizer.
+          </p>
+        </div>
+      </section>
+
+      <SectionDivider color="from-emerald-500/20 via-amber-500/20 to-blue-500/20" />
+
+      {/* ============================================================ */}
+      {/*  REVENUE SPLIT                                               */}
+      {/* ============================================================ */}
+      <section className="px-6 py-24">
+        <div className="max-w-3xl mx-auto">
+          <SectionTitle>Transparent Revenue Split</SectionTitle>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5 }}
+            className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: "Operations", pct: "40%", desc: "Compute, RPC, storage", color: "text-blue-400", barColor: "bg-blue-500" },
+                { label: "Treasury", pct: "30%", desc: "Protocol safety net", color: "text-emerald-400", barColor: "bg-emerald-500" },
+                { label: "Dev Fund", pct: "15%", desc: "Future development", color: "text-purple-400", barColor: "bg-purple-500" },
+                { label: "Creator", pct: "15%", desc: "Protocol founder", color: "text-amber-400", barColor: "bg-amber-500" },
+              ].map((item) => (
+                <div key={item.label} className="text-center">
+                  <p className={`text-3xl font-bold ${item.color}`}>{item.pct}</p>
+                  <p className="text-sm font-semibold text-white mt-1">{item.label}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                  <div className="mt-3 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${item.barColor}`} style={{ width: item.pct }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-[10px] text-gray-600 mt-6">
+              40% Operations | 30% Treasury | 15% Dev Fund | 15% Creator. Enforced by smart contract.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ============================================================ */}
       {/*  FOOTER                                                      */}
       {/* ============================================================ */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#3B82F6]/20 to-transparent" />
-      <footer className="px-6 py-12">
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-500/30 via-50% to-transparent" />
+
+      <footer className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <p className="text-white font-semibold">
-                NOUMEN{" "}
-                <span className="text-gray-500 font-normal">
-                  &mdash; Proof Before Action
-                </span>
-              </p>
-              <p className="text-xs text-gray-600 mt-1">
-                Risk Infrastructure for Solana
-              </p>
+          <div className="text-center mb-10">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            >
+              Proof Before Action
+            </motion.p>
+            <p className="text-sm text-gray-600 mt-2">
+              Risk Infrastructure for Solana
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Coins className="w-4 h-4 text-gray-400" />
+              <span>Built on</span>
+              <span className="text-gray-300 font-semibold">Solana</span>
             </div>
 
+            {/* Social icons */}
+            <div className="flex items-center gap-3">
+              {[
+                { icon: <Twitter className="w-4 h-4" />, label: "Twitter", href: "#" },
+                { icon: <MessageCircle className="w-4 h-4" />, label: "Discord", href: "#" },
+                { icon: <Github className="w-4 h-4" />, label: "GitHub", href: "#" },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl bg-[#1F2937] border border-[#374151] flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-200"
+                  title={social.label}
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+
+            {/* Nav links */}
             <div className="flex items-center gap-6">
               {[
                 { label: "Docs", href: "#" },
                 { label: "API", href: "#" },
-                { label: "GitHub", href: "#" },
-                { label: "Twitter", href: "#" },
+                { label: "Security", href: "/security" },
               ].map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-gray-500 hover:text-gray-300 transition-colors duration-200"
+                  className="text-sm text-gray-500 hover:text-blue-400 transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
           </div>
+
+          <p className="text-center text-xs text-gray-700 mt-10">
+            &copy; 2026 NOUMEN. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

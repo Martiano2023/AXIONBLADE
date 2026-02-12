@@ -5,9 +5,12 @@ import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion"
 import {
   AreaChart,
   Area,
+  BarChart,
+  Bar,
   PieChart,
   Pie,
   Cell,
+  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
@@ -84,9 +87,10 @@ const DAILY_LIMIT_PCT = 3;
 const RESERVE_RATIO = 32;
 const RESERVE_THRESHOLD = 25;
 
-const CREATOR_SPLIT = 10;
-const TREASURY_SPLIT = 90;
-const STIPEND_CAP = 5;
+const OPERATIONS_SPLIT = 40;
+const TREASURY_RESERVE_SPLIT = 30;
+const DEV_FUND_SPLIT = 15;
+const CREATOR_SPLIT = 15;
 
 const TOTAL_DONATED = 12.5;
 
@@ -269,15 +273,33 @@ function CCSDonut() {
   const radius = 52;
   const strokeWidth = 20;
   const circumference = 2 * Math.PI * radius;
+  const operationsArc = (OPERATIONS_SPLIT / 100) * circumference;
+  const treasuryArc = (TREASURY_RESERVE_SPLIT / 100) * circumference;
+  const devFundArc = (DEV_FUND_SPLIT / 100) * circumference;
   const creatorArc = (CREATOR_SPLIT / 100) * circumference;
-  const treasuryArc = (TREASURY_SPLIT / 100) * circumference;
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-40 h-40">
         <svg viewBox="0 0 140 140" className="w-full h-full -rotate-90">
-          {/* Treasury segment (purple) - starts after creator */}
+          {/* Operations segment (gray-600) - starts at top */}
+          <motion.circle
+            cx="70"
+            cy="70"
+            r={radius}
+            fill="none"
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${operationsArc} ${circumference - operationsArc}`}
+            initial={{ strokeDasharray: `0 ${circumference}` }}
+            animate={{ strokeDasharray: `${operationsArc} ${circumference - operationsArc}` }}
+            transition={{ duration: 1.0, ease: "easeOut", delay: 0.3 }}
+            className="stroke-gray-600"
+            style={{ cursor: "pointer" }}
+            onMouseEnter={() => setHoveredSegment("operations")}
+            onMouseLeave={() => setHoveredSegment(null)}
+          />
+          {/* Treasury segment (emerald-500) - starts after operations */}
           <motion.circle
             cx="70"
             cy="70"
@@ -285,16 +307,33 @@ function CCSDonut() {
             fill="none"
             strokeWidth={strokeWidth}
             strokeDasharray={`${treasuryArc} ${circumference - treasuryArc}`}
-            strokeDashoffset={-creatorArc}
+            strokeDashoffset={-operationsArc}
             initial={{ strokeDasharray: `0 ${circumference}` }}
             animate={{ strokeDasharray: `${treasuryArc} ${circumference - treasuryArc}` }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-            className="stroke-purple-500"
+            transition={{ duration: 1.1, ease: "easeOut", delay: 0.4 }}
+            className="stroke-emerald-500"
             style={{ cursor: "pointer" }}
             onMouseEnter={() => setHoveredSegment("treasury")}
             onMouseLeave={() => setHoveredSegment(null)}
           />
-          {/* Creator segment (amber) - starts at top */}
+          {/* Dev Fund segment (blue-500) - starts after operations + treasury */}
+          <motion.circle
+            cx="70"
+            cy="70"
+            r={radius}
+            fill="none"
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${devFundArc} ${circumference - devFundArc}`}
+            strokeDashoffset={-(operationsArc + treasuryArc)}
+            initial={{ strokeDasharray: `0 ${circumference}` }}
+            animate={{ strokeDasharray: `${devFundArc} ${circumference - devFundArc}` }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
+            className="stroke-blue-500"
+            style={{ cursor: "pointer" }}
+            onMouseEnter={() => setHoveredSegment("devfund")}
+            onMouseLeave={() => setHoveredSegment(null)}
+          />
+          {/* Creator segment (amber-400) - starts after operations + treasury + devfund */}
           <motion.circle
             cx="70"
             cy="70"
@@ -302,9 +341,10 @@ function CCSDonut() {
             fill="none"
             strokeWidth={strokeWidth}
             strokeDasharray={`${creatorArc} ${circumference - creatorArc}`}
+            strokeDashoffset={-(operationsArc + treasuryArc + devFundArc)}
             initial={{ strokeDasharray: `0 ${circumference}` }}
             animate={{ strokeDasharray: `${creatorArc} ${circumference - creatorArc}` }}
-            transition={{ duration: 1.0, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 1.3, ease: "easeOut", delay: 0.6 }}
             className="stroke-amber-400"
             style={{ cursor: "pointer" }}
             onMouseEnter={() => setHoveredSegment("creator")}
@@ -312,7 +352,7 @@ function CCSDonut() {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-lg font-bold text-white inline-flex items-center">CCS<InfoTooltip term="CCS" /></span>
+          <span className="text-lg font-bold text-white inline-flex items-center">Split<InfoTooltip term="CCS" /></span>
         </div>
         {/* Tooltip */}
         <AnimatePresence>
@@ -323,10 +363,17 @@ function CCSDonut() {
               exit={{ opacity: 0, y: 4 }}
               className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#1F2937] border border-[#374151] rounded-lg px-3 py-2 text-xs whitespace-nowrap z-10"
             >
-              {hoveredSegment === "creator" ? (
-                <span className="text-amber-400">Creator Share: {CREATOR_SPLIT}%</span>
-              ) : (
-                <span className="text-purple-400">Treasury Share: {TREASURY_SPLIT}%</span>
+              {hoveredSegment === "operations" && (
+                <span className="text-gray-400">Operations: {OPERATIONS_SPLIT}%</span>
+              )}
+              {hoveredSegment === "treasury" && (
+                <span className="text-emerald-400">Treasury Reserve: {TREASURY_RESERVE_SPLIT}%</span>
+              )}
+              {hoveredSegment === "devfund" && (
+                <span className="text-blue-400">Dev Fund: {DEV_FUND_SPLIT}%</span>
+              )}
+              {hoveredSegment === "creator" && (
+                <span className="text-amber-400">Creator: {CREATOR_SPLIT}%</span>
               )}
             </motion.div>
           )}
@@ -336,24 +383,31 @@ function CCSDonut() {
       <div className="space-y-2 w-full">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-            <span className="text-gray-400">Creator Share</span>
-          </div>
-          <span className="text-amber-400 font-medium">{CREATOR_SPLIT}% <span className="text-gray-600">(4-15% band)</span></span>
-        </div>
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
-            <span className="text-gray-400">Treasury Share</span>
-          </div>
-          <span className="text-purple-400 font-medium">{TREASURY_SPLIT}%</span>
-        </div>
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-gray-600" />
-            <span className="text-gray-400">Stipend Cap</span>
+            <span className="text-gray-400">Operations</span>
           </div>
-          <span className="text-gray-500 font-medium">{STIPEND_CAP}%</span>
+          <span className="text-gray-400 font-medium">{OPERATIONS_SPLIT}%</span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span className="text-gray-400">Treasury Reserve</span>
+          </div>
+          <span className="text-emerald-400 font-medium">{TREASURY_RESERVE_SPLIT}%</span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="text-gray-400">Dev Fund</span>
+          </div>
+          <span className="text-blue-400 font-medium">{DEV_FUND_SPLIT}%</span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+            <span className="text-gray-400">Creator</span>
+          </div>
+          <span className="text-amber-400 font-medium">{CREATOR_SPLIT}%</span>
         </div>
       </div>
     </div>
@@ -378,6 +432,26 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
       ))}
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Revenue trend data generator (30d)
+// ---------------------------------------------------------------------------
+
+function generateRevenueTrend() {
+  const data = [];
+  const base = new Date();
+  base.setDate(base.getDate() - 30);
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(base);
+    d.setDate(d.getDate() + i);
+    const daily = 5 + Math.random() * 6;
+    data.push({
+      date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      revenue: parseFloat(daily.toFixed(2)),
+    });
+  }
+  return data;
 }
 
 // ---------------------------------------------------------------------------
@@ -443,7 +517,7 @@ export default function TreasuryPage() {
             {
               step: "02",
               icon: <PieChartIcon className="w-5 h-5 text-purple-400" />,
-              description: "CCS splits revenue: Creator Share (10%) + Treasury Reserve (90%)",
+              description: "Revenue split: 40% Operations + 30% Treasury + 15% Dev Fund + 15% Creator",
             },
             {
               step: "03",
@@ -681,34 +755,193 @@ export default function TreasuryPage() {
       </motion.div>
 
       {/* ================================================================= */}
+      {/* Daily Revenue Trend (30d)                                        */}
+      {/* ================================================================= */}
+      <motion.div variants={staggerItem}>
+        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Daily Revenue (30d)</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <AreaChart data={generateRevenueTrend()} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+              <defs>
+                <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10B981" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#10B981" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v} SOL`} />
+              <Tooltip content={<CustomTooltip />} />
+              <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={2} fill="url(#revenueGradient)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+
+      {/* ================================================================= */}
+      {/* Revenue by Source + Reserve Ratio Gauge                           */}
+      {/* ================================================================= */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Revenue by Source */}
+        <motion.div variants={staggerItem}>
+          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+            <h3 className="text-sm font-semibold text-white mb-4">Revenue by Source</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: "Apollo Assessments", value: 58, fill: "#3B82F6" },
+                    { name: "Hermes Reports", value: 27, fill: "#10B981" },
+                    { name: "Protocol API", value: 15, fill: "#F59E0B" },
+                  ]}
+                  cx="50%" cy="50%"
+                  innerRadius={50} outerRadius={75}
+                  paddingAngle={3}
+                  dataKey="value"
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="flex justify-center gap-4 mt-2">
+              {[
+                { name: "Apollo", color: "#3B82F6", pct: "58%" },
+                { name: "Hermes", color: "#10B981", pct: "27%" },
+                { name: "API", color: "#F59E0B", pct: "15%" },
+              ].map((s) => (
+                <div key={s.name} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
+                  <span className="text-[10px] text-gray-400">{s.name} {s.pct}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Reserve Ratio Compliance */}
+        <motion.div variants={staggerItem}>
+          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center">
+            <h3 className="text-sm font-semibold text-white mb-4">Reserve Ratio (A0-17)</h3>
+            <div className="relative">
+              <svg width={140} height={80} viewBox="0 0 140 80">
+                <path d="M 10 70 A 55 55 0 0 1 130 70" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={10} strokeLinecap="round" />
+                <path d="M 10 70 A 55 55 0 0 1 130 70" fill="none" stroke="#10B981" strokeWidth={10} strokeLinecap="round" strokeDasharray={`${Math.PI * 55}`} strokeDashoffset={`${Math.PI * 55 * (1 - 0.32)}`} className="transition-all duration-1000" />
+                {/* 25% threshold marker */}
+                <line x1="37" y1="22" x2="37" y2="32" stroke="#EF4444" strokeWidth={2} opacity={0.6} />
+              </svg>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
+                <span className="text-xl font-bold text-emerald-400">32%</span>
+                <span className="text-[10px] text-gray-500 block">min 25%</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ================================================================= */}
+      {/* Recent Transactions (detailed table)                              */}
+      {/* ================================================================= */}
+      <motion.div variants={staggerItem}>
+        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <h3 className="text-sm font-semibold text-white mb-4">Recent Transactions</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="text-left py-2 text-gray-500 font-medium">Date</th>
+                  <th className="text-left py-2 text-gray-500 font-medium">Type</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">Amount</th>
+                  <th className="text-left py-2 text-gray-500 font-medium">Source</th>
+                  <th className="text-right py-2 text-gray-500 font-medium">Tx Hash</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { date: "Feb 11", type: "Service Payment", amount: "0.3 SOL", source: "Apollo Pro", hash: "7Kx9v...3bPdM" },
+                  { date: "Feb 11", type: "Service Payment", amount: "0.05 SOL", source: "Apollo Basic", hash: "4mNq2...8vRtK" },
+                  { date: "Feb 11", type: "Subscription", amount: "2.0 SOL", source: "Hermes Pro", hash: "9pLw6...2cFmJ" },
+                  { date: "Feb 10", type: "Service Payment", amount: "0.3 SOL", source: "Apollo Pro", hash: "3kHn8...7dQxP" },
+                  { date: "Feb 10", type: "Donation", amount: "1.0 SOL", source: "Anonymous", hash: "6wRt4...1aNbS" },
+                  { date: "Feb 10", type: "API Usage", amount: "0.8 SOL", source: "Protocol API", hash: "2jMp5...9eTvL" },
+                  { date: "Feb 9", type: "Service Payment", amount: "5.0 SOL", source: "Apollo Institutional", hash: "8cVx1...4hGmW" },
+                  { date: "Feb 9", type: "Budget Allocation", amount: "-0.5 SOL", source: "APOLLO Agent", hash: "1nKf7...6bYsR" },
+                ].map((tx, i) => (
+                  <tr key={i} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                    <td className="py-2.5 text-gray-400">{tx.date}</td>
+                    <td className="py-2.5 text-gray-300">{tx.type}</td>
+                    <td className={`py-2.5 text-right font-mono ${tx.amount.startsWith("-") ? "text-red-400" : "text-emerald-400"}`}>{tx.amount}</td>
+                    <td className="py-2.5 text-gray-400">{tx.source}</td>
+                    <td className="py-2.5 text-right font-mono text-blue-400/70 hover:text-blue-400 cursor-pointer">{tx.hash}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ================================================================= */}
       {/* Protocol Economics                                                */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem} className="space-y-4">
         <h2 className="text-lg font-bold text-white">Protocol Economics</h2>
         <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 space-y-6">
-          {/* CCS Distribution — horizontal bars */}
+          {/* Revenue Split — 4 colored bars */}
           <div className="space-y-3">
-            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">CCS Distribution</p>
-            <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Revenue Split</p>
+            <p className="text-xs text-gray-500">AI-adjusted pricing guarantees minimum 30% treasury allocation on every transaction</p>
+            <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Treasury Reserve</span>
-                  <span className="text-xs font-medium text-blue-400">90%</span>
+                  <span className="text-xs text-gray-400 inline-flex items-center">Operations<InfoTooltip term="Operations" /> (compute, RPC, storage)</span>
+                  <span className="text-xs font-medium text-gray-400">40%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                  <div className="h-full rounded-full bg-blue-500" style={{ width: "90%" }} />
+                  <div className="h-full rounded-full bg-gray-600" style={{ width: "40%" }} />
                 </div>
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400">Creator/Dev Fund</span>
-                  <span className="text-xs font-medium text-gray-500">10%</span>
+                  <span className="text-xs text-gray-400 inline-flex items-center">Treasury Reserve<InfoTooltip term="Treasury Reserve" /></span>
+                  <span className="text-xs font-medium text-emerald-400">30%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                  <div className="h-full rounded-full bg-gray-600" style={{ width: "10%" }} />
+                  <div className="h-full rounded-full bg-emerald-500" style={{ width: "30%" }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-400 inline-flex items-center">Development Fund<InfoTooltip term="Development Fund" /></span>
+                  <span className="text-xs font-medium text-blue-400">15%</span>
+                </div>
+                <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="h-full rounded-full bg-blue-500" style={{ width: "15%" }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-400 inline-flex items-center">Creator Allocation<InfoTooltip term="CCS" /></span>
+                  <span className="text-xs font-medium text-amber-400">15%</span>
+                </div>
+                <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
+                  <div className="h-full rounded-full bg-amber-400" style={{ width: "15%" }} />
                 </div>
               </div>
             </div>
+            {/* Summary badge */}
+            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-2.5 mt-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <p className="text-xs text-emerald-400">
+                Revenue Split: 40% Operations | 30% Treasury | 15% Dev Fund | 15% Creator
+              </p>
+            </div>
+          </div>
+
+          {/* Margin Enforcement */}
+          <div className="border-t border-[#1F2937] pt-4">
+            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Margin Enforcement</p>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Every paid transaction enforces minimum allocation: 30% to Treasury PDA, 15% to Development Fund, 15% to Creator wallet.
+              If AI calculates a price below cost threshold, the pricing engine auto-adjusts UP to maintain margins.
+            </p>
           </div>
 
           {/* Projected Monthly Revenue */}
@@ -716,6 +949,24 @@ export default function TreasuryPage() {
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Projected Monthly Revenue</p>
             <p className="text-xs text-gray-500 mb-1">Based on daily average x 30</p>
             <p className="text-xl font-bold text-white">~246 SOL/month <span className="text-sm font-normal text-gray-500">(projected)</span></p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
+                <p className="text-lg font-bold text-gray-400">~98 SOL</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Operations (40%)</p>
+              </div>
+              <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center">
+                <p className="text-lg font-bold text-emerald-400">~74 SOL</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (30%)</p>
+              </div>
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center">
+                <p className="text-lg font-bold text-blue-400">~37 SOL</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Dev Fund (15%)</p>
+              </div>
+              <div className="bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 text-center">
+                <p className="text-lg font-bold text-amber-400">~37 SOL</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Creator (15%)</p>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -1039,6 +1290,74 @@ export default function TreasuryPage() {
           })}
         </div>
       </motion.div>
+
+      {/* ================================================================= */}
+      {/* Creator Allocation                                                */}
+      {/* ================================================================= */}
+      <motion.div variants={staggerItem} className="space-y-4">
+        <h2 className="text-lg font-bold text-white">Creator Allocation</h2>
+        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-white">Founder/Creator Share</p>
+              <p className="text-xs text-gray-500">Fixed 15% of all revenue — capped by Axiom A0-27</p>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-amber-400">15%</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">of revenue</p>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-400">Current allocation</span>
+              <span className="text-xs text-amber-400">15% / 15% max</span>
+            </div>
+            <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="h-full rounded-full bg-amber-400" style={{ width: "100%" }} />
+            </div>
+          </div>
+
+          {/* Axiom reference */}
+          <div className="flex items-center gap-2 bg-amber-400/10 border border-amber-400/20 rounded-lg px-4 py-2.5">
+            <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+            <p className="text-xs text-amber-400">
+              Axiom A0-27: Total creator capture capped at 15%, floor 4%, stipend cap 5%
+            </p>
+          </div>
+
+          {/* Recent payouts table */}
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Recent Creator Payouts</p>
+            <div className="space-y-2">
+              {[
+                { amount: "0.045 SOL", source: "Apollo Pro Assessment", time: "2m ago" },
+                { amount: "0.0075 SOL", source: "Apollo Basic Assessment", time: "15m ago" },
+                { amount: "0.30 SOL", source: "Hermes Pro Subscription", time: "1h ago" },
+                { amount: "0.75 SOL", source: "Apollo Institutional", time: "3h ago" },
+                { amount: "1.50 SOL", source: "Hermes Protocol Subscription", time: "1d ago" },
+              ].map((payout, i) => (
+                <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-b-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-400 text-sm font-medium tabular-nums">{payout.amount}</span>
+                    <span className="text-xs text-gray-400">{payout.source}</span>
+                  </div>
+                  <span className="text-xs text-gray-600">{payout.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Disclaimers */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          Treasury data shown is from devnet beta. Balances, revenue projections, and reserve ratios may differ from mainnet deployment.
+          All financial operations are governed by immutable axioms enforced at the smart contract level.
+        </p>
+      </div>
     </motion.div>
   );
 }

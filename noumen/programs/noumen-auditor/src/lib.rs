@@ -29,7 +29,9 @@ pub mod noumen_auditor {
         config.bump = ctx.bumps.auditor_config;
         config._reserved = [0u8; 48];
 
+        // C-AUDIT-1: Emit initialization event with deployer key for auditability
         emit!(AuditorInitialized {
+            deployer: ctx.accounts.authority.key(),
             authority: config.authority,
             aeon_authority: config.aeon_authority,
             timestamp: clock.unix_timestamp,
@@ -48,11 +50,7 @@ pub mod noumen_auditor {
     ) -> Result<()> {
         let config = &mut ctx.accounts.auditor_config;
 
-        // A0-20: only auditor authority
-        require!(
-            ctx.accounts.authority.key() == config.authority,
-            AuditorError::Unauthorized
-        );
+        // H-AUDIT-1: Authority check moved to account constraint (has_one = authority)
 
         // Validate htl_result enum range (0=Correct, 1=Incorrect, 2=Inconclusive)
         require!(
@@ -117,11 +115,7 @@ pub mod noumen_auditor {
     ) -> Result<()> {
         let config = &mut ctx.accounts.auditor_config;
 
-        // A0-19: only auditor authority
-        require!(
-            ctx.accounts.authority.key() == config.authority,
-            AuditorError::Unauthorized
-        );
+        // H-AUDIT-1: Authority check moved to account constraint (has_one = authority)
 
         // Validate incident_type range (0-4: Exploit, RugPull, LiquidityDrain, OracleManipulation, IncentiveCollapse)
         require!(
@@ -166,13 +160,7 @@ pub mod noumen_auditor {
         ctx: Context<ResolveIncident>,
         args: ResolveIncidentArgs,
     ) -> Result<()> {
-        let config = &ctx.accounts.auditor_config;
-
-        // Only auditor authority
-        require!(
-            ctx.accounts.authority.key() == config.authority,
-            AuditorError::Unauthorized
-        );
+        // H-AUDIT-1: Authority check moved to account constraint (has_one = authority)
 
         // new_status must be Confirmed (1) or Dismissed (2)
         require!(
@@ -204,13 +192,7 @@ pub mod noumen_auditor {
         ctx: Context<PublishAccuracySnapshot>,
         args: PublishAccuracySnapshotArgs,
     ) -> Result<()> {
-        let config = &ctx.accounts.auditor_config;
-
-        // A0-21: only auditor authority
-        require!(
-            ctx.accounts.authority.key() == config.authority,
-            AuditorError::Unauthorized
-        );
+        // H-AUDIT-1: Authority check moved to account constraint (has_one = authority)
 
         // Must have at least one sample
         require!(
@@ -398,7 +380,8 @@ pub struct RecordTruthLabel<'info> {
         mut,
         seeds = [b"auditor_config"],
         bump = auditor_config.bump,
-        constraint = auditor_config.is_initialized @ AuditorError::IncidentNotFound,
+        constraint = auditor_config.is_initialized @ AuditorError::NotInitialized,
+        has_one = authority @ AuditorError::Unauthorized,
     )]
     pub auditor_config: Account<'info, AuditorConfig>,
     #[account(
@@ -424,7 +407,8 @@ pub struct RegisterSecurityIncident<'info> {
         mut,
         seeds = [b"auditor_config"],
         bump = auditor_config.bump,
-        constraint = auditor_config.is_initialized @ AuditorError::IncidentNotFound,
+        constraint = auditor_config.is_initialized @ AuditorError::NotInitialized,
+        has_one = authority @ AuditorError::Unauthorized,
     )]
     pub auditor_config: Account<'info, AuditorConfig>,
     #[account(
@@ -449,7 +433,8 @@ pub struct ResolveIncident<'info> {
     #[account(
         seeds = [b"auditor_config"],
         bump = auditor_config.bump,
-        constraint = auditor_config.is_initialized @ AuditorError::IncidentNotFound,
+        constraint = auditor_config.is_initialized @ AuditorError::NotInitialized,
+        has_one = authority @ AuditorError::Unauthorized,
     )]
     pub auditor_config: Account<'info, AuditorConfig>,
     #[account(
@@ -471,7 +456,8 @@ pub struct PublishAccuracySnapshot<'info> {
     #[account(
         seeds = [b"auditor_config"],
         bump = auditor_config.bump,
-        constraint = auditor_config.is_initialized @ AuditorError::IncidentNotFound,
+        constraint = auditor_config.is_initialized @ AuditorError::NotInitialized,
+        has_one = authority @ AuditorError::Unauthorized,
     )]
     pub auditor_config: Account<'info, AuditorConfig>,
     #[account(
@@ -496,6 +482,7 @@ pub struct PublishAccuracySnapshot<'info> {
 
 #[event]
 pub struct AuditorInitialized {
+    pub deployer: Pubkey,
     pub authority: Pubkey,
     pub aeon_authority: Pubkey,
     pub timestamp: i64,
@@ -556,8 +543,10 @@ pub enum AuditorError {
     InvalidIncidentType,
     #[msg("Invalid sample size: must be > 0")]
     InvalidSampleSize,
-    #[msg("Incident not found or auditor not initialized")]
+    #[msg("Incident not found")]
     IncidentNotFound,
+    #[msg("Auditor not initialized")]
+    NotInitialized,
     #[msg("Arithmetic overflow")]
     ArithmeticOverflow,
 }

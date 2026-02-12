@@ -35,7 +35,9 @@ pub mod noumen_apollo {
         config.bump = ctx.bumps.apollo_config;
         config._reserved = [0u8; 64];
 
+        // C-APOLLO-1: Emit initialization event with deployer key for auditability
         emit!(ApolloInitialized {
+            deployer: ctx.accounts.aeon_authority.key(),
             authority: config.authority,
             aeon_authority: config.aeon_authority,
             max_weight_bps: config.max_weight_bps,
@@ -63,6 +65,12 @@ pub mod noumen_apollo {
             ApolloError::MissingAPRPair
         );
 
+        // H-APOLLO-1: Validate evidence_families_bitmap — only bits 0-4 are valid
+        require!(
+            args.evidence_families_bitmap & 0b11100000 == 0,
+            ApolloError::InvalidBitmap
+        );
+
         // Confidence score must be 0-100
         require!(
             args.confidence_score <= 100,
@@ -71,6 +79,12 @@ pub mod noumen_apollo {
 
         // Validate risk_level enum range (0..=3)
         require!(args.risk_level <= 3, ApolloError::InvalidEnumValue);
+
+        // H-APOLLO-3: Validate expiry is in the future
+        require!(
+            args.expiry > clock.unix_timestamp,
+            ApolloError::ExpiredAssessment
+        );
 
         let record = &mut ctx.accounts.assessment_record;
         record.pool_address = args.pool_address;
@@ -454,6 +468,7 @@ pub struct UpdatePoolTaxonomy<'info> {
 
 #[event]
 pub struct ApolloInitialized {
+    pub deployer: Pubkey,
     pub authority: Pubkey,
     pub aeon_authority: Pubkey,
     pub max_weight_bps: u16,
@@ -520,4 +535,8 @@ pub enum ApolloError {
     MLIPoolCapReached,
     #[msg("Math overflow")]
     MathOverflow,
+    #[msg("Invalid evidence families bitmap: only bits 0-4 are valid (A0-18)")]
+    InvalidBitmap,
+    #[msg("Assessment expiry must be in the future")]
+    ExpiredAssessment,
 }
