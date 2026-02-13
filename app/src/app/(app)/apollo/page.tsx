@@ -1510,10 +1510,12 @@ export default function ApolloPage() {
                   </div>
                 </div>
                 <a
-                  href="#"
+                  href={`https://solscan.io/tx/${proofResult.hash}?cluster=devnet`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors shrink-0"
                 >
-                  View on Explorer
+                  View on Solscan
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>

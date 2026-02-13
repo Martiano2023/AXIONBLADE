@@ -1146,9 +1146,9 @@ export default function LandingPage() {
             {/* Social icons */}
             <div className="flex items-center gap-3">
               {[
-                { icon: <Twitter className="w-4 h-4" />, label: "Twitter", href: "#" },
-                { icon: <MessageCircle className="w-4 h-4" />, label: "Discord", href: "#" },
-                { icon: <Github className="w-4 h-4" />, label: "GitHub", href: "#" },
+                { icon: <Twitter className="w-4 h-4" />, label: "Twitter", href: "https://twitter.com/axionblade_" },
+                { icon: <MessageCircle className="w-4 h-4" />, label: "Discord", href: "https://discord.gg/solana" },
+                { icon: <Github className="w-4 h-4" />, label: "GitHub", href: "https://github.com/Martiano2023/AXIONBLADE" },
               ].map((social) => (
                 <a
                   key={social.label}
@@ -1166,8 +1166,8 @@ export default function LandingPage() {
             {/* Nav links */}
             <div className="flex items-center gap-6">
               {[
-                { label: "Docs", href: "#" },
-                { label: "API", href: "#" },
+                { label: "Docs", href: "https://github.com/Martiano2023/AXIONBLADE#readme" },
+                { label: "API", href: "https://github.com/Martiano2023/AXIONBLADE/tree/main/app/src/app/api" },
                 { label: "Security", href: "/security" },
               ].map((link) => (
                 <Link

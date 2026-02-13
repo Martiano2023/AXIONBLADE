@@ -346,13 +346,14 @@ export default function AlertsPage() {
             <Bell size={14} />
             Subscribe to Alerts
           </button>
-          <a
-            href="#"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-300 transition-colors duration-200"
+          <button
+            disabled
+            className="inline-flex items-center gap-1.5 text-sm text-gray-600 cursor-not-allowed transition-colors duration-200"
+            title="RSS Feed coming soon"
           >
             <Rss size={14} />
             RSS Feed
-          </a>
+          </button>
         </div>
       </motion.div>
 
