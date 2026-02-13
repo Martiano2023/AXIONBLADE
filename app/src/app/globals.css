@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -10,22 +10,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Orbitron', var(--font-orbitron), sans-serif;
 
-  /* NOUMEN Design Tokens */
-  --color-bg-primary: #0B0F1A;
-  --color-bg-surface: #111827;
-  --color-bg-elevated: #1F2937;
-  --color-accent-primary: #3B82F6;
-  --color-accent-secondary: #60A5FA;
-  --color-accent-tertiary: #10B981;
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-text-primary: #e2e8f0;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
-  --color-border-default: #1F2937;
-  --color-border-subtle: #374151;
+  /* AXIONBLADE Futuristic Neon Design Tokens */
+  --color-bg-primary: #0A0E17;
+  --color-bg-surface: #0F1420;
+  --color-bg-elevated: #151B2B;
+  --color-accent-primary: #00D4FF;
+  --color-accent-secondary: #7C3AED;
+  --color-accent-tertiary: #00FFB2;
+  --color-neon-cyan: #00D4FF;
+  --color-neon-purple: #7C3AED;
+  --color-neon-green: #00FFB2;
+  --color-neon-pink: #FF006E;
+  --color-success: #00FFB2;
+  --color-warning: #FFB800;
+  --color-danger: #FF3366;
+  --color-text-primary: #E8F0FE;
+  --color-text-secondary: #8B9DC3;
+  --color-text-muted: #4A5578;
+  --color-border-default: #1A2235;
+  --color-border-subtle: #243049;
 
   /* shadcn overrides */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -68,37 +73,37 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #0B0F1A;
-  --foreground: #e2e8f0;
-  --card: #111827;
-  --card-foreground: #e2e8f0;
-  --popover: #111827;
-  --popover-foreground: #e2e8f0;
-  --primary: #3B82F6;
-  --primary-foreground: #ffffff;
-  --secondary: #1F2937;
-  --secondary-foreground: #e2e8f0;
-  --muted: #1F2937;
-  --muted-foreground: #94a3b8;
-  --accent: #1F2937;
-  --accent-foreground: #e2e8f0;
-  --destructive: #EF4444;
-  --border: #1F2937;
-  --input: #1F2937;
-  --ring: #3B82F6;
-  --chart-1: #3B82F6;
-  --chart-2: #60A5FA;
-  --chart-3: #10B981;
-  --chart-4: #F59E0B;
-  --chart-5: #EF4444;
-  --sidebar: #111827;
-  --sidebar-foreground: #e2e8f0;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1F2937;
-  --sidebar-accent-foreground: #e2e8f0;
-  --sidebar-border: #1F2937;
-  --sidebar-ring: #3B82F6;
+  --background: #0A0E17;
+  --foreground: #E8F0FE;
+  --card: #0F1420;
+  --card-foreground: #E8F0FE;
+  --popover: #0F1420;
+  --popover-foreground: #E8F0FE;
+  --primary: #00D4FF;
+  --primary-foreground: #0A0E17;
+  --secondary: #151B2B;
+  --secondary-foreground: #E8F0FE;
+  --muted: #151B2B;
+  --muted-foreground: #8B9DC3;
+  --accent: #7C3AED;
+  --accent-foreground: #E8F0FE;
+  --destructive: #FF3366;
+  --border: #1A2235;
+  --input: #1A2235;
+  --ring: #00D4FF;
+  --chart-1: #00D4FF;
+  --chart-2: #7C3AED;
+  --chart-3: #00FFB2;
+  --chart-4: #FFB800;
+  --chart-5: #FF3366;
+  --sidebar: #0A0E17;
+  --sidebar-foreground: #E8F0FE;
+  --sidebar-primary: #00D4FF;
+  --sidebar-primary-foreground: #0A0E17;
+  --sidebar-accent: #151B2B;
+  --sidebar-accent-foreground: #E8F0FE;
+  --sidebar-border: #1A2235;
+  --sidebar-ring: #00D4FF;
 }
 
 /* ============================================
@@ -106,59 +111,53 @@
    ============================================ */
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes ticker-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes draw-in {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
 }
 
 @keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(0, 212, 255, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.25), 0 0 60px rgba(0, 212, 255, 0.1); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0, 212, 255, 0.15); }
+  50% { border-color: rgba(0, 212, 255, 0.35); }
+}
+
+@keyframes scan-line {
+  0% { top: 0; }
+  100% { top: 100%; }
 }
 
 /* ============================================
@@ -185,108 +184,122 @@
   code, pre, kbd, samp {
     font-family: 'JetBrains Mono', var(--font-mono), monospace;
   }
+
+  h1, h2, h3 {
+    font-family: 'Orbitron', var(--font-orbitron), sans-serif;
+  }
 }
 
 /* ============================================
-   Utility Classes
+   Glassmorphism Card
    ============================================ */
 
-/* Clean Card */
 .glass-card {
-  background: #111827;
-  border: 1px solid #1F2937;
+  background: rgba(15, 20, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 212, 255, 0.08);
 }
 
-/* Clean Card with Hover */
 .glass-card-hover {
-  background: #111827;
-  border: 1px solid #1F2937;
-  transition: border-color 200ms ease;
+  background: rgba(15, 20, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  transition: border-color 300ms ease, box-shadow 300ms ease;
 }
 
 .glass-card-hover:hover {
-  border-color: #374151;
+  border-color: rgba(0, 212, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.06), 0 0 40px rgba(124, 58, 237, 0.04);
+}
+
+/* Neon Glow Card */
+.neon-card {
+  background: rgba(15, 20, 32, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.05), inset 0 1px 0 rgba(0, 212, 255, 0.05);
+}
+
+.neon-card:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.1), 0 0 60px rgba(124, 58, 237, 0.05), inset 0 1px 0 rgba(0, 212, 255, 0.1);
+}
+
+/* Neon Text Glow */
+.neon-text-cyan {
+  color: #00D4FF;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
+}
+
+.neon-text-purple {
+  color: #7C3AED;
+  text-shadow: 0 0 10px rgba(124, 58, 237, 0.5), 0 0 20px rgba(124, 58, 237, 0.3), 0 0 40px rgba(124, 58, 237, 0.1);
+}
+
+/* Neon Border */
+.neon-border {
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.05), inset 0 0 10px rgba(0, 212, 255, 0.02);
+}
+
+/* Neon Button */
+.neon-btn {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #00D4FF;
+  transition: all 300ms ease;
+}
+
+.neon-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(124, 58, 237, 0.25));
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(124, 58, 237, 0.1);
 }
 
 /* Shimmer Loading */
 .shimmer-loading {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.03) 75%
+    rgba(0, 212, 255, 0.03) 25%,
+    rgba(0, 212, 255, 0.08) 50%,
+    rgba(0, 212, 255, 0.03) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }
 
-/* Fade In */
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
-}
-
-/* Slide Up */
-.animate-slide-up {
-  animation: slide-up 0.5s ease-out forwards;
-}
-
-/* Ticker Scroll */
-.animate-ticker {
-  animation: ticker-scroll 30s linear infinite;
-}
-
-/* Spin Slow */
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
-}
+/* Animations */
+.animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+.animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+.animate-ticker { animation: ticker-scroll 30s linear infinite; }
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
+.animate-neon-pulse { animation: neon-pulse 3s ease-in-out infinite; }
+.animate-glow-breathe { animation: glow-breathe 4s ease-in-out infinite; }
+.animate-border-glow { animation: border-glow 3s ease-in-out infinite; }
 
 /* ============================================
    Custom Scrollbar
    ============================================ */
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0A0E17; }
+::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 212, 255, 0.3); }
 
-::-webkit-scrollbar-track {
-  background: #0B0F1A;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) #0B0F1A;
-}
+* { scrollbar-width: thin; scrollbar-color: rgba(0, 212, 255, 0.15) #0A0E17; }
 
 /* ============================================
    Selection
    ============================================ */
 
-::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #e2e8f0;
-}
-
-::-moz-selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: #e2e8f0;
-}
+::selection { background: rgba(0, 212, 255, 0.3); color: #E8F0FE; }
+::-moz-selection { background: rgba(0, 212, 255, 0.3); color: #E8F0FE; }
 
 /* ============================================
    Focus Ring
    ============================================ */
 
-:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.5);
-  outline-offset: 2px;
-}
+:focus-visible { outline: 2px solid rgba(0, 212, 255, 0.5); outline-offset: 2px; }

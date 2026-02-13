@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-screen bg-[#0B0F1A]">
+    <div className="flex min-h-screen bg-[#0A0E17]">
       <NavigationSidebar />
       <div className="flex flex-1 flex-col min-w-0">
         <TopBar />

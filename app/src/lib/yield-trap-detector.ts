@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// NOUMEN Yield Trap Detector — Identifies misleading DeFi yield opportunities
+// AXIONBLADE Yield Trap Detector — Identifies misleading DeFi yield opportunities
 // ---------------------------------------------------------------------------
 // Deterministic detection of yield traps based on the relationship between
 // headline APR, effective APR, reward token health, and TVL dynamics.

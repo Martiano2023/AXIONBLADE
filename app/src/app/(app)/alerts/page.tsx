@@ -27,7 +27,7 @@ interface Alert {
 const severityConfig: Record<Severity, { color: string; label: string }> = {
   critical: { color: "bg-[#EF4444]", label: "Critical" },
   warning:  { color: "bg-[#F59E0B]", label: "Warning" },
-  info:     { color: "bg-[#3B82F6]", label: "Info" },
+  info:     { color: "bg-[#00D4FF]", label: "Info" },
   stable:   { color: "bg-[#10B981]", label: "Stable" },
 };
 
@@ -296,7 +296,7 @@ function formatTimeAgo(ts: number): string {
 }
 
 function twitterShareUrl(text: string): string {
-  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + " via @noumen_protocol")}`;
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + " via @axionblade_")}`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -342,7 +342,7 @@ export default function AlertsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg bg-[#3B82F6] px-4 py-2 text-sm font-medium text-white hover:bg-[#2563EB] transition-colors duration-200">
+          <button className="inline-flex items-center gap-2 rounded-lg bg-[#00D4FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#00B8D9] transition-colors duration-200">
             <Bell size={14} />
             Subscribe to Alerts
           </button>
@@ -366,7 +366,7 @@ export default function AlertsPage() {
         {[
           { label: "Critical", count: MOCK_ALERTS.filter(a => a.severity === "critical").length, color: "text-red-400", bg: "bg-red-400/10" },
           { label: "Warning", count: MOCK_ALERTS.filter(a => a.severity === "warning").length, color: "text-yellow-400", bg: "bg-yellow-400/10" },
-          { label: "Info", count: MOCK_ALERTS.filter(a => a.severity === "info").length, color: "text-blue-400", bg: "bg-blue-400/10" },
+          { label: "Info", count: MOCK_ALERTS.filter(a => a.severity === "info").length, color: "text-[#00D4FF]", bg: "bg-[#00D4FF]/80/10" },
           { label: "Stable", count: MOCK_ALERTS.filter(a => a.severity === "stable").length, color: "text-emerald-400", bg: "bg-emerald-400/10" },
         ].map((stat) => (
           <div key={stat.label} className={`${stat.bg} border border-white/[0.06] rounded-lg p-3 text-center`}>
@@ -381,7 +381,7 @@ export default function AlertsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.07 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-4"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4"
       >
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Most Affected Pools</h3>
         <div className="space-y-2">
@@ -421,7 +421,7 @@ export default function AlertsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.09 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-4"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4"
       >
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Alert Frequency (24h)</h3>
         <div className="flex items-end gap-1 h-16">
@@ -439,7 +439,7 @@ export default function AlertsPage() {
             return (
               <div
                 key={h}
-                className={`flex-1 rounded-sm ${hasCritical ? "bg-red-400/60" : count > 0 ? "bg-blue-400/40" : "bg-white/[0.04]"}`}
+                className={`flex-1 rounded-sm ${hasCritical ? "bg-red-400/60" : count > 0 ? "bg-[#00D4FF]/80/40" : "bg-white/[0.04]"}`}
                 style={{ height: `${height}px` }}
                 title={`${h}h ago: ${count} alerts`}
               />
@@ -466,8 +466,8 @@ export default function AlertsPage() {
               onClick={() => setSeverityFilter(filter.key)}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 ${
                 severityFilter === filter.key
-                  ? "bg-[#1F2937] text-white"
-                  : "text-gray-500 hover:text-gray-300 hover:bg-[#111827]"
+                  ? "bg-[#1A2235] text-white"
+                  : "text-gray-500 hover:text-gray-300 hover:bg-[#0F1420]"
               }`}
             >
               {filter.label}
@@ -479,10 +479,10 @@ export default function AlertsPage() {
           <select
             value={poolFilter}
             onChange={(e) => setPoolFilter(e.target.value)}
-            className="h-9 appearance-none rounded-lg border border-[#1F2937] bg-[#111827] pl-3 pr-8 text-sm text-gray-300 focus:outline-none focus:border-[#374151] hover:border-[#374151] transition-colors duration-200"
+            className="h-9 appearance-none rounded-lg border border-[#1A2235] bg-[#0F1420] pl-3 pr-8 text-sm text-gray-300 focus:outline-none focus:border-[#243049] hover:border-[#243049] transition-colors duration-200"
           >
             {ALL_POOLS.map((pool) => (
-              <option key={pool} value={pool} className="bg-[#111827] text-gray-300">
+              <option key={pool} value={pool} className="bg-[#0F1420] text-gray-300">
                 {pool}
               </option>
             ))}
@@ -510,7 +510,7 @@ export default function AlertsPage() {
           return (
             <div
               key={alert.id}
-              className="border-b border-[#1F2937] py-4 flex items-start gap-3"
+              className="border-b border-[#1A2235] py-4 flex items-start gap-3"
             >
               {/* Severity dot */}
               <div className="mt-1.5 shrink-0">
@@ -522,10 +522,10 @@ export default function AlertsPage() {
                 <p className="text-sm text-white">{alert.text}</p>
                 <p className="text-xs text-gray-500 mt-1">{alert.detail}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1F2937] text-gray-400">
+                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-400">
                     {alert.pool}
                   </span>
-                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1F2937] text-gray-500">
+                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-500">
                     {alert.protocol}
                   </span>
                 </div>
@@ -558,7 +558,7 @@ export default function AlertsPage() {
                 setSeverityFilter("all");
                 setPoolFilter("All Pools");
               }}
-              className="mt-2 text-xs text-[#3B82F6] hover:text-[#60A5FA] transition-colors"
+              className="mt-2 text-xs text-[#00D4FF] hover:text-[#00D4FF] transition-colors"
             >
               Clear filters
             </button>
@@ -571,7 +571,7 @@ export default function AlertsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 text-center"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 text-center"
       >
         <p className="text-sm text-gray-400 mb-1">
           Want alerts delivered to you?
@@ -579,7 +579,7 @@ export default function AlertsPage() {
         <p className="text-xs text-gray-500 mb-4">
           Upgrade to HERMES Pro for real-time notifications
         </p>
-        <button className="inline-flex items-center gap-2 rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB] transition-colors duration-200">
+        <button className="inline-flex items-center gap-2 rounded-lg bg-[#00D4FF] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00B8D9] transition-colors duration-200">
           Upgrade to Pro
         </button>
       </motion.div>

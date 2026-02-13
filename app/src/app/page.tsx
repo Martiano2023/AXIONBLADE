@@ -88,7 +88,7 @@ function ParticleGrid() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+            ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -98,7 +98,7 @@ function ParticleGrid() {
       for (const p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${MAX_OPACITY * 0.8})`;
+        ctx.fillStyle = `rgba(0, 212, 255, ${MAX_OPACITY * 0.8})`;
         ctx.fill();
       }
 
@@ -140,12 +140,12 @@ function HeroShield() {
       >
         <defs>
           <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="0%" stopColor="#00D4FF" />
             <stop offset="50%" stopColor="#8B5CF6" />
             <stop offset="100%" stopColor="#06B6D4" />
           </linearGradient>
           <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="0%" stopColor="#00D4FF" />
             <stop offset="100%" stopColor="#8B5CF6" />
           </linearGradient>
         </defs>
@@ -284,7 +284,7 @@ function RiskTicker() {
   const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <div className="w-full overflow-hidden border-y border-[#1F2937] bg-[#0D1117]">
+    <div className="w-full overflow-hidden border-y border-[#1A2235] bg-[#0D1117]">
       <div className="flex animate-ticker whitespace-nowrap">
         {items.map((item, i) => {
           const style = LEVEL_STYLES[item.level];
@@ -300,7 +300,7 @@ function RiskTicker() {
               <span className={`text-sm font-medium tabular-nums ${changeColor(item.direction)}`}>
                 {arrow(item.direction)}{item.change}
               </span>
-              <span className="text-[#1F2937] mx-1 text-lg">|</span>
+              <span className="text-[#1A2235] mx-1 text-lg">|</span>
             </div>
           );
         })}
@@ -313,7 +313,7 @@ function RiskTicker() {
 /*  Sparkline SVG                                                       */
 /* ------------------------------------------------------------------ */
 
-function Sparkline({ data, color = "#3B82F6", width = 100, height = 32 }: { data: number[]; color?: string; width?: number; height?: number }) {
+function Sparkline({ data, color = "#00D4FF", width = 100, height = 32 }: { data: number[]; color?: string; width?: number; height?: number }) {
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
@@ -398,7 +398,7 @@ function SectionTitle({ children, className = "" }: { children: React.ReactNode;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5 }}
-      className={`text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent ${className}`}
+      className={`text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white via-cyan-100 to-purple-200 bg-clip-text text-transparent ${className}`}
     >
       {children}
     </motion.h2>
@@ -409,7 +409,7 @@ function SectionTitle({ children, className = "" }: { children: React.ReactNode;
 /*  Section Divider                                                     */
 /* ------------------------------------------------------------------ */
 
-function SectionDivider({ color = "from-blue-500/20 via-purple-500/20 to-cyan-500/20" }: { color?: string }) {
+function SectionDivider({ color = "from-[#00D4FF]/20 via-purple-500/20 to-cyan-500/20" }: { color?: string }) {
   return (
     <div className="max-w-4xl mx-auto px-6">
       <div className={`h-px bg-gradient-to-r ${color}`} />
@@ -450,7 +450,7 @@ export default function LandingPage() {
   const timelineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div className="min-h-screen bg-[#0B0F1A] font-sans text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0E17] font-sans text-white overflow-x-hidden">
       {/* ============================================================ */}
       {/*  HERO                                                        */}
       {/* ============================================================ */}
@@ -459,7 +459,7 @@ export default function LandingPage() {
         <HeroShield />
 
         {/* Ambient glow orb */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-500/[0.06] blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#00D4FF]/[0.06] blur-[120px] pointer-events-none" />
 
         <motion.div
           initial="hidden"
@@ -472,7 +472,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="flex items-center justify-center gap-2 mb-6"
           >
-            <span className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-sm text-blue-400 font-medium">
+            <span className="inline-flex items-center gap-2 bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-full px-4 py-1.5 text-sm text-[#00D4FF] font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Live on Devnet
             </span>
@@ -485,7 +485,7 @@ export default function LandingPage() {
           >
             Risk Infrastructure
             <br />
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#00D4FF] via-purple-400 to-cyan-400 bg-clip-text text-transparent">
               for Solana
             </span>
           </motion.h1>
@@ -505,13 +505,13 @@ export default function LandingPage() {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link href="/apollo">
-              <button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)]">
+              <button className="bg-gradient-to-r from-[#00D4FF] to-[#00B8D9] hover:from-[#00D4FF]/90 hover:to-[#00D4FF]/70 text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,212,255,0.3)] hover:shadow-[0_0_30px_rgba(0,212,255,0.4)]">
                 Start Assessment
                 <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
             <Link href="/integrations">
-              <button className="border border-[#374151] text-gray-300 hover:border-blue-500/50 hover:text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 cursor-pointer">
+              <button className="border border-[#243049] text-gray-300 hover:border-[#00D4FF]/50 hover:text-white px-8 py-3.5 rounded-xl font-semibold transition-all duration-200 cursor-pointer">
                 Request Integration
               </button>
             </Link>
@@ -540,15 +540,15 @@ export default function LandingPage() {
             variants={fade}
             transition={{ duration: 0.5 }}
             whileHover={{ y: -6 }}
-            className="group relative bg-[#111827] border border-[#1F2937] rounded-2xl p-10 hover:border-blue-500/30 transition-all duration-300 overflow-hidden"
+            className="group relative bg-[#0F1420] border border-[#1A2235] rounded-2xl p-10 hover:border-[#00D4FF]/30 transition-all duration-300 overflow-hidden"
           >
             {/* Abstract decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -translate-y-8 translate-x-8" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/3 rounded-full blur-xl translate-y-6 -translate-x-6" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00D4FF]/5 rounded-full blur-2xl -translate-y-8 translate-x-8" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#00D4FF]/3 rounded-full blur-xl translate-y-6 -translate-x-6" />
 
             <div className="relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center mb-6">
-                <Shield className="w-7 h-7 text-blue-400" />
+              <div className="w-14 h-14 rounded-2xl bg-[#00D4FF]/15 border border-[#00D4FF]/20 flex items-center justify-center mb-6">
+                <Shield className="w-7 h-7 text-[#00D4FF]" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-3">
                 For Protocols
@@ -557,7 +557,7 @@ export default function LandingPage() {
                 Embed verified risk scores in your UI. Full API access with embeddable widget included. White-label ready.
               </p>
               <Link href="/integrations">
-                <span className="text-blue-400 hover:text-blue-300 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors duration-200 group-hover:gap-2.5">
+                <span className="text-[#00D4FF] hover:text-[#00D4FF]/80 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors duration-200 group-hover:gap-2.5">
                   Request Integration <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </span>
               </Link>
@@ -569,7 +569,7 @@ export default function LandingPage() {
             variants={fade}
             transition={{ duration: 0.5 }}
             whileHover={{ y: -6 }}
-            className="group relative bg-[#111827] border border-[#1F2937] rounded-2xl p-10 hover:border-emerald-500/30 transition-all duration-300 overflow-hidden"
+            className="group relative bg-[#0F1420] border border-[#1A2235] rounded-2xl p-10 hover:border-emerald-500/30 transition-all duration-300 overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -translate-y-8 translate-x-8" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/3 rounded-full blur-xl translate-y-6 -translate-x-6" />
@@ -608,7 +608,7 @@ export default function LandingPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto"
         >
           {[
-            { label: "Proofs Minted", value: 1247, sparkline: sparklines.proofs, color: "#3B82F6", borderColor: "border-t-blue-500", icon: <ShieldCheck className="w-5 h-5 text-blue-400" />, iconBg: "bg-blue-500/15" },
+            { label: "Proofs Minted", value: 1247, sparkline: sparklines.proofs, color: "#00D4FF", borderColor: "border-t-[#00D4FF]", icon: <ShieldCheck className="w-5 h-5 text-[#00D4FF]" />, iconBg: "bg-[#00D4FF]/15" },
             { label: "Protocol Pilots", value: 5, sparkline: sparklines.pilots, color: "#8B5CF6", borderColor: "border-t-purple-500", icon: <Plug className="w-5 h-5 text-purple-400" />, iconBg: "bg-purple-500/15" },
             { label: "Model Accuracy", value: 91.2, suffix: "%", sparkline: sparklines.accuracy, color: "#10B981", decimals: 1, borderColor: "border-t-emerald-500", icon: <Target className="w-5 h-5 text-emerald-400" />, iconBg: "bg-emerald-500/15" },
             { label: "Axioms Enforced", value: 29, sparkline: sparklines.axioms, color: "#F59E0B", borderColor: "border-t-amber-500", icon: <ScrollText className="w-5 h-5 text-amber-400" />, iconBg: "bg-amber-500/15" },
@@ -618,7 +618,7 @@ export default function LandingPage() {
               variants={fade}
               transition={{ duration: 0.4 }}
               whileHover={{ y: -4, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
-              className={`bg-[#111827] border border-[#1F2937] border-t-2 ${metric.borderColor} rounded-xl p-6 text-center relative overflow-hidden hover:border-[#374151] transition-all duration-200`}
+              className={`bg-[#0F1420] border border-[#1A2235] border-t-2 ${metric.borderColor} rounded-xl p-6 text-center relative overflow-hidden hover:border-[#243049] transition-all duration-200`}
             >
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
                 <Sparkline data={metric.sparkline} color={metric.color} width={100} height={32} />
@@ -642,17 +642,17 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      <SectionDivider color="from-purple-500/20 via-blue-500/20 to-emerald-500/20" />
+      <SectionDivider color="from-purple-500/20 via-[#00D4FF]/20 to-emerald-500/20" />
 
       {/* ============================================================ */}
       {/*  HOW IT WORKS                                                */}
       {/* ============================================================ */}
       <section className="px-6 py-24 relative">
         {/* Subtle background panel */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/[0.02] to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00D4FF]/[0.02] to-transparent pointer-events-none" />
 
         <div className="max-w-5xl mx-auto relative z-10">
-          <SectionTitle>How NOUMEN Protects Capital</SectionTitle>
+          <SectionTitle>How AXIONBLADE Protects Capital</SectionTitle>
 
           <div className="relative">
             {/* Animated connecting gradient line */}
@@ -662,7 +662,7 @@ export default function LandingPage() {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-                className="h-full bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-emerald-500/40 origin-left rounded-full"
+                className="h-full bg-gradient-to-r from-[#00D4FF]/40 via-purple-500/40 to-emerald-500/40 origin-left rounded-full"
               />
             </div>
 
@@ -678,9 +678,9 @@ export default function LandingPage() {
                   num: "01",
                   title: "Submit",
                   desc: "Enter any Solana pool address. Our engine identifies the protocol, tokens, and risk parameters automatically.",
-                  icon: <Upload className="w-7 h-7 text-blue-400" />,
-                  iconBg: "bg-blue-500/15 border-blue-500/25",
-                  numColor: "text-blue-400",
+                  icon: <Upload className="w-7 h-7 text-[#00D4FF]" />,
+                  iconBg: "bg-[#00D4FF]/15 border-[#00D4FF]/25",
+                  numColor: "text-[#00D4FF]",
                 },
                 {
                   num: "02",
@@ -729,7 +729,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <SectionDivider color="from-emerald-500/20 via-cyan-500/20 to-blue-500/20" />
+      <SectionDivider color="from-emerald-500/20 via-cyan-500/20 to-[#00D4FF]/20" />
 
       {/* ============================================================ */}
       {/*  COMPARISON TABLE                                            */}
@@ -743,18 +743,18 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
-            className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden"
+            className="bg-[#0F1420] border border-[#1A2235] rounded-xl overflow-hidden"
           >
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1a2332] border-b border-[#1F2937]">
+                <tr className="bg-[#1a2332] border-b border-[#1A2235]">
                   <th className="text-left text-gray-500 font-medium px-6 py-5 w-40" />
                   <th className="text-left px-6 py-5">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center">
-                        <Shield className="w-3.5 h-3.5 text-blue-400" />
+                      <div className="w-6 h-6 rounded bg-[#00D4FF]/20 flex items-center justify-center">
+                        <Shield className="w-3.5 h-3.5 text-[#00D4FF]" />
                       </div>
-                      <span className="text-white font-bold">NOUMEN</span>
+                      <span className="text-white font-bold">AXIONBLADE</span>
                     </div>
                   </th>
                   <th className="text-left px-6 py-5">
@@ -777,24 +777,24 @@ export default function LandingPage() {
               </thead>
               <tbody>
                 {[
-                  { feature: "Real-time", noumen: true, audits: false, dashboards: "Partial" },
-                  { feature: "On-chain proof", noumen: true, audits: false, dashboards: false },
-                  { feature: "Per-assessment", noumen: "0.02 SOL", audits: "$50,000+", dashboards: "Free (no scoring)" },
-                  { feature: "Verifiable AI", noumen: true, audits: false, dashboards: false },
-                  { feature: "API available", noumen: true, audits: false, dashboards: "Some" },
+                  { feature: "Real-time", axionblade: true, audits: false, dashboards: "Partial" },
+                  { feature: "On-chain proof", axionblade: true, audits: false, dashboards: false },
+                  { feature: "Per-assessment", axionblade: "0.02 SOL", audits: "$50,000+", dashboards: "Free (no scoring)" },
+                  { feature: "Verifiable AI", axionblade: true, audits: false, dashboards: false },
+                  { feature: "API available", axionblade: true, audits: false, dashboards: "Some" },
                 ].map((row, i) => (
                   <tr
                     key={row.feature}
-                    className={`${i % 2 === 0 ? "bg-[#111827]" : "bg-[#0E1420]"} hover:bg-[#1F2937]/40 transition-colors duration-150`}
+                    className={`${i % 2 === 0 ? "bg-[#0F1420]" : "bg-[#0E1420]"} hover:bg-[#1A2235]/40 transition-colors duration-150`}
                   >
                     <td className="px-6 py-4 text-gray-300 font-semibold">
                       {row.feature}
                     </td>
-                    <td className="px-6 py-4 bg-blue-500/[0.04]">
-                      {row.noumen === true ? (
+                    <td className="px-6 py-4 bg-[#00D4FF]/[0.04]">
+                      {row.axionblade === true ? (
                         <AnimatedCheck delay={i * 0.08} />
                       ) : (
-                        <span className="text-blue-400 font-semibold">{row.noumen}</span>
+                        <span className="text-[#00D4FF] font-semibold">{row.axionblade}</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
@@ -821,7 +821,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <SectionDivider color="from-blue-500/20 via-amber-500/15 to-purple-500/20" />
+      <SectionDivider color="from-[#00D4FF]/20 via-amber-500/15 to-purple-500/20" />
 
       {/* ============================================================ */}
       {/*  ROADMAP                                                     */}
@@ -832,10 +832,10 @@ export default function LandingPage() {
 
           <div ref={roadmapRef} className="relative pl-10">
             {/* Background track */}
-            <div className="absolute left-[15px] top-0 bottom-0 w-px bg-[#1F2937]" />
+            <div className="absolute left-[15px] top-0 bottom-0 w-px bg-[#1A2235]" />
             {/* Animated gradient fill */}
             <motion.div
-              className="absolute left-[15px] top-0 w-px bg-gradient-to-b from-emerald-500 via-blue-500 via-purple-500 to-amber-500"
+              className="absolute left-[15px] top-0 w-px bg-gradient-to-b from-emerald-500 via-[#00D4FF] via-purple-500 to-amber-500"
               style={{ height: timelineHeight }}
             />
 
@@ -860,12 +860,12 @@ export default function LandingPage() {
                   title: "HERMES Intelligence + Subscriptions",
                   badge: "February 2026",
                   active: true,
-                  dotColor: "bg-blue-400 border-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.4)]",
-                  icon: <Globe className="w-4 h-4 text-blue-400" />,
-                  iconBg: "bg-blue-500/15",
-                  borderClass: "border-blue-500/20",
-                  shadowClass: "shadow-[0_0_20px_rgba(59,130,246,0.08)]",
-                  badgeClass: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
+                  dotColor: "bg-[#00D4FF]/80 border-[#00D4FF]/80 shadow-[0_0_8px_rgba(0,212,255,0.4)]",
+                  icon: <Globe className="w-4 h-4 text-[#00D4FF]" />,
+                  iconBg: "bg-[#00D4FF]/15",
+                  borderClass: "border-[#00D4FF]/20",
+                  shadowClass: "shadow-[0_0_20px_rgba(0,212,255,0.08)]",
+                  badgeClass: "bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/30",
                   statusLabel: "February 2026",
                   items: ["HERMES intelligence layer", "Subscription system", "Public API + widget system"],
                 },
@@ -907,7 +907,7 @@ export default function LandingPage() {
                   {/* Dot */}
                   <div className={`absolute -left-10 top-1 w-[11px] h-[11px] rounded-full border-2 ${item.dotColor}`} />
 
-                  <div className={`bg-[#111827] border ${item.active ? item.borderClass : "border-[#1F2937]"} rounded-xl p-5 ${item.active && item.shadowClass ? item.shadowClass : ""}`}>
+                  <div className={`bg-[#0F1420] border ${item.active ? item.borderClass : "border-[#1A2235]"} rounded-xl p-5 ${item.active && item.shadowClass ? item.shadowClass : ""}`}>
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <div className={`w-7 h-7 rounded-lg ${item.iconBg} flex items-center justify-center`}>
                         {item.icon}
@@ -919,7 +919,7 @@ export default function LandingPage() {
                         className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                           item.active && item.badgeClass
                             ? item.badgeClass
-                            : "bg-[#1F2937] text-gray-400"
+                            : "bg-[#1A2235] text-gray-400"
                         }`}
                       >
                         {item.badge}
@@ -934,7 +934,7 @@ export default function LandingPage() {
                         <span className={`ml-2 text-xs font-bold px-2 py-0.5 rounded-full ${
                           (item as { statusLabel?: string }).statusLabel === "Live"
                             ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                            : "bg-blue-500/15 text-blue-400 border border-blue-500/30"
+                            : "bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/30"
                         }`}>
                           {(item as { statusLabel?: string }).statusLabel}
                         </span>
@@ -956,7 +956,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <SectionDivider color="from-amber-500/20 via-blue-500/20 to-purple-500/20" />
+      <SectionDivider color="from-amber-500/20 via-[#00D4FF]/20 to-purple-500/20" />
 
       {/* ============================================================ */}
       {/*  PRICING                                                     */}
@@ -976,44 +976,44 @@ export default function LandingPage() {
             <motion.div
               variants={fade}
               transition={{ duration: 0.5 }}
-              className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8 hover:border-blue-500/30 transition-all duration-300"
+              className="bg-[#0F1420] border border-[#1A2235] rounded-2xl p-8 hover:border-[#00D4FF]/30 transition-all duration-300"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
-                  <ShieldCheck className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 rounded-xl bg-[#00D4FF]/15 border border-[#00D4FF]/20 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5 text-[#00D4FF]" />
                 </div>
                 <h3 className="text-xl font-bold text-white">APOLLO</h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">Launch Price</span>
               </div>
               <p className="text-sm text-gray-400 mb-6">DeFi Risk Assessment Engine</p>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Basic</p>
                     <p className="text-xs text-gray-500">Single pool assessment</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-blue-400">0.02 SOL</p>
+                    <p className="text-lg font-bold text-[#00D4FF]">0.02 SOL</p>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Pro</p>
                     <p className="text-xs text-gray-500">Full report + monitoring</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-blue-400">0.15 SOL</p>
+                    <p className="text-lg font-bold text-[#00D4FF]">0.15 SOL</p>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Institutional</p>
                     <p className="text-xs text-gray-500">Custom integrations + SLA</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-blue-400">from 2 SOL</p>
+                    <p className="text-lg font-bold text-[#00D4FF]">from 2 SOL</p>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
                   </div>
                 </div>
@@ -1024,7 +1024,7 @@ export default function LandingPage() {
             <motion.div
               variants={fade}
               transition={{ duration: 0.5 }}
-              className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8 hover:border-cyan-500/30 transition-all duration-300"
+              className="bg-[#0F1420] border border-[#1A2235] rounded-2xl p-8 hover:border-cyan-500/30 transition-all duration-300"
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
@@ -1035,7 +1035,7 @@ export default function LandingPage() {
               </div>
               <p className="text-sm text-gray-400 mb-6">DeFi Intelligence Layer</p>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Free Preview</p>
                     <p className="text-xs text-gray-500">Basic intelligence reports</p>
@@ -1044,7 +1044,7 @@ export default function LandingPage() {
                     <p className="text-lg font-bold text-emerald-400">Free</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Pro</p>
                     <p className="text-xs text-gray-500">Full reports + notifications</p>
@@ -1054,7 +1054,7 @@ export default function LandingPage() {
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">Launch Price</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
                   <div>
                     <p className="text-sm font-semibold text-white">Protocol</p>
                     <p className="text-xs text-gray-500">API access + white-label</p>
@@ -1074,7 +1074,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <SectionDivider color="from-emerald-500/20 via-amber-500/20 to-blue-500/20" />
+      <SectionDivider color="from-emerald-500/20 via-amber-500/20 to-[#00D4FF]/20" />
 
       {/* ============================================================ */}
       {/*  REVENUE SPLIT                                               */}
@@ -1088,11 +1088,11 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
-            className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8"
+            className="bg-[#0F1420] border border-[#1A2235] rounded-2xl p-8"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "Operations", pct: "40%", desc: "Compute, RPC, storage", color: "text-blue-400", barColor: "bg-blue-500" },
+                { label: "Operations", pct: "40%", desc: "Compute, RPC, storage", color: "text-[#00D4FF]", barColor: "bg-[#00D4FF]" },
                 { label: "Treasury", pct: "30%", desc: "Protocol safety net", color: "text-emerald-400", barColor: "bg-emerald-500" },
                 { label: "Dev Fund", pct: "15%", desc: "Future development", color: "text-purple-400", barColor: "bg-purple-500" },
                 { label: "Creator", pct: "15%", desc: "Protocol founder", color: "text-amber-400", barColor: "bg-amber-500" },
@@ -1117,7 +1117,7 @@ export default function LandingPage() {
       {/* ============================================================ */}
       {/*  FOOTER                                                      */}
       {/* ============================================================ */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-500/30 via-50% to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#00D4FF]/30 via-50% to-transparent" />
 
       <footer className="px-6 py-16">
         <div className="max-w-5xl mx-auto">
@@ -1127,7 +1127,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-2xl font-bold bg-gradient-to-r from-[#00D4FF] to-purple-400 bg-clip-text text-transparent"
             >
               Proof Before Action
             </motion.p>
@@ -1155,7 +1155,7 @@ export default function LandingPage() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-[#1F2937] border border-[#374151] flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-200"
+                  className="w-9 h-9 rounded-xl bg-[#1A2235] border border-[#243049] flex items-center justify-center text-gray-400 hover:text-white hover:border-[#00D4FF]/50 hover:bg-[#00D4FF]/10 transition-all duration-200"
                   title={social.label}
                 >
                   {social.icon}
@@ -1173,7 +1173,7 @@ export default function LandingPage() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-gray-500 hover:text-blue-400 transition-colors duration-200"
+                  className="text-sm text-gray-500 hover:text-[#00D4FF] transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
@@ -1182,7 +1182,7 @@ export default function LandingPage() {
           </div>
 
           <p className="text-center text-xs text-gray-700 mt-10">
-            &copy; 2026 NOUMEN. All rights reserved.
+            &copy; 2026 AXIONBLADE. All rights reserved.
           </p>
         </div>
       </footer>

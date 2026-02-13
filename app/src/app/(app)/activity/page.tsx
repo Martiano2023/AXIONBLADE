@@ -48,7 +48,7 @@ const eventColors: Record<EventType, { bg: string; text: string; dot: string }> 
   Execution:  { bg: "bg-emerald-500/15",text: "text-emerald-400",dot: "bg-emerald-500" },
   Payment:    { bg: "bg-amber-500/15",  text: "text-amber-400",  dot: "bg-amber-500"  },
   Assessment: { bg: "bg-cyan-500/15",   text: "text-cyan-400",   dot: "bg-cyan-500"   },
-  Report:     { bg: "bg-blue-500/15",   text: "text-blue-400",   dot: "bg-blue-500"   },
+  Report:     { bg: "bg-[#00D4FF]/15",   text: "text-[#00D4FF]",   dot: "bg-[#00D4FF]"   },
   Incident:   { bg: "bg-rose-500/15",   text: "text-rose-400",   dot: "bg-rose-500"   },
 };
 
@@ -132,7 +132,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="p-1 rounded hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
+      className="p-1 rounded hover:bg-[#1A2235] transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
       title="Copy signature"
     >
       {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
@@ -161,10 +161,10 @@ function SelectDropdown({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-10 appearance-none rounded-xl border border-[#1F2937] bg-[#111827]",
+          "h-10 appearance-none rounded-xl border border-[#1A2235] bg-[#0F1420]",
           "pl-3 pr-8 text-sm text-gray-300 cursor-pointer",
-          "focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40",
-          "hover:bg-[#1F2937] hover:border-[#374151] transition-colors duration-200"
+          "focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40",
+          "hover:bg-[#1A2235] hover:border-[#243049] transition-colors duration-200"
         )}
         aria-label={label}
       >
@@ -235,7 +235,7 @@ export default function ActivityPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className="flex items-center gap-2 rounded-full bg-[#1F2937] border border-[#1F2937] px-4 py-2"
+          className="flex items-center gap-2 rounded-full bg-[#1A2235] border border-[#1A2235] px-4 py-2"
         >
           <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
           <span className="text-sm font-medium text-gray-300">
@@ -251,7 +251,7 @@ export default function ActivityPage() {
         transition={{ delay: 0.15, duration: 0.4 }}
         className={cn(
           "sticky top-0 z-10 -mx-1 px-1 py-3",
-          "bg-[#111827] border border-[#1F2937] rounded-xl"
+          "bg-[#0F1420] border border-[#1A2235] rounded-xl"
         )}
       >
         <div className="flex flex-col lg:flex-row gap-3 px-4">
@@ -286,16 +286,16 @@ export default function ActivityPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={cn(
-                "h-10 w-full rounded-xl border border-[#1F2937] bg-[#111827]",
+                "h-10 w-full rounded-xl border border-[#1A2235] bg-[#0F1420]",
                 "pl-9 pr-3 text-sm text-gray-300 placeholder:text-gray-600",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40",
-                "hover:bg-[#1F2937] transition-colors duration-200"
+                "focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40",
+                "hover:bg-[#1A2235] transition-colors duration-200"
               )}
             />
           </div>
 
           {/* Time range buttons */}
-          <div className="flex items-center gap-1 bg-[#111827] rounded-xl border border-[#1F2937] p-1">
+          <div className="flex items-center gap-1 bg-[#0F1420] rounded-xl border border-[#1A2235] p-1">
             {TIME_RANGES.map((tr) => (
               <button
                 key={tr.key}
@@ -303,8 +303,8 @@ export default function ActivityPage() {
                 className={cn(
                   "px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200 cursor-pointer",
                   timeRange === tr.key
-                    ? "bg-[#1F2937] text-white border border-[#374151]"
-                    : "text-gray-500 hover:text-gray-300 hover:bg-[#1F2937] border border-transparent"
+                    ? "bg-[#1A2235] text-white border border-[#243049]"
+                    : "text-gray-500 hover:text-gray-300 hover:bg-[#1A2235] border border-transparent"
                 )}
               >
                 {tr.label}
@@ -326,7 +326,7 @@ export default function ActivityPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-20 gap-4"
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#111827] border border-[#1F2937]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#0F1420] border border-[#1A2235]">
             <Inbox size={28} className="text-gray-600" />
           </div>
           <p className="text-gray-500 text-sm">No events match the current filters</p>
@@ -337,7 +337,7 @@ export default function ActivityPage() {
               setSearch("");
               setTimeRange("all");
             }}
-            className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer transition-colors"
+            className="text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 cursor-pointer transition-colors"
           >
             Clear all filters
           </button>
@@ -345,7 +345,7 @@ export default function ActivityPage() {
       ) : (
         <div className="relative">
           {/* Timeline vertical line */}
-          <div className="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-[#374151] via-[#1F2937] to-transparent" />
+          <div className="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-[#243049] via-[#1A2235] to-transparent" />
 
           <div className="space-y-3">
             {filteredEvents.map((event, index) => {
@@ -376,8 +376,8 @@ export default function ActivityPage() {
                   {/* Event card */}
                   <div
                     className={cn(
-                      "flex-1 bg-[#111827] border border-[#1F2937] rounded-xl p-4",
-                      "hover:border-[#374151] transition-colors duration-200",
+                      "flex-1 bg-[#0F1420] border border-[#1A2235] rounded-xl p-4",
+                      "hover:border-[#243049] transition-colors duration-200",
                       "group"
                     )}
                   >
@@ -420,7 +420,7 @@ export default function ActivityPage() {
                     {/* TX Signature row */}
                     {event.txSignature && (
                       <>
-                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1F2937]">
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1A2235]">
                           <span className="text-[11px] font-mono text-gray-500 truncate">
                             {event.txSignature}
                           </span>
@@ -429,7 +429,7 @@ export default function ActivityPage() {
                             href={`https://solscan.io/tx/${event.txSignature}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1 rounded hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-blue-400"
+                            className="p-1 rounded hover:bg-[#1A2235] transition-colors text-gray-500 hover:text-[#00D4FF]"
                             title="View on Solscan"
                           >
                             <ArrowUpRight size={12} />
@@ -451,7 +451,7 @@ export default function ActivityPage() {
                                 href={`https://solscan.io/tx/${event.txSignature}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-400 hover:text-blue-300 transition-colors"
+                                className="text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
                               >
                                 View decision proof on Solscan
                               </a>

@@ -1,7 +1,7 @@
 "use client";
 
 // ---------------------------------------------------------------------------
-// NOUMEN DataSourceBadge — Tiny pill showing data provenance
+// AXIONBLADE DataSourceBadge — Tiny pill showing data provenance
 // ---------------------------------------------------------------------------
 // Displays the source of a data point (Pyth, Raydium, etc.) with an optional
 // "Updated Xs ago" tooltip and a pulse animation for fresh data (< 2s).
@@ -20,7 +20,7 @@ interface DataSourceBadgeProps {
     | "pyth"
     | "raydium"
     | "orca"
-    | "noumen"
+    | "axionblade"
     | "mainnet-readonly"
     | "simulated";
   lastUpdated?: number;
@@ -53,8 +53,8 @@ const SOURCE_CONFIG: Record<DataSourceBadgeProps["source"], SourceConfig> = {
     icon: "\u25CF",
     color: "text-teal-400 bg-teal-500/10 border-teal-500/20",
   },
-  noumen: {
-    label: "NOUMEN",
+  axionblade: {
+    label: "AXIONBLADE",
     icon: "\u25C6",
     color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
   },

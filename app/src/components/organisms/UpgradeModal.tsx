@@ -105,7 +105,7 @@ export function UpgradeModal({ open, onClose }: UpgradeModalProps) {
               <div>
                 <h2 className="text-2xl font-bold text-white">Choose Your Plan</h2>
                 <p className="text-gray-400 mt-1">
-                  Unlock the full power of NOUMEN&apos;s risk intelligence
+                  Unlock the full power of AXIONBLADE&apos;s risk intelligence
                 </p>
               </div>
               <button

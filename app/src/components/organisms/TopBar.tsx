@@ -33,15 +33,15 @@ const routeLabels: Record<string, string> = {
 
 const tickerItems = [
   { label: "Treasury", value: "42.5 SOL", color: "bg-emerald-400" },
-  { label: "Proofs", value: "1,247", color: "bg-blue-500" },
+  { label: "Proofs", value: "1,247", color: "bg-[#00D4FF]" },
   { label: "Uptime", value: "99.9%", color: "bg-cyan-400" },
   { label: "Agents", value: "2/100", color: "bg-amber-400" },
-  { label: "Services", value: "7", color: "bg-blue-400" },
+  { label: "Services", value: "7", color: "bg-[#00D4FF]/80" },
 ];
 
 const tierConfig = {
   free: { label: "Free", className: "bg-white/[0.05] text-gray-500" },
-  pro: { label: "Pro", className: "bg-blue-500/15 text-blue-400" },
+  pro: { label: "Pro", className: "bg-[#00D4FF]/15 text-[#00D4FF]" },
   institutional: { label: "Institutional", className: "bg-amber-500/15 text-amber-400" },
 } as const;
 
@@ -115,7 +115,7 @@ export function TopBar() {
     <header
       className={cn(
         "sticky top-0 z-20 flex h-16 items-center justify-between gap-4",
-        "border-b border-[#1F2937] bg-[#0B0F1A] pl-14 pr-4 sm:px-6 lg:px-6"
+        "border-b border-[#1A2235] bg-[#0A0E17] pl-14 pr-4 sm:px-6 lg:px-6"
       )}
     >
       {/* Left: page title */}
@@ -126,8 +126,8 @@ export function TopBar() {
       {/* Center: Live stats ticker */}
       <div className="hidden md:flex flex-1 max-w-xl mx-8 overflow-hidden relative">
         {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#0B0F1A] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0B0F1A] to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#0A0E17] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0A0E17] to-transparent z-10 pointer-events-none" />
 
         <div className="flex items-center gap-6 animate-ticker whitespace-nowrap">
           {tickerContent.map((item, i) => (
@@ -153,12 +153,12 @@ export function TopBar() {
         {/* Notification bell */}
         <button
           type="button"
-          className="relative flex items-center justify-center w-10 h-10 rounded-xl text-gray-400 hover:text-white hover:bg-[#111827] transition-colors duration-200"
+          className="relative flex items-center justify-center w-10 h-10 rounded-xl text-gray-400 hover:text-white hover:bg-[#0F1420] transition-colors duration-200"
           aria-label="Notifications"
         >
           <Bell size={18} />
           {/* Red dot badge */}
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#0B0F1A]" />
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#0A0E17]" />
         </button>
 
         {/* SOL balance */}
@@ -170,8 +170,8 @@ export function TopBar() {
             height: "40px",
             fontSize: "14px",
             borderRadius: "12px",
-            background: "#111827",
-            border: "1px solid #1F2937",
+            background: "#0F1420",
+            border: "1px solid #1A2235",
           }}
         />
       </div>

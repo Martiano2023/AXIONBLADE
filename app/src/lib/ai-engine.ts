@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------
-// NOUMEN AI Engine — Deterministic template-based risk narrative generator
+// AXIONBLADE AI Engine — Deterministic template-based risk narrative generator
 // ---------------------------------------------------------------------------
 // Generates human-readable risk narratives from structured risk breakdown
 // data. No LLM API calls — fully deterministic, auditable, and reproducible.
-// Compliant with axiom: LLMs never make final decisions in NOUMEN.
+// Compliant with axiom: LLMs never make final decisions in AXIONBLADE.
 // ---------------------------------------------------------------------------
 
 import type { RiskBreakdown, PoolMetrics, RiskDriver } from "./risk-engine";
@@ -171,7 +171,7 @@ function buildRecommendation(
 
   switch (riskLevel) {
     case "Critical":
-      return `ALERT-ONLY: This pool scores ${overallScore}/100, placing it in the Critical risk tier. NOUMEN recommends against any new allocation. ${getCriticalDetail(breakdown, metrics)} Current positions should be reviewed for exit timing.`;
+      return `ALERT-ONLY: This pool scores ${overallScore}/100, placing it in the Critical risk tier. AXIONBLADE recommends against any new allocation. ${getCriticalDetail(breakdown, metrics)} Current positions should be reviewed for exit timing.`;
 
     case "High":
       return `CAUTION: This pool scores ${overallScore}/100 (High risk). Consider reducing exposure or limiting allocation to no more than 5% of portfolio. ${getHighDetail(breakdown)} Active monitoring recommended with 24-hour reassessment cycle.`;

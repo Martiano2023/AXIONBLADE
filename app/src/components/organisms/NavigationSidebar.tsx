@@ -10,13 +10,19 @@ import {
   Crown,
   Shield,
   Zap,
+  Bot,
   Wallet,
+  BarChart3,
   ScrollText,
   Activity,
   Bell,
   Settings,
   ShieldCheck,
   Plug,
+  ScanSearch,
+  Droplet,
+  TrendingUp,
+  Coins,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -29,20 +35,63 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ElementType;
+  badge?: string;
 }
 
-const navItems: NavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "AEON", href: "/aeon", icon: Crown },
-  { label: "APOLLO", href: "/apollo", icon: Shield },
-  { label: "HERMES", href: "/hermes", icon: Zap },
-  { label: "Treasury", href: "/treasury", icon: Wallet },
-  { label: "Axioms", href: "/axioms", icon: ScrollText },
-  { label: "Activity", href: "/activity", icon: Activity },
-  { label: "Alerts", href: "/alerts", icon: Bell },
-  { label: "Settings", href: "/settings", icon: Settings },
-  { label: "Security", href: "/security", icon: ShieldCheck },
-  { label: "Integrations", href: "/integrations", icon: Plug },
+interface NavSection {
+  label: string;
+  items: NavItem[];
+  color?: string;
+  icon?: React.ElementType;
+}
+
+const navSections: NavSection[] = [
+  {
+    label: "Core",
+    items: [
+      { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { label: "AI Agents", href: "/agents", icon: Bot, badge: "v3.3" },
+      { label: "Activity", href: "/activity", icon: Activity },
+    ],
+  },
+  {
+    label: "AEON Guardian",
+    icon: Crown,
+    color: "amber",
+    items: [
+      { label: "Wallet Scanner", href: "/wallet-scanner", icon: ScanSearch, badge: "0.05 SOL" },
+      { label: "Alerts", href: "/alerts", icon: Bell },
+      { label: "Security", href: "/security", icon: ShieldCheck },
+    ],
+  },
+  {
+    label: "APOLLO Analyst",
+    icon: Shield,
+    color: "blue",
+    items: [
+      { label: "Pool Analyzer", href: "/pool-analyzer", icon: Droplet, badge: "0.005" },
+      { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01" },
+      { label: "Token Deep Dive", href: "/token-deep-dive", icon: Coins, badge: "0.012" },
+    ],
+  },
+  {
+    label: "HERMES Executor",
+    icon: Zap,
+    color: "purple",
+    items: [
+      { label: "Yield Optimizer", href: "/yield-optimizer", icon: TrendingUp, badge: "0.008" },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { label: "Treasury", href: "/treasury", icon: Wallet },
+      { label: "Economy", href: "/economy", icon: BarChart3 },
+      { label: "Axioms", href: "/axioms", icon: ScrollText },
+      { label: "Settings", href: "/settings", icon: Settings },
+      { label: "Integrations", href: "/integrations", icon: Plug },
+    ],
+  },
 ];
 
 const gettingStartedSteps = [
@@ -72,12 +121,12 @@ export function NavigationSidebar() {
       <div className="flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 overflow-hidden">
           {collapsed && !isMobile ? (
-            <span className="text-2xl font-black tracking-tighter text-white">
-              N
+            <span className="text-2xl font-black tracking-tighter neon-text-cyan" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+              A
             </span>
           ) : (
-            <span className="text-xl font-bold tracking-tight text-white whitespace-nowrap">
-              NOUMEN
+            <span className="text-xl font-bold tracking-tight neon-text-cyan whitespace-nowrap" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+              AXIONBLADE
             </span>
           )}
         </Link>
@@ -101,7 +150,7 @@ export function NavigationSidebar() {
             className={cn(
               "block w-2 h-2 rounded-full",
               highestTier === "institutional" && "bg-amber-400",
-              highestTier === "pro" && "bg-blue-400",
+              highestTier === "pro" && "bg-[#00D4FF]/80",
               highestTier === "free" && "bg-gray-500"
             )}
           />
@@ -114,7 +163,7 @@ export function NavigationSidebar() {
               </span>
             )}
             {highestTier === "pro" && (
-              <span className="inline-flex items-center self-start rounded-full px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-medium">
+              <span className="inline-flex items-center self-start rounded-full px-2 py-0.5 bg-[#00D4FF]/20 text-[#00D4FF] text-[10px] font-medium">
                 Pro
               </span>
             )}
@@ -128,7 +177,7 @@ export function NavigationSidebar() {
               <button
                 type="button"
                 onClick={() => setShowUpgradeModal(true)}
-                className="self-start text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                className="self-start text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
               >
                 Upgrade
               </button>
@@ -188,57 +237,114 @@ export function NavigationSidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
-        <ul className="flex flex-col gap-1" role="list">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  title={collapsed && !isMobile ? item.label : undefined}
-                  className={cn(
-                    "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300",
-                    collapsed && !isMobile ? "justify-center px-0" : "",
-                    active
-                      ? "bg-[#111827] border border-[#1F2937] text-white"
-                      : "text-gray-500 hover:bg-[#111827] hover:text-gray-300 border border-transparent"
-                  )}
-                  aria-current={active ? "page" : undefined}
-                >
-                  {/* Active accent bar */}
-                  {active && (
-                    <motion.div
-                      layoutId="sidebar-active"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-blue-500"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        <div className="flex flex-col gap-5">
+          {navSections.map((section, sectionIdx) => (
+            <div key={section.label}>
+              {/* Section Header */}
+              {(!collapsed || isMobile) && (
+                <div className="flex items-center gap-2 px-3 mb-2">
+                  {section.icon && (
+                    <section.icon
+                      size={12}
+                      className={cn(
+                        section.color === "amber" && "text-amber-400",
+                        section.color === "blue" && "text-blue-400",
+                        section.color === "purple" && "text-purple-400",
+                        !section.color && "text-gray-600"
+                      )}
                     />
                   )}
-                  <span
-                    className={cn(
-                      "shrink-0 transition-colors duration-200",
-                      active ? "text-blue-400" : "text-gray-500 group-hover:text-gray-300"
-                    )}
-                  >
-                    <Icon size={20} />
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                    {section.label}
                   </span>
-                  {(!collapsed || isMobile) && (
-                    <span className="truncate">{item.label}</span>
-                  )}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                </div>
+              )}
+
+              {/* Section Items */}
+              <ul className="flex flex-col gap-1" role="list">
+                {section.items.map((item) => {
+                  const active = isActive(item.href);
+                  const Icon = item.icon;
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        title={collapsed && !isMobile ? item.label : undefined}
+                        className={cn(
+                          "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
+                          collapsed && !isMobile ? "justify-center px-0" : "",
+                          active
+                            ? "bg-[#0F1420] border border-[#1A2235] text-white"
+                            : "text-gray-500 hover:bg-[#0F1420] hover:text-gray-300 border border-transparent"
+                        )}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {/* Active accent bar */}
+                        {active && (
+                          <motion.div
+                            layoutId="sidebar-active"
+                            className={cn(
+                              "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full",
+                              section.color === "amber" && "bg-amber-400",
+                              section.color === "blue" && "bg-blue-400",
+                              section.color === "purple" && "bg-purple-400",
+                              !section.color && "bg-[#00D4FF]"
+                            )}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                          />
+                        )}
+                        <span
+                          className={cn(
+                            "shrink-0 transition-colors duration-200",
+                            active
+                              ? section.color === "amber"
+                                ? "text-amber-400"
+                                : section.color === "blue"
+                                ? "text-blue-400"
+                                : section.color === "purple"
+                                ? "text-purple-400"
+                                : "text-[#00D4FF]"
+                              : "text-gray-500 group-hover:text-gray-300"
+                          )}
+                        >
+                          <Icon size={18} />
+                        </span>
+                        {(!collapsed || isMobile) && (
+                          <span className="truncate flex-1">{item.label}</span>
+                        )}
+                        {(!collapsed || isMobile) && item.badge && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/[0.05] text-gray-500">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Section Divider */}
+              {sectionIdx < navSections.length - 1 && (!collapsed || isMobile) && (
+                <div className="h-px bg-white/[0.04] mt-4" />
+              )}
+            </div>
+          ))}
+        </div>
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-white/[0.06] px-4 py-4">
+      <div className="border-t border-white/[0.06] px-4 py-3">
         {collapsed && !isMobile ? (
-          <p className="text-[10px] text-gray-600 text-center">v3.2</p>
+          <p className="text-[10px] text-gray-600 text-center">v3.3</p>
         ) : (
-          <p className="text-xs text-gray-600">v3.2.3</p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-gray-600">AXIONBLADE v3.3.0</p>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-[9px] text-gray-500">Live</span>
+            </div>
+          </div>
         )}
       </div>
     </div>
@@ -249,7 +355,7 @@ export function NavigationSidebar() {
       {/* Mobile toggle button */}
       <button
         type="button"
-        className="fixed left-4 top-4 z-50 rounded-xl bg-[#0B0F1A] border border-[#1F2937] p-2.5 text-gray-400 hover:text-white transition-colors lg:hidden"
+        className="fixed left-4 top-4 z-50 rounded-xl bg-[#0A0E17] border border-[#1A2235] p-2.5 text-gray-400 hover:text-white transition-colors lg:hidden"
         onClick={() => setMobileOpen((prev) => !prev)}
         aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
       >
@@ -279,7 +385,7 @@ export function NavigationSidebar() {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 left-0 z-50 w-[256px] bg-[#0B0F1A] border-r border-[#1F2937] lg:hidden"
+            className="fixed inset-y-0 left-0 z-50 w-[256px] bg-[#0A0E17] border-r border-[#1A2235] lg:hidden"
             aria-label="Mobile navigation"
           >
             {sidebarContent(true)}
@@ -291,7 +397,7 @@ export function NavigationSidebar() {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-30 hidden lg:flex flex-col",
-          "bg-[#0B0F1A] border-r border-[#1F2937]",
+          "bg-[#0A0E17] border-r border-[#1A2235]",
           "transition-all duration-300 ease-in-out",
           collapsed ? "w-[72px]" : "w-[256px]"
         )}

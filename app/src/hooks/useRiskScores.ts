@@ -1,7 +1,7 @@
 "use client";
 
 // ---------------------------------------------------------------------------
-// NOUMEN useRiskScores Hook — Composite risk scoring
+// AXIONBLADE useRiskScores Hook — Composite risk scoring
 // ---------------------------------------------------------------------------
 // Combines pool data (usePoolData) and token prices (usePrices) to compute
 // per-pool risk scores using the 5-family APOLLO-compatible risk engine.

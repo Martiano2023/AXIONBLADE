@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   const apiKey = request.headers.get("x-api-key");
   if (!validateApiKey(apiKey)) {
     return NextResponse.json(
-      { error: "Invalid or missing API key. Get one at noumen.app/settings" },
+      { error: "Invalid or missing API key. Get one at axionblade.app/settings" },
       { status: 401, headers: corsHeaders }
     );
   }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
         Math.floor(Math.random() * 16).toString(16)
       ).join(""),
     timestamp: Date.now(),
-    source: "noumen-v3.2.3",
+    source: "axionblade-v3.2.3",
   };
 
   const responseHeaders = {

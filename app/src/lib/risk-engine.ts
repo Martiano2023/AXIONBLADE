@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// NOUMEN Risk Engine — 5-family evidence-based risk scoring
+// AXIONBLADE Risk Engine — 5-family evidence-based risk scoring
 // ---------------------------------------------------------------------------
 // Implements APOLLO-compatible risk assessment with weighted evidence families.
 // Axiom-compliant: deterministic, auditable, no LLM in the loop.

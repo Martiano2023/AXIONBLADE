@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// NOUMEN Protocol Database — Curated Solana DeFi protocol registry
+// AXIONBLADE Protocol Database — Curated Solana DeFi protocol registry
 // ---------------------------------------------------------------------------
 // Static reference data for the 10 major Solana DeFi protocols tracked by
 // APOLLO and HERMES. Data sourced from public registries, audit disclosures,

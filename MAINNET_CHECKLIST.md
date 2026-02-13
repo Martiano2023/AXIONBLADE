@@ -1,4 +1,4 @@
-# NOUMEN Mainnet Deployment Checklist
+# AXIONBLADE Mainnet Deployment Checklist
 
 > Protocol version: v3.2.3
 > Target date: 2026-02-15
@@ -10,8 +10,8 @@
 ### Build & Test
 - [ ] `anchor build` completes without errors
 - [ ] `anchor test` — all tests pass on localnet
-- [ ] All 7 program `.so` binaries exist in `noumen/target/deploy/`
-- [ ] All 7 IDL files generated and saved in `noumen/target/idl/`
+- [ ] All 7 program `.so` binaries exist in `contracts/target/deploy/`
+- [ ] All 7 IDL files generated and saved in `contracts/target/idl/`
 - [ ] Frontend `npm run build` completes without errors
 - [ ] Frontend tested locally against devnet
 

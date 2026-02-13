@@ -12,8 +12,8 @@ interface CardProps {
 }
 
 const variantStyles: Record<string, string> = {
-  default: "bg-[#111827] border border-[#1F2937] rounded-xl",
-  elevated: "bg-[#1F2937] border border-[#374151] rounded-xl",
+  default: "bg-[#0F1420] border border-[#1A2235] rounded-xl",
+  elevated: "bg-[#1A2235] border border-[#243049] rounded-xl",
 };
 
 export function Card({
@@ -35,7 +35,7 @@ export function Card({
     <motion.div
       {...motionProps}
       className={cn(
-        "rounded-xl p-5 hover:border-[#374151] transition-colors duration-200",
+        "rounded-xl p-5 hover:border-[#243049] transition-colors duration-200",
         variantStyles[variant],
         onClick && "cursor-pointer",
         className

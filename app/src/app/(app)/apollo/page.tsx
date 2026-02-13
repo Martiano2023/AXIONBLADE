@@ -360,7 +360,7 @@ const PRICING_TIERS: PricingTierConfig[] = [
     id: "basic",
     name: "BASIC",
     price: "0.02 SOL",
-    priceColor: "text-blue-400",
+    priceColor: "text-[#00D4FF]",
     description: "Simple risk score only — minimal compute",
     features: [
       "Risk score (0-100)",
@@ -469,7 +469,7 @@ function severityConfig(severity: string) {
     case "warning":
       return { dot: "bg-amber-400", text: "text-amber-400", label: "WARNING", badge: "bg-amber-400/15 text-amber-400 border-amber-400/30" };
     default:
-      return { dot: "bg-blue-400", text: "text-blue-400", label: "INFO", badge: "bg-blue-400/15 text-blue-400 border-blue-400/30" };
+      return { dot: "bg-[#00D4FF]/80", text: "text-[#00D4FF]", label: "INFO", badge: "bg-[#00D4FF]/80/15 text-[#00D4FF] border-[#00D4FF]/80/30" };
   }
 }
 
@@ -593,10 +593,10 @@ function PoolCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={cn(
-        "relative bg-[#111827] border border-[#1F2937] rounded-xl p-5",
-        "hover:border-[#374151] transition-colors duration-200",
+        "relative bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
+        "hover:border-[#243049] transition-colors duration-200",
         "flex flex-col items-center gap-4",
-        isSelected && "border-blue-500/40 bg-blue-500/[0.04]",
+        isSelected && "border-[#00D4FF]/40 bg-[#00D4FF]/[0.04]",
         isWatched && isProOrAbove && "border-l-2 border-l-amber-400/50"
       )}
     >
@@ -614,7 +614,7 @@ function PoolCard({
             className={cn(
               "w-4 h-4 rounded border flex items-center justify-center transition-all duration-200",
               isSelected
-                ? "bg-blue-500 border-blue-500"
+                ? "bg-[#00D4FF] border-[#00D4FF]"
                 : "border-white/20 bg-white/[0.03] hover:border-white/40"
             )}
           >
@@ -795,7 +795,7 @@ function PoolCard({
       {/* Data source badges */}
       <div className="w-full flex items-center justify-between gap-2 px-1">
         <DataSourceBadge source="mainnet-readonly" />
-        <DataSourceBadge source="noumen" />
+        <DataSourceBadge source="axionblade" />
       </div>
 
       {/* Technical Details — pro+ shows proof hash, institutional shows all */}
@@ -842,8 +842,8 @@ function AccuracyMetricCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
       className={cn(
-        "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
-        "hover:border-[#374151] transition-colors duration-200",
+        "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
+        "hover:border-[#243049] transition-colors duration-200",
         "flex flex-col gap-3"
       )}
     >
@@ -950,7 +950,7 @@ function exportPoolReport(pool: PoolAssessment): string {
   const date = new Date().toISOString().slice(0, 10);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `noumen-report-${pool.pool.toLowerCase()}-${date}.json`;
+  a.download = `axionblade-report-${pool.pool.toLowerCase()}-${date}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -984,7 +984,7 @@ function exportComparisonReport(pools: PoolAssessment[]): string {
   const date = new Date().toISOString().slice(0, 10);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `noumen-comparison-${date}.json`;
+  a.download = `axionblade-comparison-${date}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -1176,14 +1176,14 @@ export default function ApolloPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative bg-[#111827] border border-[#1F2937] rounded-xl p-8 overflow-hidden"
+        className="relative bg-[#0F1420] border border-[#1A2235] rounded-xl p-8 overflow-hidden"
       >
         {/* Gradient top border */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#00D4FF]/80 via-cyan-500 to-emerald-500" />
 
         <div className="flex flex-col items-center text-center gap-4 mb-8">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/15 border border-blue-500/20">
-            <Eye className="h-8 w-8 text-blue-400" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#00D4FF]/15 border border-[#00D4FF]/20">
+            <Eye className="h-8 w-8 text-[#00D4FF]" />
           </div>
           <div>
             <h1 className="text-4xl font-bold text-white tracking-tight">APOLLO</h1>
@@ -1201,10 +1201,10 @@ export default function ApolloPage() {
               step: "01",
               description: "Submit a pool or protocol address",
               Icon: Search,
-              color: "text-blue-400",
-              bgColor: "bg-blue-500/15",
-              borderColor: "border-blue-500/30",
-              numColor: "bg-blue-500",
+              color: "text-[#00D4FF]",
+              bgColor: "bg-[#00D4FF]/15",
+              borderColor: "border-[#00D4FF]/30",
+              numColor: "bg-[#00D4FF]",
             },
             {
               step: "02",
@@ -1228,8 +1228,8 @@ export default function ApolloPage() {
             <div
               key={s.step}
               className={cn(
-                "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
-                "hover:border-[#374151] transition-colors duration-200",
+                "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
+                "hover:border-[#243049] transition-colors duration-200",
                 "flex flex-col items-center text-center gap-3"
               )}
             >
@@ -1257,8 +1257,8 @@ export default function ApolloPage() {
         className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
       >
         <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 border border-blue-500/20 shrink-0">
-            <Eye className="h-7 w-7 text-blue-400" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00D4FF]/15 border border-[#00D4FF]/20 shrink-0">
+            <Eye className="h-7 w-7 text-[#00D4FF]" />
           </div>
           <div>
             <div className="flex items-center gap-3">
@@ -1295,10 +1295,10 @@ export default function ApolloPage() {
           <span className="text-xs text-gray-500 uppercase tracking-wider">New Assessment</span>
         </div>
         <div
-          className="relative bg-[#111827] border border-[#1F2937] rounded-xl p-6 overflow-hidden"
+          className="relative bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 overflow-hidden"
         >
           {/* Gradient top border */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 to-cyan-500" />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#00D4FF]/80 to-cyan-500" />
 
           <div className="flex flex-col md:flex-row md:items-end gap-4">
             {/* Pool Address Input */}
@@ -1311,7 +1311,7 @@ export default function ApolloPage() {
                 value={poolAddress}
                 onChange={(e) => setPoolAddress(e.target.value)}
                 placeholder='Enter Solana pool address (e.g., 7Xk...)'
-                className="bg-[#111827] border border-[#1F2937] rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/20 transition-all w-full"
+                className="bg-[#0F1420] border border-[#1A2235] rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-[#00D4FF]/50 focus:outline-none focus:ring-1 focus:ring-[#00D4FF]/20 transition-all w-full"
               />
             </div>
 
@@ -1324,7 +1324,7 @@ export default function ApolloPage() {
                 <select
                   value={protocol}
                   onChange={(e) => setProtocol(e.target.value)}
-                  className="appearance-none bg-[#111827] border border-[#1F2937] rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/20 transition-all w-full pr-10"
+                  className="appearance-none bg-[#0F1420] border border-[#1A2235] rounded-xl px-4 py-3 text-sm text-white focus:border-[#00D4FF]/50 focus:outline-none focus:ring-1 focus:ring-[#00D4FF]/20 transition-all w-full pr-10"
                 >
                   <option value="Raydium">Raydium</option>
                   <option value="Orca">Orca</option>
@@ -1352,7 +1352,7 @@ export default function ApolloPage() {
                   className={cn(
                     "bg-white/[0.02] border rounded-xl p-4 cursor-pointer transition-all duration-200 text-left",
                     selectedTier === tier.id
-                      ? "border-blue-500/50 bg-blue-500/10 shadow-[0_0_15px_rgba(59,130,246,0.08)]"
+                      ? "border-[#00D4FF]/50 bg-[#00D4FF]/10 shadow-[0_0_15px_rgba(0,212,255,0.08)]"
                       : "border-white/[0.08] hover:border-white/15"
                   )}
                 >
@@ -1427,7 +1427,7 @@ export default function ApolloPage() {
               onClick={handleSubmit}
               disabled={!poolAddress.trim()}
               className={cn(
-                "bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium px-6 py-3 rounded-xl hover:from-blue-500 hover:to-cyan-500 transition-all duration-300 flex items-center gap-2 shrink-0",
+                "bg-gradient-to-r from-[#00D4FF] to-cyan-600 text-white font-medium px-6 py-3 rounded-xl hover:from-[#00D4FF]/80 hover:to-cyan-500 transition-all duration-300 flex items-center gap-2 shrink-0",
                 !poolAddress.trim() && "opacity-50 cursor-not-allowed"
               )}
             >
@@ -1465,7 +1465,7 @@ export default function ApolloPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="mt-3 bg-[#111827] border border-emerald-500/30 rounded-xl p-5 overflow-hidden relative"
+              className="mt-3 bg-[#0F1420] border border-emerald-500/30 rounded-xl p-5 overflow-hidden relative"
             >
               {/* Subtle glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-emerald-500/10 to-emerald-500/5 animate-pulse pointer-events-none" />
@@ -1561,10 +1561,10 @@ export default function ApolloPage() {
             key={mod.name}
             variants={itemVariants}
             className={cn(
-              "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
+              "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
               "border-l-[3px]",
               mod.borderColor,
-              "hover:border-[#374151] transition-colors duration-200"
+              "hover:border-[#243049] transition-colors duration-200"
             )}
           >
             <div className="flex items-start gap-3">
@@ -1594,7 +1594,7 @@ export default function ApolloPage() {
       <div>
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <Activity className="h-5 w-5 text-blue-400" />
+            <Activity className="h-5 w-5 text-[#00D4FF]" />
             <h2 className="text-lg font-bold text-white">Pool Risk Assessments</h2>
           </div>
           <span className="text-xs text-gray-500 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
@@ -1618,11 +1618,11 @@ export default function ApolloPage() {
         </div>
 
         {/* Evidence Family Breakdown Chart */}
-        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+        <div className="mt-6 bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Risk Score by Evidence Family</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={[
-              { name: "Price/Vol", score: 82, fill: "#3B82F6" },
+              { name: "Price/Vol", score: 82, fill: "#00D4FF" },
               { name: "Liquidity", score: 74, fill: "#10B981" },
               { name: "Behavior", score: 68, fill: "#F59E0B" },
               { name: "Incentive", score: 71, fill: "#8B5CF6" },
@@ -1633,7 +1633,7 @@ export default function ApolloPage() {
               <YAxis type="category" dataKey="name" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={false} tickLine={false} width={60} />
               <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={16}>
                 {[
-                  <Cell key="0" fill="#3B82F6" />,
+                  <Cell key="0" fill="#00D4FF" />,
                   <Cell key="1" fill="#10B981" />,
                   <Cell key="2" fill="#F59E0B" />,
                   <Cell key="3" fill="#8B5CF6" />,
@@ -1645,13 +1645,13 @@ export default function ApolloPage() {
         </div>
 
         {/* Overall Risk Gauge */}
-        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center">
+        <div className="mt-6 bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 flex flex-col items-center">
           <h3 className="text-sm font-semibold text-white mb-4">Overall Risk Score</h3>
           <RiskGauge score={76} />
         </div>
 
         {/* Pool Comparison Table */}
-        <div className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6 overflow-x-auto">
+        <div className="mt-6 bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 overflow-x-auto">
           <h3 className="text-sm font-semibold text-white mb-4">Pool Comparison</h3>
           <table className="w-full text-xs">
             <thead>
@@ -1688,7 +1688,7 @@ export default function ApolloPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.4 }}
-              className="mt-6 bg-[#111827] border border-[#1F2937] rounded-xl p-6 relative"
+              className="mt-6 bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 relative"
             >
               {/* Close button */}
               <button
@@ -1839,7 +1839,7 @@ export default function ApolloPage() {
         </div>
         <div
           className={cn(
-            "bg-[#111827] border border-[#1F2937] rounded-xl",
+            "bg-[#0F1420] border border-[#1A2235] rounded-xl",
             "overflow-hidden"
           )}
         >
@@ -1861,7 +1861,7 @@ export default function ApolloPage() {
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 20, x: "-50%" }}
             transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="fixed bottom-6 left-1/2 z-40 bg-[#111827] border border-[#1F2937] rounded-xl px-6 py-3 shadow-2xl"
+            className="fixed bottom-6 left-1/2 z-40 bg-[#0F1420] border border-[#1A2235] rounded-xl px-6 py-3 shadow-2xl"
           >
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-300">
@@ -1869,7 +1869,7 @@ export default function ApolloPage() {
               </span>
               <button
                 onClick={handleCompareClick}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium text-sm px-4 py-2 rounded-xl hover:from-blue-500 hover:to-cyan-500 transition-all duration-300"
+                className="bg-gradient-to-r from-[#00D4FF] to-cyan-600 text-white font-medium text-sm px-4 py-2 rounded-xl hover:from-[#00D4FF]/80 hover:to-cyan-500 transition-all duration-300"
               >
                 Compare
               </button>
@@ -1892,7 +1892,7 @@ export default function ApolloPage() {
       {/* ================================================================== */}
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Risk scores are informational only and do not constitute financial advice. NOUMEN does not recommend, endorse, or advise on any DeFi position.
+          Risk scores are informational only and do not constitute financial advice. AXIONBLADE does not recommend, endorse, or advise on any DeFi position.
           AI-adjusted pricing may vary based on pool complexity and network conditions — check current price before confirming any transaction.
         </p>
         <p className="text-[10px] text-gray-600 leading-relaxed">

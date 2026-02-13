@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 
 export function getCorsHeaders(request: NextRequest) {
   const origin = request.headers.get("origin") ?? "";
-  const allowed = ["https://noumen.app", "https://www.noumen.app"];
+  const allowed = ["https://axionblade.app", "https://www.axionblade.app"];
   // Allow localhost in dev
   if (process.env.NODE_ENV === "development") {
     allowed.push("http://localhost:3000", "http://localhost:3001");

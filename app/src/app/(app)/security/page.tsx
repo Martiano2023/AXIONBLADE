@@ -48,7 +48,7 @@ export default function SecurityPage() {
       >
         <h1 className="text-2xl font-bold text-white">Security</h1>
         <p className="text-sm text-gray-400">
-          How NOUMEN protects the protocol and its users
+          How AXIONBLADE protects the protocol and its users
         </p>
       </motion.div>
 
@@ -57,7 +57,7 @@ export default function SecurityPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-2">
           29 axioms enforced at smart contract level
@@ -72,9 +72,9 @@ export default function SecurityPage() {
           {KEY_AXIOMS.map((axiom) => (
             <div
               key={axiom.id}
-              className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0B0F1A] border border-[#1F2937]"
+              className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]"
             >
-              <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#1F2937] text-[#3B82F6]">
+              <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#1A2235] text-[#00D4FF]">
                 {axiom.id}
               </span>
               <span className="text-sm text-gray-300">{axiom.description}</span>
@@ -84,7 +84,7 @@ export default function SecurityPage() {
 
         <Link
           href="/axioms"
-          className="inline-flex items-center gap-1.5 text-sm text-[#3B82F6] hover:text-[#60A5FA] transition-colors duration-200"
+          className="inline-flex items-center gap-1.5 text-sm text-[#00D4FF] hover:text-[#00D4FF] transition-colors duration-200"
         >
           View all 29 axioms
           <ArrowRight size={14} />
@@ -96,7 +96,7 @@ export default function SecurityPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">
           Risk Model Transparency
@@ -110,7 +110,7 @@ export default function SecurityPage() {
                 All risk models are deterministic and reproducible
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
-                Given the same inputs, NOUMEN always produces the same risk
+                Given the same inputs, AXIONBLADE always produces the same risk
                 score. No black-box AI.
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function SecurityPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">Audit Status</h2>
 
@@ -176,7 +176,7 @@ export default function SecurityPage() {
           </div>
 
           <div className="flex items-center gap-3 py-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <span className="text-sm text-gray-300">
               Audit partner: TBD &mdash; evaluating OtterSec, Neodyme, Ackee
               Blockchain
@@ -190,7 +190,7 @@ export default function SecurityPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">
           Proof Verification
@@ -198,14 +198,14 @@ export default function SecurityPage() {
 
         <div className="space-y-4 mb-6">
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
               Every risk assessment generates an immutable proof on Solana
             </p>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
               Proofs contain: pool address, risk score, evidence family scores,
               timestamp, block number
@@ -213,14 +213,14 @@ export default function SecurityPage() {
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
               Proofs cannot be altered, deleted, or backdated
             </p>
           </div>
         </div>
 
-        <div className="bg-[#0B0F1A] border border-[#1F2937] rounded-lg p-4">
+        <div className="bg-[#0A0E17] border border-[#1A2235] rounded-lg p-4">
           <p className="text-xs text-gray-500 mb-2">Verify any proof:</p>
           <div className="flex items-center gap-3">
             <code className="text-sm font-mono text-gray-400 truncate">
@@ -230,7 +230,7 @@ export default function SecurityPage() {
               href={`https://solscan.io/tx/${MOCK_PROOF_HASH}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 shrink-0 text-sm text-[#3B82F6] hover:text-[#60A5FA] transition-colors duration-200"
+              className="inline-flex items-center gap-1.5 shrink-0 text-sm text-[#00D4FF] hover:text-[#00D4FF] transition-colors duration-200"
             >
               View on Explorer
               <ExternalLink size={12} />

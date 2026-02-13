@@ -222,7 +222,7 @@ function HeartbeatCountdown() {
             animate={{ strokeDashoffset: offset }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className={cn(
-              remaining > 15 ? "stroke-blue-500" : remaining > 5 ? "stroke-amber-400" : "stroke-rose-500"
+              remaining > 15 ? "stroke-[#00D4FF]" : remaining > 5 ? "stroke-amber-400" : "stroke-rose-500"
             )}
           />
         </svg>
@@ -257,7 +257,7 @@ function HeartbeatCountdown() {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
-              className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#0B0F1A] hover:bg-[#1F2937] transition-colors"
+              className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#0A0E17] hover:bg-[#1A2235] transition-colors"
             >
               <div className="flex items-center gap-2">
                 <span className={cn(
@@ -287,11 +287,11 @@ function AgentsTab() {
   ];
 
   return (
-    <div className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden">
+    <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1F2937]">
+            <tr className="border-b border-[#1A2235]">
               {headers.map((h) => (
                 <th key={h.label} className="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider font-medium">
                   <span className="inline-flex items-center">
@@ -307,7 +307,7 @@ function AgentsTab() {
               const statusStyle = STATUS_STYLES[agent.status];
               const barColor = agent.budgetPct >= 80 ? "from-rose-500 to-rose-400" :
                 agent.budgetPct >= 50 ? "from-amber-400 to-amber-300" :
-                "from-blue-500 to-blue-400";
+                "from-[#00D4FF] to-[#00D4FF]/80";
 
               return (
                 <motion.tr
@@ -315,7 +315,7 @@ function AgentsTab() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: i * 0.05 }}
-                  className="bg-[#0B0F1A] hover:bg-[#1F2937] transition-colors border-b border-[#1F2937] last:border-b-0"
+                  className="bg-[#0A0E17] hover:bg-[#1A2235] transition-colors border-b border-[#1A2235] last:border-b-0"
                 >
                   <td className="px-6 py-3">
                     <span className="font-medium text-white">{agent.name}</span>
@@ -331,7 +331,7 @@ function AgentsTab() {
                   <td className="px-6 py-3 text-gray-300 font-mono">{agent.depth}</td>
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-20 h-1.5 rounded-full bg-[#1F2937] overflow-hidden">
+                      <div className="w-20 h-1.5 rounded-full bg-[#1A2235] overflow-hidden">
                         <motion.div
                           className={cn("h-full rounded-full bg-gradient-to-r", barColor)}
                           initial={{ width: 0 }}
@@ -380,7 +380,7 @@ function PolicyLayersTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: i * 0.08 }}
           className={cn(
-            "bg-[#111827] border border-[#1F2937] rounded-xl p-5 border-l-4 hover:border-[#374151] transition-colors duration-200",
+            "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 border-l-4 hover:border-[#243049] transition-colors duration-200",
             layer.borderColor,
           )}
         >
@@ -396,7 +396,7 @@ function PolicyLayersTab() {
               </div>
             </div>
             {layer.activeProposals > 0 && (
-              <span className="inline-flex items-center rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-xs font-medium text-blue-400">
+              <span className="inline-flex items-center rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/30 px-2.5 py-0.5 text-xs font-medium text-[#00D4FF]">
                 {layer.activeProposals} proposal{layer.activeProposals > 1 ? "s" : ""}
               </span>
             )}
@@ -427,7 +427,7 @@ function CircuitBreakerTab() {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 text-center"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-8 text-center"
       >
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
@@ -447,7 +447,7 @@ function CircuitBreakerTab() {
         </p>
 
         {/* Three states legend */}
-        <div className="flex items-center justify-center gap-8 mt-6 pt-4 border-t border-[#1F2937]">
+        <div className="flex items-center justify-center gap-8 mt-6 pt-4 border-t border-[#1A2235]">
           {[
             { label: "Normal", color: "bg-emerald-400", text: "text-emerald-400", active: true },
             { label: "Degraded", color: "bg-amber-400", text: "text-amber-400", active: false },
@@ -468,7 +468,7 @@ function CircuitBreakerTab() {
         <h3 className="text-xs text-gray-500 uppercase tracking-wider mb-4 font-medium">Trigger History</h3>
         <div className="relative ml-4">
           {/* Vertical line */}
-          <div className="absolute left-[5px] top-2 bottom-2 w-px bg-[#1F2937]" />
+          <div className="absolute left-[5px] top-2 bottom-2 w-px bg-[#1A2235]" />
 
           <div className="space-y-4">
             {MOCK_CB_EVENTS.map((event, i) => {
@@ -476,7 +476,7 @@ function CircuitBreakerTab() {
                 ? "bg-amber-400 shadow-amber-400/30"
                 : event.type === "resolved"
                   ? "bg-emerald-400 shadow-emerald-400/30"
-                  : "bg-blue-500 shadow-blue-500/30";
+                  : "bg-[#00D4FF] shadow-[#00D4FF]/30";
 
               return (
                 <motion.div
@@ -493,7 +493,7 @@ function CircuitBreakerTab() {
                   )} />
 
                   {/* Content */}
-                  <div className="flex-1 flex items-center justify-between py-2 px-4 rounded-xl bg-[#0B0F1A] hover:bg-[#1F2937] transition-colors">
+                  <div className="flex-1 flex items-center justify-between py-2 px-4 rounded-xl bg-[#0A0E17] hover:bg-[#1A2235] transition-colors">
                     <span className="text-sm text-gray-300">{event.label}</span>
                     <span className="text-xs text-gray-500 whitespace-nowrap ml-4">{event.time}</span>
                   </div>
@@ -531,7 +531,7 @@ function AddressChip({ address }: { address: string }) {
   }, [address]);
 
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#1F2937] border border-[#1F2937] px-3 py-1.5 text-xs font-mono text-gray-400">
+    <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#1A2235] border border-[#1A2235] px-3 py-1.5 text-xs font-mono text-gray-400">
       {truncateAddress(address)}
       <button
         type="button"
@@ -544,7 +544,7 @@ function AddressChip({ address }: { address: string }) {
         href={`https://solscan.io/account/${address}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-gray-500 hover:text-blue-400 transition-colors p-0.5"
+        className="text-gray-500 hover:text-[#00D4FF] transition-colors p-0.5"
       >
         <ExternalLink className="w-3 h-3" />
       </a>
@@ -586,9 +586,9 @@ export default function AeonPage() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="w-16 h-16 rounded-2xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center"
+            className="w-16 h-16 rounded-2xl bg-[#00D4FF]/15 border border-[#00D4FF]/20 flex items-center justify-center"
           >
-            <Crown className="w-8 h-8 text-blue-400" />
+            <Crown className="w-8 h-8 text-[#00D4FF]" />
           </motion.div>
 
           {/* Title + Subtitle */}
@@ -599,7 +599,7 @@ export default function AeonPage() {
 
           {/* Description */}
           <p className="text-sm text-gray-400 max-w-2xl">
-            AEON is the governance brain of NOUMEN. It manages policy layers, enforces axioms, and coordinates all agents. AEON decides — but never executes directly. Every governance action requires proof-before-action.
+            AEON is the governance brain of AXIONBLADE. It manages policy layers, enforces axioms, and coordinates all agents. AEON decides — but never executes directly. Every governance action requires proof-before-action.
           </p>
         </div>
 
@@ -608,17 +608,17 @@ export default function AeonPage() {
           {[
             {
               step: "01",
-              icon: <Layers className="w-5 h-5 text-blue-400" />,
+              icon: <Layers className="w-5 h-5 text-[#00D4FF]" />,
               description: "Policies are organized in 4 layers: Immutable (L0) → Constitutional (L1) → Operational (L2) → Tactical (L3)",
             },
             {
               step: "02",
-              icon: <GitBranch className="w-5 h-5 text-blue-400" />,
+              icon: <GitBranch className="w-5 h-5 text-[#00D4FF]" />,
               description: "Any policy change must pass through proposal → vote → proof → execution pipeline",
             },
             {
               step: "03",
-              icon: <HeartPulse className="w-5 h-5 text-blue-400" />,
+              icon: <HeartPulse className="w-5 h-5 text-[#00D4FF]" />,
               description: "Circuit breakers and heartbeat monitoring ensure system safety 24/7",
             },
           ].map((item, i) => (
@@ -627,10 +627,10 @@ export default function AeonPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
-              className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 text-left hover:border-[#374151] transition-colors duration-200"
+              className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 text-left hover:border-[#243049] transition-colors duration-200"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="w-6 h-6 rounded-full bg-blue-500/15 border border-blue-500/20 flex items-center justify-center text-[10px] font-bold text-blue-400">
+                <span className="w-6 h-6 rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/20 flex items-center justify-center text-[10px] font-bold text-[#00D4FF]">
                   {item.step}
                 </span>
                 {item.icon}
@@ -647,7 +647,7 @@ export default function AeonPage() {
           transition={{ duration: 0.4, delay: 0.6 }}
           className="mt-6 flex justify-center"
         >
-          <span className="bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-xs text-blue-400">
+          <span className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-full px-4 py-1.5 text-xs text-[#00D4FF]">
             Governance participation requires staking (coming soon)
           </span>
         </motion.div>
@@ -658,8 +658,8 @@ export default function AeonPage() {
       {/* ================================================================= */}
       <motion.div variants={staggerItem} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/15 border border-blue-500/20">
-            <Crown className="w-5 h-5 text-blue-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00D4FF]/15 border border-[#00D4FF]/20">
+            <Crown className="w-5 h-5 text-[#00D4FF]" />
           </div>
           <div>
             <div className="flex items-center gap-3">
@@ -684,7 +684,7 @@ export default function AeonPage() {
       {/* Status Banner                                                     */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] border-l-4 border-l-emerald-500 rounded-xl p-6 flex items-center gap-4">
+        <div className="bg-[#0F1420] border border-[#1A2235] border-l-4 border-l-emerald-500 rounded-xl p-6 flex items-center gap-4">
           <div className="flex items-center gap-3 flex-1">
             <ShieldCheck className="w-6 h-6 text-emerald-400" />
             <div>
@@ -705,11 +705,11 @@ export default function AeonPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active Agents */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 hover:border-[#243049] transition-colors duration-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Active Agents</span>
-              <div className="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center">
-                <Users className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/15 flex items-center justify-center">
+                <Users className="w-4 h-4 text-[#00D4FF]" />
               </div>
             </div>
             <div className="flex items-baseline gap-1">
@@ -721,7 +721,7 @@ export default function AeonPage() {
 
         {/* Decisions Today */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 hover:border-[#243049] transition-colors duration-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Decisions Today</span>
               <div className="w-8 h-8 rounded-lg bg-cyan-400/15 flex items-center justify-center">
@@ -734,7 +734,7 @@ export default function AeonPage() {
 
         {/* System Safety */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 hover:border-[#243049] transition-colors duration-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500 uppercase tracking-wider flex items-center">
                 System Safety
@@ -750,7 +750,7 @@ export default function AeonPage() {
 
         {/* Heartbeat */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 hover:border-[#243049] transition-colors duration-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500 uppercase tracking-wider flex items-center">
                 Heartbeat
@@ -790,9 +790,9 @@ export default function AeonPage() {
       {/* Section 2: Heartbeat Monitor                                      */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200">
           <div className="flex items-center gap-2 mb-6">
-            <Activity className="w-4 h-4 text-blue-400" />
+            <Activity className="w-4 h-4 text-[#00D4FF]" />
             <h2 className="text-sm font-bold text-white uppercase tracking-wider">Governance Health Monitor</h2>
             <InfoTooltip term="Heartbeat" definition="Periodic on-chain signal confirming AEON governance is alive and all systems are operating within normal parameters" />
           </div>
@@ -815,7 +815,7 @@ export default function AeonPage() {
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
         {/* Tab buttons */}
-        <div className="flex gap-1 mb-4 p-1 bg-[#111827] rounded-xl border border-[#1F2937] w-fit">
+        <div className="flex gap-1 mb-4 p-1 bg-[#0F1420] rounded-xl border border-[#1A2235] w-fit">
           {TABS.map((tab) => (
             <button
               key={tab}
@@ -831,7 +831,7 @@ export default function AeonPage() {
               {activeTab === tab && (
                 <motion.div
                   layoutId="aeon-tab-bg"
-                  className="absolute inset-0 bg-[#1F2937] border border-[#374151] rounded-lg"
+                  className="absolute inset-0 bg-[#1A2235] border border-[#243049] rounded-lg"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}

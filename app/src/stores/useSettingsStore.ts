@@ -44,6 +44,6 @@ export const useSettingsStore = create<SettingsState>()(
       toggleNewIntelligenceReports: () =>
         set((s) => ({ newIntelligenceReports: !s.newIntelligenceReports })),
     }),
-    { name: "noumen-settings" }
+    { name: "axionblade-settings" }
   )
 );

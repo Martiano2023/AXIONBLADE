@@ -1,7 +1,7 @@
 "use client";
 
 // ---------------------------------------------------------------------------
-// NOUMEN usePrices Hook — Real-time Pyth price data
+// AXIONBLADE usePrices Hook — Real-time Pyth price data
 // ---------------------------------------------------------------------------
 // Fetches token prices from the Pyth Network on mount, auto-refreshes
 // every 10 seconds, and exposes a manual refresh function.

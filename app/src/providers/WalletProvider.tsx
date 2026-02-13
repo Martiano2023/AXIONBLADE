@@ -9,7 +9,19 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
+  CoinbaseWalletAdapter,
+  LedgerWalletAdapter,
+  TrustWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { WalletConnectWalletAdapter } from "@walletconnect/solana-adapter";
+import { TipLinkWalletAdapter } from "@tiplink/wallet-adapter";
+import {
+  SolanaMobileWalletAdapter,
+  createDefaultAddressSelector,
+  createDefaultAuthorizationResultCache,
+  createDefaultWalletNotFoundHandler,
+} from "@solana-mobile/wallet-adapter-mobile";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 // Import wallet adapter styles
 import "@solana/wallet-adapter-react-ui/styles.css";
@@ -76,10 +88,52 @@ export function WalletProvider({ children }: Props) {
   // that has no validator. This prevents "ws error: undefined" in the console.
   useSuppressSolanaWsErrors(endpoint);
 
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    [],
-  );
+  const wallets = useMemo(() => {
+    const network = endpoint.includes("mainnet")
+      ? WalletAdapterNetwork.Mainnet
+      : WalletAdapterNetwork.Devnet;
+
+    return [
+      // Core Solana Wallets (Desktop + Mobile)
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new CoinbaseWalletAdapter(),
+      new LedgerWalletAdapter(),
+      new TrustWalletAdapter(),
+
+      // Mobile — QR code for any wallet
+      ...(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+        ? [
+            new WalletConnectWalletAdapter({
+              network,
+              options: {
+                projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+              },
+            }),
+          ]
+        : []),
+
+      // Mobile — deep-link Android
+      new SolanaMobileWalletAdapter({
+        addressSelector: createDefaultAddressSelector(),
+        appIdentity: { name: "AXIONBLADE", uri: "https://axionblade.app" },
+        authorizationResultCache: createDefaultAuthorizationResultCache(),
+        cluster: network,
+        onWalletNotFound: createDefaultWalletNotFoundHandler(),
+      }),
+
+      // Social login — Google via TipLink
+      ...(process.env.NEXT_PUBLIC_TIPLINK_CLIENT_ID
+        ? [
+            new TipLinkWalletAdapter({
+              clientId: process.env.NEXT_PUBLIC_TIPLINK_CLIENT_ID,
+              title: "AXIONBLADE",
+              theme: "dark",
+            }),
+          ]
+        : []),
+    ];
+  }, [endpoint]);
 
   // When the endpoint is a local validator, provide a fake wsEndpoint to
   // prevent the Connection from auto-deriving ws://localhost:8900.

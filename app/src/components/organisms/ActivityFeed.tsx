@@ -25,7 +25,7 @@ const typeDotColor: Record<string, string> = {
   execution: "bg-emerald-400",
   payment: "bg-amber-400",
   assessment: "bg-cyan-400",
-  report: "bg-blue-400",
+  report: "bg-[#00D4FF]/80",
   incident: "bg-rose-500",
   alert: "bg-amber-400",
   error: "bg-rose-500",

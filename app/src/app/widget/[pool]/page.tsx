@@ -1,6 +1,6 @@
 /**
  * Embeddable risk score badge widget.
- * Usage: <iframe src="https://noumen.app/widget/POOL_ADDRESS" width="300" height="100" />
+ * Usage: <iframe src="https://axionblade.app/widget/POOL_ADDRESS" width="300" height="100" />
  *
  * CSS-only, no framer-motion — optimized for fast iframe loading.
  */
@@ -141,7 +141,7 @@ export default async function WidgetPage({ params }: WidgetPageProps) {
           {level}
         </div>
         <a
-          href="https://noumen.app"
+          href="https://axionblade.app"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -165,7 +165,7 @@ export default async function WidgetPage({ params }: WidgetPageProps) {
           >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          Powered by NOUMEN
+          Powered by AXIONBLADE
         </a>
       </div>
     </div>

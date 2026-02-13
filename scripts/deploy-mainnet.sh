@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # chmod +x scripts/deploy-mainnet.sh
 #
-# NOUMEN Protocol — Mainnet Deployment Script
+# AXIONBLADE Protocol — Mainnet Deployment Script
 # Deploys all 7 Anchor programs to Solana mainnet-beta
 # Usage: ./scripts/deploy-mainnet.sh [--dry-run]
 #
@@ -16,7 +16,7 @@ export PATH="$HOME/.cargo/bin:$HOME/.local/share/solana/install/active_release/b
 # Configuration
 # ---------------------------------------------------------------------------
 CLUSTER="mainnet-beta"
-WORKSPACE_DIR="$(cd "$(dirname "$0")/.." && pwd)/noumen"
+WORKSPACE_DIR="$(cd "$(dirname "$0")/.." && pwd)/contracts"
 SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)"
 ANCHOR_TOML="$WORKSPACE_DIR/Anchor.toml"
 TARGET_DIR="$WORKSPACE_DIR/target"
@@ -103,7 +103,7 @@ log_ok "Balance check passed."
 
 # 6. Verify workspace
 if [[ ! -f "$ANCHOR_TOML" ]]; then
-    fail "Anchor.toml not found at $ANCHOR_TOML. Run this script from the NOUMEM root."
+    fail "Anchor.toml not found at $ANCHOR_TOML. Run this script from the AXIONBLADE root."
 fi
 log_ok "Anchor workspace found at $WORKSPACE_DIR"
 
