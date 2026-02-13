@@ -463,8 +463,8 @@ function ReportCard({
       exit={{ opacity: 0, scale: 0.95, y: -8 }}
       transition={{ duration: 0.35, delay: index * 0.04, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={cn(
-        "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
-        "hover:border-[#374151] transition-colors duration-200",
+        "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
+        "hover:border-[#243049] transition-colors duration-200",
         reportTypeBorderGlow(report.type),
         "flex flex-col gap-3"
       )}
@@ -755,10 +755,10 @@ export default function HermesPage() {
               key={step.step}
               variants={itemVariants}
               className={cn(
-                "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
+                "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
                 "border-l-[3px]",
                 step.borderColor,
-                "hover:border-[#374151] transition-colors duration-200"
+                "hover:border-[#243049] transition-colors duration-200"
               )}
             >
               <div className="flex items-start gap-3">
@@ -933,8 +933,8 @@ export default function HermesPage() {
             key={svc.name}
             variants={itemVariants}
             className={cn(
-              "bg-[#111827] border border-[#1F2937] rounded-xl p-4",
-              "hover:border-[#374151] transition-colors duration-200",
+              "bg-[#0F1420] border border-[#1A2235] rounded-xl p-4",
+              "hover:border-[#243049] transition-colors duration-200",
               "flex flex-col items-center gap-2.5 text-center"
             )}
           >
@@ -1002,13 +1002,13 @@ export default function HermesPage() {
       {/* ================================================================== */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Report Type Distribution */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Report Type Distribution</h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={[
-                  { name: "RiskDecomposition", value: 42, fill: "#3B82F6" },
+                  { name: "RiskDecomposition", value: 42, fill: "#00D4FF" },
                   { name: "YieldTrap", value: 28, fill: "#EF4444" },
                   { name: "EffectiveAPR", value: 35, fill: "#10B981" },
                   { name: "PoolComparison", value: 18, fill: "#F59E0B" },
@@ -1024,7 +1024,7 @@ export default function HermesPage() {
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 mt-2 justify-center">
             {[
-              { name: "Risk", color: "#3B82F6" },
+              { name: "Risk", color: "#00D4FF" },
               { name: "Yield", color: "#EF4444" },
               { name: "APR", color: "#10B981" },
               { name: "Compare", color: "#F59E0B" },
@@ -1039,7 +1039,7 @@ export default function HermesPage() {
         </div>
 
         {/* Confidence Distribution */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Confidence Distribution</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={[
@@ -1052,7 +1052,7 @@ export default function HermesPage() {
               <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
               <XAxis dataKey="range" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={24} />
+              <Bar dataKey="count" fill="#00D4FF" radius={[4, 4, 0, 0]} barSize={24} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -1077,7 +1077,7 @@ export default function HermesPage() {
 
             {/* Score gauges row */}
             <div className={cn(
-              "bg-[#111827] border border-[#1F2937] rounded-xl",
+              "bg-[#0F1420] border border-[#1A2235] rounded-xl",
               "overflow-hidden"
             )}>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.06]">
@@ -1165,7 +1165,7 @@ export default function HermesPage() {
       {/* Disclaimers */}
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Intelligence reports are informational only. NOUMEN does not provide financial advice. All analysis is algorithmic and deterministic — no LLM makes final decisions.
+          Intelligence reports are informational only. AXIONBLADE does not provide financial advice. All analysis is algorithmic and deterministic — no LLM makes final decisions.
         </p>
         <p className="text-[10px] text-gray-600 leading-relaxed">
           Devnet Beta — report data uses simulated sources and may differ from mainnet conditions. AI-adjusted pricing may vary.

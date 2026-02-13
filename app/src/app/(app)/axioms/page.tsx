@@ -69,7 +69,7 @@ const AXIOMS: Axiom[] = [
   { number: "A0-7",  description: "Auto-learning in production is prohibited",                   category: "security", rationale: "Prevents model drift and adversarial manipulation. All model updates require explicit human review." },
   { number: "A0-13", description: "Circuit breaker: 3 modes (Normal, Degraded, Halted)",          category: "security", rationale: "Graduated response to anomalies. Degraded mode preserves critical functions while isolating threats." },
   { number: "A0-14", description: "Failed proof -> automatic halt and incident report",           category: "security", rationale: "A failed proof indicates potential data corruption or attack. Immediate halt prevents cascading damage." },
-  { number: "A0-23", description: "All cross-program invocations must be explicitly whitelisted", category: "security", rationale: "Prevents composability attacks. Only audited, approved programs can interact with NOUMEN contracts." },
+  { number: "A0-23", description: "All cross-program invocations must be explicitly whitelisted", category: "security", rationale: "Prevents composability attacks. Only audited, approved programs can interact with AXIONBLADE contracts." },
   { number: "A0-24", description: "Rate limiting on all public-facing instructions",             category: "security", rationale: "Mitigates spam, DoS attacks, and resource exhaustion. Protects compute budget and system stability." },
 
   // Economy (5)
@@ -94,7 +94,7 @@ const CATEGORY_META: Record<
   { label: string; color: string; dotClass: string; bgClass: string; borderClass: string }
 > = {
   governance:  { label: "Governance",  color: "#a855f7", dotClass: "bg-purple-500",  bgClass: "bg-purple-500/15",  borderClass: "border-purple-500/40" },
-  separation:  { label: "Separation",  color: "#3b82f6", dotClass: "bg-blue-500",    bgClass: "bg-blue-500/15",    borderClass: "border-blue-500/40" },
+  separation:  { label: "Separation",  color: "#00D4FF", dotClass: "bg-[#00D4FF]",    bgClass: "bg-[#00D4FF]/15",    borderClass: "border-[#00D4FF]/40" },
   proofs:      { label: "Proofs",      color: "#22d3ee", dotClass: "bg-cyan-500",    bgClass: "bg-cyan-500/15",    borderClass: "border-cyan-500/40" },
   security:    { label: "Security",    color: "#f43f5e", dotClass: "bg-rose-500",    bgClass: "bg-rose-500/15",    borderClass: "border-rose-500/40" },
   economy:     { label: "Economy",     color: "#10b981", dotClass: "bg-emerald-500", bgClass: "bg-emerald-500/15", borderClass: "border-emerald-500/40" },
@@ -217,13 +217,13 @@ export default function AxiomsPage() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00D4FF]/15 text-[#00D4FF]">
             <ScrollText size={20} />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-white inline-flex items-center">Axiom<InfoTooltip term="Axiom" /> Monitor</h1>
             <p className="text-sm text-gray-400">
-              29 immutable rules — the constitution of NOUMEN
+              29 immutable rules — the constitution of AXIONBLADE
             </p>
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function AxiomsPage() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="flex flex-col items-center"
       >
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 flex flex-col items-center gap-4">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-8 flex flex-col items-center gap-4">
           <ComplianceGauge />
           <p className="text-sm text-gray-500">
             <span className="text-gray-300 font-medium">29/29</span> Active
@@ -265,10 +265,10 @@ export default function AxiomsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6"
       >
         <div className="flex items-center gap-2 mb-4">
-          <Shield size={18} className="text-blue-400" />
+          <Shield size={18} className="text-[#00D4FF]" />
           <h2 className="text-lg font-semibold text-white">Compliance by Category</h2>
         </div>
         <div className="flex justify-center">
@@ -308,8 +308,8 @@ export default function AxiomsPage() {
               <Radar
                 name="Compliance"
                 dataKey="compliance"
-                stroke="#3B82F6"
-                fill="#3B82F6"
+                stroke="#00D4FF"
+                fill="#00D4FF"
                 fillOpacity={0.3}
                 strokeWidth={2}
                 animationDuration={1500}
@@ -325,7 +325,7 @@ export default function AxiomsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35, duration: 0.5 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6"
       >
         <h2 className="text-sm font-semibold text-white mb-4">Compliance History (30d)</h2>
         <ResponsiveContainer width="100%" height={160}>
@@ -368,9 +368,9 @@ export default function AxiomsPage() {
                 "flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 cursor-pointer",
                 isActive
                   ? cat.key === "all"
-                    ? "bg-[#1F2937] text-white border-[#374151]"
+                    ? "bg-[#1A2235] text-white border-[#243049]"
                     : cn(meta?.bgClass, "border-transparent text-white")
-                  : "bg-[#111827] text-gray-400 border-[#1F2937] hover:bg-[#1F2937]/60 hover:text-gray-200"
+                  : "bg-[#0F1420] text-gray-400 border-[#1A2235] hover:bg-[#1A2235]/60 hover:text-gray-200"
               )}
             >
               {meta && (
@@ -411,8 +411,8 @@ export default function AxiomsPage() {
             >
               <div
                 className={cn(
-                  "bg-[#111827] border border-[#1F2937] rounded-xl p-5",
-                  "hover:border-[#374151] transition-colors duration-200",
+                  "bg-[#0F1420] border border-[#1A2235] rounded-xl p-5",
+                  "hover:border-[#243049] transition-colors duration-200",
                   "group cursor-default"
                 )}
                 style={{

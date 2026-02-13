@@ -1,5 +1,5 @@
 /**
- * NOUMEN Protocol — Mainnet Account Initialization Script
+ * AXIONBLADE Protocol — Mainnet Account Initialization Script
  *
  * Connects to mainnet-beta, loads the deployer wallet, and calls each
  * program's initialization instruction to set up on-chain config accounts.
@@ -10,7 +10,7 @@
  * Prerequisites:
  *   - Programs already deployed to mainnet via deploy-mainnet.sh
  *   - Wallet keypair at ~/.config/solana/id.json
- *   - IDLs built at noumen/target/idl/
+ *   - IDLs built at contracts/target/idl/
  */
 
 import * as fs from "fs";
@@ -30,7 +30,7 @@ import { Program, AnchorProvider, Wallet, BN } from "@coral-xyz/anchor";
 // ---------------------------------------------------------------------------
 const CLUSTER_URL = clusterApiUrl("mainnet-beta");
 const WALLET_PATH = path.join(os.homedir(), ".config", "solana", "id.json");
-const IDL_DIR = path.join(__dirname, "..", "noumen", "target", "idl");
+const IDL_DIR = path.join(__dirname, "..", "contracts", "target", "idl");
 
 const PROGRAM_IDS: Record<string, string> = {
   noumen_core: "9jNGhtBFjLFcUKdDdxgwpbKMj6Z6iQw2oBGCeaVBj8gE",

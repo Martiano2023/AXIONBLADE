@@ -4,13 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-NOUMEN is an autonomous risk assessment infrastructure with verifiable proof, designed to operate in DeFi and Agent-to-Agent environments on Solana. This repository contains **architecture design documents only** (no source code). The current version is **v3.2.3**.
+AXIONBLADE is an autonomous risk assessment infrastructure with verifiable proof, designed to operate in DeFi and Agent-to-Agent environments on Solana. The current version is **v3.2.3**.
 
-Core principle: NOUMEN never executes anything without prior proof of decision and never makes decisions that cannot be retroactively audited.
+Core principle: AXIONBLADE never executes anything without prior proof of decision and never makes decisions that cannot be retroactively audited.
 
 ## Repository Structure
 
-All documents live in `files/` and follow numbered ordering. `INDICE_MESTRE.md` is the master index. Documents are incremental — each version builds on previous ones via delta tables.
+- **app/** — Next.js 16 frontend (React, Tailwind CSS v4, Framer Motion)
+- **contracts/** — Anchor workspace with 7 Solana programs (crate names: `noumen_*` — on-chain identifiers, do not rename)
+- **contracts/scripts/** — Deployment and initialization scripts
+- **contracts/keys/** — Authority keypairs (super, aeon, keeper)
+- **files/** — Architecture design documents (numbered, incremental deltas)
+- **scripts/** — Root-level mainnet deployment scripts
+
+All architecture documents live in `files/` and follow numbered ordering. `INDICE_MESTRE.md` is the master index.
 
 - **00**: Identity and non-negotiable principles
 - **01**: Initial technical consultancy (risks, prioritization, demo)
@@ -28,6 +35,20 @@ All documents live in `files/` and follow numbered ordering. `INDICE_MESTRE.md` 
 | **HERMES** | DeFi intelligence — 5 services for external consumption | NEVER | NEVER |
 
 **Firewall chain**: `APOLLO -> assessment_pda -> Risk Engine (<=40%) -> AEON -> Executor`. Executors never read APOLLO's PDAs directly. HERMES outputs are terminal (external consumption only, never enters execution chain).
+
+## On-Chain Programs (contracts/)
+
+The 7 Anchor programs use `noumen_*` crate names — these are on-chain identifiers tied to deployed Program IDs and **must not be renamed**:
+
+| Program | Program ID |
+|---------|-----------|
+| noumen_core | `9jNGhtBFjLFcUKdDdxgwpbKMj6Z6iQw2oBGCeaVBj8gE` |
+| noumen_proof | `3SNcx2kAf5NXNJd68eLK5gZ3cUvvMEUkC8F4N1ZSUZqV` |
+| noumen_treasury | `EMNF5A4cpqusBuUajMv3FUzjbwR7GQMFyJ7JDi4FjLFu` |
+| noumen_apollo | `92WeuJoJdh3o1jLcvSLKuTUitQMnUhMRzoTYaSzgo3Ee` |
+| noumen_hermes | `Hfv5AS3sydnniyqgF8dwXgN76NU4aKAysgcQJ3uncmTj` |
+| noumen_auditor | `CGLy91mAXwz761z6soTnap2pNVVA8d8zfsGZjLkqwvTe` |
+| noumen_service | `9ArzMqH6jSWVwvQyYfsdtUQ595wCQXFQAQzXxcoM4LbY` |
 
 ## Axiom System (Safety Envelope)
 
@@ -55,10 +76,11 @@ Revenue comes exclusively from real usage (paid services, APIs, A2A marketplace)
 
 Donations go to a separate Donation PDA, swept daily to Treasury without passing through the CCS split. Anti-masquerade rule: conditional donations are rejected.
 
-## Key Rules When Working With These Documents
+## Key Rules When Working With This Codebase
 
 - Each architecture version is a **delta** on the previous — read them in order to understand the full picture
 - When proposing changes, verify against all 29 active axioms; any violation means the idea is rejected
 - Innovation checklist (from `00_IDENTIDADE`): real demand? recurrence? attack surface? breaks axiom? requires custody? auditable? fails safely? can be disabled without killing the system?
-- LLMs never make final decisions in NOUMEN — all final decisions are deterministic, versioned, and recordable
+- LLMs never make final decisions in AXIONBLADE — all final decisions are deterministic, versioned, and recordable
 - The system scales only when there is measured demand, never preemptively
+- **Do not rename** `noumen_*` program crate names, Cargo.toml entries, PDA seeds, or IDL filenames — these are on-chain identifiers

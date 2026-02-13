@@ -1,4 +1,4 @@
-# NOUMEN Mainnet Deployment Guide
+# AXIONBLADE Mainnet Deployment Guide
 
 > Protocol version: v3.2.3
 > Programs: 7 Anchor programs on Solana mainnet-beta
@@ -124,7 +124,7 @@ Expected output:
 
 ```
 =================================================================
-NOUMEN MAINNET VERIFICATION REPORT
+AXIONBLADE MAINNET VERIFICATION REPORT
 =================================================================
 Program: noumen_core ..........................  DEPLOYED
 Program: noumen_proof .........................  DEPLOYED

@@ -61,7 +61,7 @@ function CustomTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#111827] border border-[#1F2937] rounded-lg px-3 py-2 shadow-lg">
+    <div className="bg-[#0F1420] border border-[#1A2235] rounded-lg px-3 py-2 shadow-lg">
       <p className="text-xs text-gray-500 mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-white">{payload[0].value} transactions</p>
     </div>
@@ -82,7 +82,7 @@ const revenueSparkData = generateSparkData(7, 8.2, 0.25);
 // --- Card wrapper ---
 
 const cardBase =
-  "bg-[#111827] border border-[#1F2937] rounded-xl hover:border-[#374151] transition-colors duration-200 p-6";
+  "bg-[#0F1420] border border-[#1A2235] rounded-xl hover:border-[#243049] transition-colors duration-200 p-6";
 
 // --- Dashboard page ---
 
@@ -160,11 +160,11 @@ export default function DashboardPage() {
               <AreaChart data={revenueSparkData}>
                 <defs>
                   <linearGradient id="sparkBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#00D4FF" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#00D4FF" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <Area type="monotone" dataKey="v" stroke="#3B82F6" strokeWidth={1.5} fill="url(#sparkBlue)" dot={false} />
+                <Area type="monotone" dataKey="v" stroke="#00D4FF" strokeWidth={1.5} fill="url(#sparkBlue)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
         {/* APOLLO */}
         <div className={cardBase}>
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-blue-400" />
+            <span className="w-2 h-2 rounded-full bg-[#00D4FF]/80" />
             <p className="text-xs text-gray-500 uppercase tracking-wider">APOLLO — Risk Assessment</p>
           </div>
           <div className="space-y-2">
@@ -270,7 +270,7 @@ export default function DashboardPage() {
       <div className={cardBase}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-sm font-semibold text-white">Protocol Activity (7d)</h2>
-          <div className="flex items-center gap-1 bg-[#0B0F1A] rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-[#0A0E17] rounded-lg p-1">
             {(["24h", "7d", "30d", "90d"] as const).map((range) => (
               <button
                 key={range}
@@ -278,7 +278,7 @@ export default function DashboardPage() {
                 className={
                   "px-3 py-1 rounded-md text-xs font-medium transition-colors duration-200 " +
                   (timeRange === range
-                    ? "bg-[#1F2937] text-white"
+                    ? "bg-[#1A2235] text-white"
                     : "text-gray-500 hover:text-gray-300")
                 }
               >
@@ -304,14 +304,14 @@ export default function DashboardPage() {
               tickLine={false}
               dx={-4}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "rgba(59,130,246,0.2)", strokeWidth: 1 }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "rgba(0,212,255,0.2)", strokeWidth: 1 }} />
             <Line
               type="monotone"
               dataKey="transactions"
-              stroke="#3B82F6"
+              stroke="#00D4FF"
               strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4, fill: "#3B82F6", stroke: "#111827", strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: "#00D4FF", stroke: "#0F1420", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -326,10 +326,10 @@ export default function DashboardPage() {
               key={i}
               className={
                 "flex items-center py-2.5" +
-                (i < recentActivity.length - 1 ? " border-b border-[#1F2937]" : "")
+                (i < recentActivity.length - 1 ? " border-b border-[#1A2235]" : "")
               }
             >
-              <span className="text-xs font-medium text-blue-400 w-16">{event.agent}</span>
+              <span className="text-xs font-medium text-[#00D4FF] w-16">{event.agent}</span>
               <span className="text-sm text-gray-400 flex-1">{event.description}</span>
               <span className="text-xs text-gray-600">{event.time}</span>
             </div>
@@ -341,7 +341,7 @@ export default function DashboardPage() {
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
           Dashboard data is from devnet beta. Metrics, balances, and agent statuses may differ from mainnet deployment.
-          NOUMEN does not provide financial advice. All risk assessments are informational only.
+          AXIONBLADE does not provide financial advice. All risk assessments are informational only.
         </p>
       </div>
     </div>

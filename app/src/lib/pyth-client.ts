@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// NOUMEN Pyth Network Price Service Client
+// AXIONBLADE Pyth Network Price Service Client
 // ---------------------------------------------------------------------------
 // Fetches real-time price data from the Pyth Network via the Hermes API.
 // Provides SOL-ecosystem token prices for APOLLO risk assessments.
@@ -15,7 +15,7 @@ import { PriceServiceConnection } from "@pythnetwork/price-service-client";
 const PYTH_ENDPOINT = "https://hermes-beta.pyth.network";
 
 /**
- * Real Pyth price feed IDs for tokens relevant to NOUMEN's monitored pools.
+ * Real Pyth price feed IDs for tokens relevant to AXIONBLADE's monitored pools.
  * These are the actual hex-encoded feed IDs from the Pyth Network.
  */
 export const PRICE_FEED_IDS: Record<string, string> = {

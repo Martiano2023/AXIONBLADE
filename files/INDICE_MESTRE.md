@@ -1,4 +1,4 @@
-# NOUMEN — Índice Mestre
+# AXIONBLADE — Índice Mestre
 
 > Versão atual: v3.2.3  
 > Total de axiomas ativos: 29 (A0-2 deprecated)  
@@ -10,7 +10,7 @@
 
 | # | Arquivo | Conteúdo | Versão |
 |---|---|---|---|
-| 00 | `00_IDENTIDADE_NOUMEN.md` | Identidade, princípios, limites | Core |
+| 00 | `00_IDENTIDADE_AXIONBLADE.md` | Identidade, princípios, limites | Core |
 | 01 | `01_CONSULTORIA_TECNICA_INICIAL.md` | Resumo executivo, riscos, priorização, demo, capabilities | v1.0 |
 | 02 | `02_EVOLUCAO_SISTEMICA_MULTI_AGENTE.md` | Multi-agente, coordenação, economia, segurança, escala | v2.0 |
 | 03 | `03_AGENTE_DEFI_APOLLO_CONCEITUAL.md` | APOLLO conceitual: papel, escopo, firewall, autonomia | v2.1 |

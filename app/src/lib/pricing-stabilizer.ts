@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// NOUMEN AI Pricing Stabilizer Engine
+// AXIONBLADE AI Pricing Stabilizer Engine
 // ---------------------------------------------------------------------------
 // Three phases: Launch (Days 1-30), Calibration (Days 31-90), Stable (Day 90+)
 // Ensures protocol sustainability while remaining competitive.

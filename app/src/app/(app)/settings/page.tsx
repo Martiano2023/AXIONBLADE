@@ -49,10 +49,10 @@ function Toggle({
         onClick={onToggle}
         className={cn(
           "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-all duration-300",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D4FF]/50",
           enabled
-            ? "bg-blue-500"
-            : "bg-[#1F2937] hover:bg-[#374151]"
+            ? "bg-[#00D4FF]"
+            : "bg-[#1A2235] hover:bg-[#243049]"
         )}
       >
         <span
@@ -91,7 +91,7 @@ function Section({
         {icon}
         <h2 className="text-lg font-semibold text-white">{title}</h2>
       </div>
-      <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 divide-y divide-[#1F2937]">
+      <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 divide-y divide-[#1A2235]">
         {children}
       </div>
     </motion.div>
@@ -114,7 +114,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="p-1.5 rounded-lg hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
+      className="p-1.5 rounded-lg hover:bg-[#1A2235] transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
       title="Copy to clipboard"
     >
       {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
@@ -182,13 +182,13 @@ export default function SettingsPage() {
         transition={{ duration: 0.5 }}
         className="flex items-center gap-3"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00D4FF]/15 text-[#00D4FF]">
           <Settings size={20} />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">Settings</h1>
           <p className="text-sm text-gray-400">
-            Configure your NOUMEN dashboard
+            Configure your AXIONBLADE dashboard
           </p>
         </div>
       </motion.div>
@@ -251,17 +251,17 @@ export default function SettingsPage() {
           </>
         ) : (
           <div className="py-8 flex flex-col items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1F2937] border border-[#1F2937]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1A2235] border border-[#1A2235]">
               <Wallet size={24} className="text-gray-500" />
             </div>
             <p className="text-sm text-gray-400 text-center">
-              Connect your Solana wallet to interact with NOUMEN
+              Connect your Solana wallet to interact with AXIONBLADE
             </p>
             <button
               className={cn(
                 "inline-flex items-center gap-2 rounded-xl px-6 py-2.5",
-                "bg-[#3B82F6] text-white font-medium text-sm",
-                "hover:bg-[#2563EB]",
+                "bg-[#00D4FF] text-white font-medium text-sm",
+                "hover:bg-[#00B8D9]",
                 "transition-colors duration-200 cursor-pointer"
               )}
             >
@@ -307,10 +307,10 @@ export default function SettingsPage() {
               value={refreshInterval}
               onChange={(e) => setRefreshInterval(Number(e.target.value))}
               className={cn(
-                "h-9 appearance-none rounded-xl border border-[#1F2937] bg-[#1F2937]",
+                "h-9 appearance-none rounded-xl border border-[#1A2235] bg-[#1A2235]",
                 "pl-3 pr-8 text-sm text-gray-300 cursor-pointer",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500/40",
-                "hover:bg-[#1F2937] transition-colors duration-200"
+                "focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40",
+                "hover:bg-[#1A2235] transition-colors duration-200"
               )}
             >
               {REFRESH_OPTIONS.map((opt) => (
@@ -380,7 +380,7 @@ export default function SettingsPage() {
               Localnet
             </span>
           </div>
-          <span className="inline-flex items-center rounded-full bg-[#1F2937] border border-[#1F2937] px-2.5 py-0.5 text-xs font-medium text-gray-400">
+          <span className="inline-flex items-center rounded-full bg-[#1A2235] border border-[#1A2235] px-2.5 py-0.5 text-xs font-medium text-gray-400">
             Cluster: localnet
           </span>
         </div>
@@ -399,7 +399,7 @@ export default function SettingsPage() {
       {/* ---- Section 5: About ---- */}
       <Section
         title="About"
-        icon={<Info size={18} className="text-blue-400" />}
+        icon={<Info size={18} className="text-[#00D4FF]" />}
         delay={0.5}
       >
         {/* Version */}
@@ -408,7 +408,7 @@ export default function SettingsPage() {
             <p className="text-xs text-gray-500 mb-1">Version</p>
             <p className="text-sm font-semibold text-gray-200">v3.2.3</p>
           </div>
-          <span className="inline-flex items-center rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-xs font-medium text-blue-400">
+          <span className="inline-flex items-center rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/30 px-2.5 py-0.5 text-xs font-medium text-[#00D4FF]">
             Latest
           </span>
         </div>
@@ -420,7 +420,7 @@ export default function SettingsPage() {
             {PROGRAMS.map((prog) => (
               <div
                 key={prog.name}
-                className="flex items-center justify-between gap-3 py-1.5 px-3 rounded-lg bg-[#0B0F1A] hover:bg-[#1F2937] transition-colors"
+                className="flex items-center justify-between gap-3 py-1.5 px-3 rounded-lg bg-[#0A0E17] hover:bg-[#1A2235] transition-colors"
               >
                 <span className="text-xs font-medium text-gray-300">
                   {prog.name}
@@ -451,9 +451,9 @@ export default function SettingsPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-xl border border-[#1F2937] px-3 py-2",
+                  "inline-flex items-center gap-1.5 rounded-xl border border-[#1A2235] px-3 py-2",
                   "text-xs font-medium text-gray-400",
-                  "hover:border-[#374151] hover:text-gray-200 transition-colors duration-200"
+                  "hover:border-[#243049] hover:text-gray-200 transition-colors duration-200"
                 )}
               >
                 {link.label}
@@ -467,9 +467,9 @@ export default function SettingsPage() {
       {/* Disclaimer */}
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Settings are stored locally in your browser. NOUMEN is currently on devnet beta.
+          Settings are stored locally in your browser. AXIONBLADE is currently on devnet beta.
           Configuration changes take effect immediately but may behave differently on mainnet.
-          NOUMEN does not provide financial advice. All risk assessments are informational only.
+          AXIONBLADE does not provide financial advice. All risk assessments are informational only.
         </p>
       </div>
     </div>

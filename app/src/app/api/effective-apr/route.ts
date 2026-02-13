@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   const apiKey = request.headers.get("x-api-key");
   if (!validateApiKey(apiKey)) {
     return NextResponse.json(
-      { error: "Invalid or missing API key. Get one at noumen.app/settings" },
+      { error: "Invalid or missing API key. Get one at axionblade.app/settings" },
       { status: 401, headers: corsHeaders }
     );
   }
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
   // Free tier cannot access effective-apr
   if (tier === "free") {
     return NextResponse.json(
-      { error: "Effective APR is not available on the free tier. Upgrade at noumen.app/settings" },
+      { error: "Effective APR is not available on the free tier. Upgrade at axionblade.app/settings" },
       {
         status: 403,
         headers: { ...corsHeaders, "X-RateLimit-Remaining": String(rateCheck.remaining) },

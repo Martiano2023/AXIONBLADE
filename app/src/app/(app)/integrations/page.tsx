@@ -20,7 +20,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="p-1.5 rounded-lg hover:bg-[#1F2937] transition-colors text-gray-500 hover:text-gray-300"
+      className="p-1.5 rounded-lg hover:bg-[#1A2235] transition-colors text-gray-500 hover:text-gray-300"
       title="Copy to clipboard"
     >
       {copied ? (
@@ -42,7 +42,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <CopyButton text={code} />
       </div>
-      <div className="bg-[#0B0F1A] border border-[#1F2937] rounded-lg p-4 overflow-x-auto">
+      <div className="bg-[#0A0E17] border border-[#1A2235] rounded-lg p-4 overflow-x-auto">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">
             {language}
@@ -60,10 +60,10 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 /*  Code snippets                                                      */
 /* ------------------------------------------------------------------ */
 
-const widgetEmbed = `<iframe src="https://noumen.app/widget/POOL_ADDRESS"
+const widgetEmbed = `<iframe src="https://axionblade.app/widget/POOL_ADDRESS"
         width="300" height="80" />`;
 
-const apiExample = `const response = await fetch('https://api.noumen.app/v1/risk-score', {
+const apiExample = `const response = await fetch('https://api.axionblade.app/v1/risk-score', {
   headers: { 'X-API-Key': 'your-key' },
   body: JSON.stringify({ pool: 'POOL_ADDRESS' })
 });
@@ -102,8 +102,8 @@ const endpoints = [
 
 function WidgetPreview() {
   return (
-    <div className="inline-flex items-center gap-2 bg-[#0B0F1A] border border-[#1F2937] rounded-lg px-3 py-2">
-      <span className="text-xs font-medium text-gray-400">[NOUMEN]</span>
+    <div className="inline-flex items-center gap-2 bg-[#0A0E17] border border-[#1A2235] rounded-lg px-3 py-2">
+      <span className="text-xs font-medium text-gray-400">[AXIONBLADE]</span>
       <span className="text-xs text-white">SOL-USDC</span>
       <span className="text-xs text-gray-400">Risk:</span>
       <span className="text-xs font-semibold text-[#10B981]">87</span>
@@ -126,7 +126,7 @@ export default function IntegrationsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="text-2xl font-bold text-white">Integrate NOUMEN</h1>
+        <h1 className="text-2xl font-bold text-white">Integrate AXIONBLADE</h1>
         <p className="text-sm text-gray-400">
           Embed verified risk intelligence into your protocol
         </p>
@@ -137,7 +137,7 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">
           Risk Score Widget
@@ -157,7 +157,7 @@ export default function IntegrationsPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-3 font-medium">
             Preview
           </p>
-          <div className="flex items-center justify-center bg-[#0B0F1A] border border-[#1F2937] rounded-lg p-6">
+          <div className="flex items-center justify-center bg-[#0A0E17] border border-[#1A2235] rounded-lg p-6">
             <WidgetPreview />
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">REST API</h2>
 
@@ -180,7 +180,7 @@ export default function IntegrationsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#1F2937]">
+              <tr className="border-b border-[#1A2235]">
                 <th className="text-left py-2 pr-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Method
                 </th>
@@ -196,7 +196,7 @@ export default function IntegrationsPage() {
               {endpoints.map((ep) => (
                 <tr
                   key={ep.path}
-                  className="border-b border-[#1F2937] last:border-b-0"
+                  className="border-b border-[#1A2235] last:border-b-0"
                 >
                   <td className="py-2.5 pr-4">
                     <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">
@@ -221,7 +221,7 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">
           Why Protocols Integrate
@@ -229,21 +229,21 @@ export default function IntegrationsPage() {
 
         <div className="space-y-3">
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
               Users demand verified risk data before depositing
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
               Risk transparency reduces support load and community FUD
             </p>
           </div>
           <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#3B82F6] shrink-0" />
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
             <p className="text-sm text-gray-300">
-              NOUMEN-verified pools projected to show higher TVL retention
+              AXIONBLADE-verified pools projected to show higher TVL retention
             </p>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
-        className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">
           Integration Status
@@ -268,8 +268,8 @@ export default function IntegrationsPage() {
         </div>
 
         <a
-          href="mailto:integrations@noumen.app"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#3B82F6] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#2563EB] transition-colors duration-200"
+          href="mailto:integrations@axionblade.app"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#00D4FF] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00B8D9] transition-colors duration-200"
         >
           <Mail size={14} />
           Request Integration

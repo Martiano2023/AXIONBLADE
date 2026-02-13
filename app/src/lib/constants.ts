@@ -33,7 +33,7 @@ export const SEEDS = {
   // noumen_core
   aeonConfig: Buffer.from("aeon_config"),
   agentManifest: Buffer.from("agent"),
-  policyProposal: Buffer.from("policy"),
+  policyProposal: Buffer.from("proposal"),
 
   // noumen_proof
   proofConfig: Buffer.from("proof_config"),

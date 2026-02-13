@@ -18,13 +18,13 @@ interface ButtonProps {
 
 const variantStyles: Record<string, string> = {
   primary:
-    "bg-[#3B82F6] text-white hover:bg-[#2563EB] transition-colors duration-200",
+    "bg-[#00D4FF] text-white hover:bg-[#00B8D9] transition-colors duration-200",
   secondary:
-    "bg-[#111827] text-text-primary hover:bg-[#1F2937] transition-colors duration-200",
+    "bg-[#0F1420] text-text-primary hover:bg-[#1A2235] transition-colors duration-200",
   outline:
-    "border border-[#1F2937] text-text-primary hover:bg-[#1F2937] hover:border-[#374151] transition-colors duration-200",
+    "border border-[#1A2235] text-text-primary hover:bg-[#1A2235] hover:border-[#243049] transition-colors duration-200",
   ghost:
-    "text-text-secondary hover:text-text-primary hover:bg-[#1F2937] transition-colors duration-200",
+    "text-text-secondary hover:text-text-primary hover:bg-[#1A2235] transition-colors duration-200",
   danger:
     "bg-[#EF4444] text-white hover:bg-[#DC2626] transition-colors duration-200",
 };
@@ -58,7 +58,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         whileTap={disabled || loading ? undefined : { scale: 0.97 }}
         transition={{ duration: 0.15, ease: "easeOut" }}
         className={cn(
-          "inline-flex items-center justify-center rounded-lg font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0F1A] cursor-pointer select-none",
+          "inline-flex items-center justify-center rounded-lg font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D4FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0E17] cursor-pointer select-none",
           variantStyles[variant],
           sizeStyles[size],
           (disabled || loading) && "opacity-50 pointer-events-none",

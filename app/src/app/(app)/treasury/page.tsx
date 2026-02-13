@@ -328,7 +328,7 @@ function CCSDonut() {
             initial={{ strokeDasharray: `0 ${circumference}` }}
             animate={{ strokeDasharray: `${devFundArc} ${circumference - devFundArc}` }}
             transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-            className="stroke-blue-500"
+            className="stroke-[#00D4FF]"
             style={{ cursor: "pointer" }}
             onMouseEnter={() => setHoveredSegment("devfund")}
             onMouseLeave={() => setHoveredSegment(null)}
@@ -361,7 +361,7 @@ function CCSDonut() {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
-              className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#1F2937] border border-[#374151] rounded-lg px-3 py-2 text-xs whitespace-nowrap z-10"
+              className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#1A2235] border border-[#243049] rounded-lg px-3 py-2 text-xs whitespace-nowrap z-10"
             >
               {hoveredSegment === "operations" && (
                 <span className="text-gray-400">Operations: {OPERATIONS_SPLIT}%</span>
@@ -370,7 +370,7 @@ function CCSDonut() {
                 <span className="text-emerald-400">Treasury Reserve: {TREASURY_RESERVE_SPLIT}%</span>
               )}
               {hoveredSegment === "devfund" && (
-                <span className="text-blue-400">Dev Fund: {DEV_FUND_SPLIT}%</span>
+                <span className="text-[#00D4FF]">Dev Fund: {DEV_FUND_SPLIT}%</span>
               )}
               {hoveredSegment === "creator" && (
                 <span className="text-amber-400">Creator: {CREATOR_SPLIT}%</span>
@@ -397,10 +397,10 @@ function CCSDonut() {
         </div>
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00D4FF]" />
             <span className="text-gray-400">Dev Fund</span>
           </div>
-          <span className="text-blue-400 font-medium">{DEV_FUND_SPLIT}%</span>
+          <span className="text-[#00D4FF] font-medium">{DEV_FUND_SPLIT}%</span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
@@ -421,7 +421,7 @@ function CCSDonut() {
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; dataKey: string }>; label?: string }) {
   if (!active || !payload) return null;
   return (
-    <div className="bg-[#1F2937] border border-[#374151] rounded-xl px-4 py-3 shadow-xl">
+    <div className="bg-[#1A2235] border border-[#243049] rounded-xl px-4 py-3 shadow-xl">
       <p className="text-xs text-gray-400 mb-2 font-medium">{label}</p>
       {payload.map((entry) => (
         <div key={entry.dataKey} className="flex items-center gap-2 text-sm">
@@ -530,7 +530,7 @@ export default function TreasuryPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
-              className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 text-left hover:border-[#374151] transition-colors duration-200"
+              className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 text-left hover:border-[#243049] transition-colors duration-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <span className="w-6 h-6 rounded-full bg-purple-500/15 border border-purple-500/20 flex items-center justify-center text-[10px] font-bold text-purple-400">
@@ -561,7 +561,7 @@ export default function TreasuryPage() {
       {/* Section 1: Hero Balance Card                                      */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="relative overflow-hidden rounded-xl bg-[#111827] border border-[#1F2937] p-8">
+        <div className="relative overflow-hidden rounded-xl bg-[#0F1420] border border-[#1A2235] p-8">
           {/* Animated gradient border glow */}
           <div className="absolute inset-0 rounded-2xl opacity-30 pointer-events-none"
             style={{
@@ -640,7 +640,7 @@ export default function TreasuryPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column: Revenue Pie Chart */}
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200">
             <div className="flex flex-col items-center">
               <div className="relative w-full h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -700,7 +700,7 @@ export default function TreasuryPage() {
           </div>
 
           {/* Right Column: Recent Revenue Events Feed */}
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200">
             <h3 className="text-sm font-medium text-white mb-4">Recent Revenue Events</h3>
             <div className="max-h-[280px] overflow-y-auto space-y-0 pr-1 custom-scrollbar">
               {[
@@ -735,19 +735,19 @@ export default function TreasuryPage() {
 
         {/* Revenue Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4 hover:border-[#243049] transition-colors duration-200">
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Today&apos;s Revenue</p>
             <p className="text-lg font-bold text-emerald-400 tabular-nums">8.2 SOL</p>
           </div>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4 hover:border-[#243049] transition-colors duration-200">
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">This Week</p>
             <p className="text-lg font-bold text-purple-400 tabular-nums">65.3 SOL</p>
           </div>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4 hover:border-[#243049] transition-colors duration-200">
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Active Subscriptions</p>
             <p className="text-lg font-bold text-cyan-400 tabular-nums">47</p>
           </div>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4 hover:border-[#243049] transition-colors duration-200">
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Avg Proof/Day</p>
             <p className="text-lg font-bold text-amber-400 tabular-nums">312</p>
           </div>
@@ -758,7 +758,7 @@ export default function TreasuryPage() {
       {/* Daily Revenue Trend (30d)                                        */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Daily Revenue (30d)</h3>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={generateRevenueTrend()} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
@@ -784,13 +784,13 @@ export default function TreasuryPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Revenue by Source */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
             <h3 className="text-sm font-semibold text-white mb-4">Revenue by Source</h3>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   data={[
-                    { name: "Apollo Assessments", value: 58, fill: "#3B82F6" },
+                    { name: "Apollo Assessments", value: 58, fill: "#00D4FF" },
                     { name: "Hermes Reports", value: 27, fill: "#10B981" },
                     { name: "Protocol API", value: 15, fill: "#F59E0B" },
                   ]}
@@ -803,7 +803,7 @@ export default function TreasuryPage() {
             </ResponsiveContainer>
             <div className="flex justify-center gap-4 mt-2">
               {[
-                { name: "Apollo", color: "#3B82F6", pct: "58%" },
+                { name: "Apollo", color: "#00D4FF", pct: "58%" },
                 { name: "Hermes", color: "#10B981", pct: "27%" },
                 { name: "API", color: "#F59E0B", pct: "15%" },
               ].map((s) => (
@@ -818,7 +818,7 @@ export default function TreasuryPage() {
 
         {/* Reserve Ratio Compliance */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 flex flex-col items-center">
             <h3 className="text-sm font-semibold text-white mb-4">Reserve Ratio (A0-17)</h3>
             <div className="relative">
               <svg width={140} height={80} viewBox="0 0 140 80">
@@ -840,7 +840,7 @@ export default function TreasuryPage() {
       {/* Recent Transactions (detailed table)                              */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Recent Transactions</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -869,7 +869,7 @@ export default function TreasuryPage() {
                     <td className="py-2.5 text-gray-300">{tx.type}</td>
                     <td className={`py-2.5 text-right font-mono ${tx.amount.startsWith("-") ? "text-red-400" : "text-emerald-400"}`}>{tx.amount}</td>
                     <td className="py-2.5 text-gray-400">{tx.source}</td>
-                    <td className="py-2.5 text-right font-mono text-blue-400/70 hover:text-blue-400 cursor-pointer">{tx.hash}</td>
+                    <td className="py-2.5 text-right font-mono text-[#00D4FF]/70 hover:text-[#00D4FF] cursor-pointer">{tx.hash}</td>
                   </tr>
                 ))}
               </tbody>
@@ -883,7 +883,7 @@ export default function TreasuryPage() {
       {/* ================================================================= */}
       <motion.div variants={staggerItem} className="space-y-4">
         <h2 className="text-lg font-bold text-white">Protocol Economics</h2>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 space-y-6">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 space-y-6">
           {/* Revenue Split — 4 colored bars */}
           <div className="space-y-3">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Revenue Split</p>
@@ -910,10 +910,10 @@ export default function TreasuryPage() {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-gray-400 inline-flex items-center">Development Fund<InfoTooltip term="Development Fund" /></span>
-                  <span className="text-xs font-medium text-blue-400">15%</span>
+                  <span className="text-xs font-medium text-[#00D4FF]">15%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                  <div className="h-full rounded-full bg-blue-500" style={{ width: "15%" }} />
+                  <div className="h-full rounded-full bg-[#00D4FF]" style={{ width: "15%" }} />
                 </div>
               </div>
               <div>
@@ -936,7 +936,7 @@ export default function TreasuryPage() {
           </div>
 
           {/* Margin Enforcement */}
-          <div className="border-t border-[#1F2937] pt-4">
+          <div className="border-t border-[#1A2235] pt-4">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Margin Enforcement</p>
             <p className="text-xs text-gray-500 leading-relaxed">
               Every paid transaction enforces minimum allocation: 30% to Treasury PDA, 15% to Development Fund, 15% to Creator wallet.
@@ -945,7 +945,7 @@ export default function TreasuryPage() {
           </div>
 
           {/* Projected Monthly Revenue */}
-          <div className="border-t border-[#1F2937] pt-4">
+          <div className="border-t border-[#1A2235] pt-4">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Projected Monthly Revenue</p>
             <p className="text-xs text-gray-500 mb-1">Based on daily average x 30</p>
             <p className="text-xl font-bold text-white">~246 SOL/month <span className="text-sm font-normal text-gray-500">(projected)</span></p>
@@ -958,8 +958,8 @@ export default function TreasuryPage() {
                 <p className="text-lg font-bold text-emerald-400">~74 SOL</p>
                 <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (30%)</p>
               </div>
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center">
-                <p className="text-lg font-bold text-blue-400">~37 SOL</p>
+              <div className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-lg p-3 text-center">
+                <p className="text-lg font-bold text-[#00D4FF]">~37 SOL</p>
                 <p className="text-[10px] text-gray-500 uppercase tracking-wider">Dev Fund (15%)</p>
               </div>
               <div className="bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 text-center">
@@ -977,21 +977,21 @@ export default function TreasuryPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* (a) Reserve Ratio Gauge */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center justify-center h-full hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 flex flex-col items-center justify-center h-full hover:border-[#243049] transition-colors duration-200">
             <ReserveGauge ratio={RESERVE_RATIO} threshold={RESERVE_THRESHOLD} />
           </div>
         </motion.div>
 
         {/* (b) CCS Distribution Donut */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex flex-col items-center justify-center h-full hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 flex flex-col items-center justify-center h-full hover:border-[#243049] transition-colors duration-200">
             <CCSDonut />
           </div>
         </motion.div>
 
         {/* (c) Revenue vs Expenses chart */}
         <motion.div variants={staggerItem}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 h-full hover:border-[#374151] transition-colors duration-200">
+          <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 h-full hover:border-[#243049] transition-colors duration-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-white">Revenue vs Expenses</h3>
               <div className="flex items-center gap-3">
@@ -1049,7 +1049,7 @@ export default function TreasuryPage() {
       {/* Section 3: Transaction History                                    */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
             <h2 className="text-lg font-bold text-white">Recent Transactions</h2>
@@ -1069,7 +1069,7 @@ export default function TreasuryPage() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 z-20 bg-[#1F2937] border border-[#374151] rounded-xl overflow-hidden shadow-2xl min-w-[140px]"
+                    className="absolute right-0 top-full mt-2 z-20 bg-[#1A2235] border border-[#243049] rounded-xl overflow-hidden shadow-2xl min-w-[140px]"
                   >
                     {FILTER_OPTIONS.map((opt) => (
                       <button
@@ -1158,7 +1158,7 @@ export default function TreasuryPage() {
       {/* Section 4: Donations                                              */}
       {/* ================================================================= */}
       <motion.div variants={staggerItem}>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl overflow-hidden">
           {/* Header */}
           <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
@@ -1264,7 +1264,7 @@ export default function TreasuryPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 * i }}
-                className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 hover:border-[#374151] transition-colors duration-200"
+                className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-5 hover:border-[#243049] transition-colors duration-200"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className={cn("text-base font-bold", b.accent)}>{b.agent}</span>
@@ -1296,7 +1296,7 @@ export default function TreasuryPage() {
       {/* ================================================================= */}
       <motion.div variants={staggerItem} className="space-y-4">
         <h2 className="text-lg font-bold text-white">Creator Allocation</h2>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 space-y-4">
+        <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-white">Founder/Creator Share</p>

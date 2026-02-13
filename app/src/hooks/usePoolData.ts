@@ -1,7 +1,7 @@
 "use client";
 
 // ---------------------------------------------------------------------------
-// NOUMEN usePoolData Hook — Simulated real DeFi pool data
+// AXIONBLADE usePoolData Hook — Simulated real DeFi pool data
 // ---------------------------------------------------------------------------
 // Provides pool-level metrics seeded from real mainnet approximate values.
 // Applies small random variations every 30 seconds to simulate live data.
