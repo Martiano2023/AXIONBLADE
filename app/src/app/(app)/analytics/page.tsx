@@ -44,7 +44,7 @@ const ON_CHAIN = {
 
 const PROGRAMS = [
   { name: "noumen_core",     id: "9jNGhtB...8gE", status: "live",    cost: 2.12, deployedAt: "2026-02-24" },
-  { name: "noumen_proof",    id: "3SNcx2k...ZqV", status: "pending", cost: 1.69, deployedAt: null },
+  { name: "noumen_proof",    id: "3SNcx2k...ZqV", status: "live",    cost: 1.69, deployedAt: "2026-02-24" },
   { name: "noumen_treasury", id: "EMNF5A4...LFu", status: "pending", cost: 2.25, deployedAt: null },
   { name: "noumen_apollo",   id: "92WeuJo...3Ee", status: "pending", cost: 1.58, deployedAt: null },
   { name: "noumen_hermes",   id: "Hfv5AS3...mTj", status: "pending", cost: 1.70, deployedAt: null },
@@ -156,7 +156,7 @@ export default function AnalyticsPage() {
           <MainnetBadge />
         </div>
         <p className="text-xs text-gray-600 mt-1">
-          AXIONBLADE v3.4.0 — noumen_core live since {ON_CHAIN.deployDate} · slot #{ON_CHAIN.deploySlot.toLocaleString()}
+          AXIONBLADE v3.4.0 — noumen_core + noumen_proof live since {ON_CHAIN.deployDate} · slot #{ON_CHAIN.deploySlot.toLocaleString()}
         </p>
       </div>
 
@@ -534,7 +534,7 @@ export default function AnalyticsPage() {
         <AlertCircle className="w-3.5 h-3.5 text-gray-600 shrink-0 mt-0.5" />
         <p className="text-xs text-gray-600 leading-relaxed">
           On-chain data sourced directly from Solana mainnet-beta.
-          Program metrics (assessments, reports, treasury) pending deployment of remaining 6 programs.
+          Program metrics (assessments, reports, treasury) pending deployment of remaining 5 programs.
           AXIONBLADE does not provide financial advice.
         </p>
       </div>

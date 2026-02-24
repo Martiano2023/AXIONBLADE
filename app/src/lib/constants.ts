@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
 // ---------------------------------------------------------------------------
-// Program IDs (mainnet — noumen_core live 2026-02-24)
+// Program IDs (mainnet — noumen_core + noumen_proof live 2026-02-24)
 // ---------------------------------------------------------------------------
 
 export const PROGRAM_IDS = {
@@ -34,10 +34,13 @@ export const AEON_CONFIG_PDA = new PublicKey(
     "2mdu4o1p2isEHQeZ2KYHYFnnDdHd183p7HzKQ3Nh8pN3"
 );
 
+export const PROOF_CONFIG_PDA = new PublicKey(
+  "9q4QmPjWc7GGG5zVqLs9pBbra4LgkjHYZBui3HAKEnZX"
+);
+
 export const MAINNET_STATUS = {
-  deployedPrograms: ["noumen_core"] as string[],
+  deployedPrograms: ["noumen_core", "noumen_proof"] as string[],
   pendingPrograms: [
-    "noumen_proof",
     "noumen_treasury",
     "noumen_apollo",
     "noumen_hermes",

@@ -48,11 +48,11 @@ const chartDataSets: Record<string, ReturnType<typeof generateChartData>> = {
 
 // Real on-chain events — mainnet 2026-02-24
 const recentActivity = [
-  { agent: "AEON",   description: "propose_policy_change #1 — Layer 2 Operational, 24h timelock (Pending)", time: "Feb 24" },
-  { agent: "AEON",   description: "update_agent KRONOS — daily budget cap set to 5,000,000 lamports",       time: "Feb 24" },
-  { agent: "KRONOS", description: "record_heartbeat — on-chain timestamp confirmed (noumen_core)",           time: "Feb 24" },
-  { agent: "AEON",   description: "create_agent ×4 — AEON · APOLLO · HERMES · KRONOS registered on-chain",  time: "Feb 24" },
-  { agent: "AEON",   description: "initialize_aeon — governance config created (aeon_config PDA)",           time: "Feb 24" },
+  { agent: "AEON",   description: "initialize_proof — proof_config PDA created, keeper_authority set (noumen_proof)", time: "Feb 24" },
+  { agent: "AEON",   description: "propose_policy_change #1 — Layer 2 Operational, 24h timelock (Pending)",           time: "Feb 24" },
+  { agent: "AEON",   description: "update_agent KRONOS — daily budget cap set to 5,000,000 lamports",                 time: "Feb 24" },
+  { agent: "KRONOS", description: "record_heartbeat — on-chain timestamp confirmed (noumen_core)",                     time: "Feb 24" },
+  { agent: "AEON",   description: "create_agent ×4 — AEON · APOLLO · HERMES · KRONOS registered on-chain",            time: "Feb 24" },
 ];
 
 // --- Custom tooltip ---
@@ -148,7 +148,7 @@ export default function DashboardPage() {
           <p className="text-gray-400 text-lg">Real-time system overview and agent performance</p>
           <LiveBadge />
         </div>
-        <p className="text-xs text-gray-600 mt-1">AXIONBLADE v3.4.0 — Mainnet Alpha · noumen_core live</p>
+        <p className="text-xs text-gray-600 mt-1">AXIONBLADE v3.4.0 — Mainnet Alpha · noumen_core + noumen_proof live</p>
       </div>
 
       {/* Row 1: Hero metrics */}
@@ -192,7 +192,7 @@ export default function DashboardPage() {
                   { name: "Treasury — noumen_treasury pending", status: "pending" },
                   { name: "Axioms 49/50 active", status: "pass" },
                   { name: "Circuit breaker: Normal", status: "pass" },
-                  { name: "Proof chain — noumen_proof pending", status: "pending" },
+                  { name: "Proof chain — noumen_proof live", status: "pass" },
                   { name: "KRONOS heartbeat on-chain", status: "pass" },
                 ].map((check) => (
                   <div key={check.name} className="flex items-center justify-between">
@@ -224,9 +224,9 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold text-white">0</p>
                 </div>
               </div>
-              <p className="text-sm text-amber-400 mb-3">⏳ noumen_proof not yet deployed</p>
+              <p className="text-sm text-emerald-400 mb-3">✓ noumen_proof live — proof_config initialized</p>
               <div className="h-16 flex items-center justify-center">
-                <p className="text-xs text-gray-600 text-center">Proof logging becomes available<br/>after noumen_proof deploy (~1.7 SOL)</p>
+                <p className="text-xs text-gray-600 text-center">log_decision available on-chain (A0-5)<br/>proof_config PDA: 9q4QmPj...nZX</p>
               </div>
             </div>
           </GlassCard>
@@ -558,8 +558,8 @@ export default function DashboardPage() {
       {/* Disclaimer */}
       <div className="relative z-10 border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-xs text-gray-600 leading-relaxed">
-          AXIONBLADE is live on Solana mainnet-beta with <strong className="text-gray-500">noumen_core</strong> deployed.
-          4 agents registered on-chain. Programs pending deploy: noumen_proof, noumen_treasury, noumen_apollo, noumen_hermes, noumen_auditor, noumen_service.
+          AXIONBLADE is live on Solana mainnet-beta with <strong className="text-gray-500">noumen_core</strong> and <strong className="text-gray-500">noumen_proof</strong> deployed.
+          4 agents registered on-chain. Programs pending deploy: noumen_treasury, noumen_apollo, noumen_hermes, noumen_auditor, noumen_service.
           Agent metrics marked ⏳ will activate after their respective program deploys.
           AXIONBLADE does not provide financial advice. All risk assessments are informational only.
         </p>
