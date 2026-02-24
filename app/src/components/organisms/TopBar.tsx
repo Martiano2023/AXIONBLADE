@@ -35,8 +35,9 @@ const tickerItems = [
   { label: "Treasury", value: "42.5 SOL", color: "bg-emerald-400" },
   { label: "Proofs", value: "1,247", color: "bg-[#00D4FF]" },
   { label: "Uptime", value: "99.9%", color: "bg-cyan-400" },
-  { label: "Agents", value: "2/100", color: "bg-amber-400" },
+  { label: "Agents", value: "4/100", color: "bg-amber-400" },
   { label: "Services", value: "7", color: "bg-[#00D4FF]/80" },
+  { label: "Axioms", value: "50/50", color: "bg-green-400" },
 ];
 
 const tierConfig = {

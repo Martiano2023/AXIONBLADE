@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------------
+// AEON Governance Page — Enhanced with glassmorphism
+// ---------------------------------------------------------------------------
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -24,6 +27,8 @@ import {
 } from "lucide-react";
 import { TechnicalDetails } from "@/components/atoms/TechnicalDetails";
 import { InfoTooltip } from "@/components/atoms/Tooltip";
+import { GlassCard } from "@/components/atoms/GlassCard";
+import { AEONIllustration } from "@/components/illustrations/AgentIllustrations";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -70,7 +75,7 @@ interface CircuitBreakerEvent {
 // Constants
 // ---------------------------------------------------------------------------
 
-const AUTHORITY_ADDRESS = "9jNGzLEhNggpoSHbWozAsHmSMzrKBPJvHQmu5Tj8j8gE";
+const AUTHORITY_ADDRESS = "9jNGhtBFjLFcUKdDdxgwpbKMj6Z6iQw2oBGCeaVBj8gE";
 const HEARTBEAT_INTERVAL = 60;
 const TABS = ["Agents", "Policy Layers", "Circuit Breaker"] as const;
 type TabType = (typeof TABS)[number];
@@ -82,9 +87,10 @@ type TabType = (typeof TABS)[number];
 const MOCK_AGENTS: Agent[] = [
   { id: 1, name: "APOLLO", type: "Evaluator", status: "Active", depth: 1, budgetPct: 52, ttl: "Active for 3d", lastHeartbeat: "30s ago" },
   { id: 2, name: "HERMES", type: "Service", status: "Active", depth: 1, budgetPct: 39, ttl: "Active for 3d", lastHeartbeat: "45s ago" },
-  { id: 3, name: "Monitor-01", type: "Monitor", status: "Active", depth: 1, budgetPct: 15, ttl: "Active for 1d", lastHeartbeat: "2m ago" },
-  { id: 4, name: "Executor-01", type: "Executor", status: "Standby", depth: 1, budgetPct: 0, ttl: "Active for 2d", lastHeartbeat: "5m ago" },
-  { id: 5, name: "Backup-01", type: "Monitor", status: "Inactive", depth: 1, budgetPct: 0, ttl: "Expired", lastHeartbeat: "N/A" },
+  { id: 3, name: "KRONOS", type: "Crank", status: "Active", depth: 1, budgetPct: 21, ttl: "Active for 3d", lastHeartbeat: "1m ago" },
+  { id: 4, name: "Monitor-01", type: "Monitor", status: "Active", depth: 1, budgetPct: 15, ttl: "Active for 1d", lastHeartbeat: "2m ago" },
+  { id: 5, name: "Executor-01", type: "Executor", status: "Standby", depth: 1, budgetPct: 0, ttl: "Active for 2d", lastHeartbeat: "5m ago" },
+  { id: 6, name: "Backup-01", type: "Monitor", status: "Inactive", depth: 1, budgetPct: 0, ttl: "Expired", lastHeartbeat: "N/A" },
 ];
 
 const MOCK_HEARTBEAT_LOG: TimelineEvent[] = [
@@ -104,7 +110,7 @@ const MOCK_POLICY_LAYERS: PolicyLayer[] = [
     borderColor: "border-l-rose-500",
     bgColor: "bg-rose-500/5",
     icon: <Lock className="w-4 h-4 text-rose-400" />,
-    items: ["29 axioms, all compliant"],
+    items: ["50 axioms — 49 active, 1 deprecated, all compliant"],
     activeProposals: 0,
   },
   {
@@ -363,7 +369,7 @@ function AgentsTab() {
           <p>Agent Registry PDA: 7kPm...xR2d</p>
           <p>Max Agents: 100 (Axiom A0-5)</p>
           <p>Creation Depth: 1 (only AEON creates)</p>
-          <p>{`{ "registered": 5, "active": 3, "standby": 1, "inactive": 1 }`}</p>
+          <p>{`{ "registered": 6, "active": 4, "standby": 1, "inactive": 1 }`}</p>
         </div>
       </TechnicalDetails>
     </div>
@@ -405,9 +411,26 @@ function PolicyLayersTab() {
           {/* Items */}
           <div className="space-y-1.5 mt-4">
             {layer.items.map((item) => (
-              <div key={item} className="flex items-center gap-2 text-sm text-gray-400">
-                <span className="w-1 h-1 rounded-full bg-gray-600" />
+              <div
+                key={item}
+                className={cn(
+                  "flex items-center gap-2 text-sm",
+                  layer.id === 0
+                    ? "text-rose-300 font-semibold bg-rose-500/10 border border-rose-500/25 rounded-lg px-3 py-2"
+                    : "text-gray-400 px-1"
+                )}
+              >
+                {layer.id === 0 ? (
+                  <ShieldCheck className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                ) : (
+                  <span className="w-1 h-1 rounded-full bg-gray-600" />
+                )}
                 {item}
+                {layer.id === 0 && (
+                  <span className="ml-auto inline-flex items-center rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wide">
+                    Compliant
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -574,32 +597,38 @@ export default function AeonPage() {
       variants={staggerContainer}
       initial="hidden"
       animate="show"
-      className="space-y-6"
+      className="space-y-8 relative"
     >
+      {/* Background gradients */}
+      <div className="absolute top-0 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-40 -right-40 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl" />
+
       {/* ================================================================= */}
       {/* Hero Section                                                      */}
       {/* ================================================================= */}
-      <motion.div variants={staggerItem} className="text-center">
-        <div className="flex flex-col items-center gap-4">
-          {/* Agent icon */}
+      <motion.div variants={staggerItem} className="text-center relative z-10">
+        <div className="flex flex-col items-center gap-6">
+          {/* Agent illustration */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="w-16 h-16 rounded-2xl bg-[#00D4FF]/15 border border-[#00D4FF]/20 flex items-center justify-center"
+            className="w-32 h-32"
           >
-            <Crown className="w-8 h-8 text-[#00D4FF]" />
+            <AEONIllustration />
           </motion.div>
 
           {/* Title + Subtitle */}
           <div>
-            <h1 className="text-3xl font-bold text-white">AEON</h1>
-            <p className="text-lg text-gray-400 mt-1">Sovereign Governance</p>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-rose-400 bg-clip-text text-transparent mb-2">
+              AEON
+            </h1>
+            <p className="text-xl text-gray-300">Sovereign Governance</p>
           </div>
 
           {/* Description */}
           <p className="text-sm text-gray-400 max-w-2xl">
-            AEON is the governance brain of AXIONBLADE. It manages policy layers, enforces axioms, and coordinates all agents. AEON decides — but never executes directly. Every governance action requires proof-before-action.
+            AEON is the Sovereign Governor of AXIONBLADE. It delegates, coordinates, and decides — but executes only by delegation. AEON manages KRONOS, APOLLO, and HERMES. Every governance action requires proof-before-action and is retroactively auditable.
           </p>
         </div>
 
@@ -673,7 +702,7 @@ export default function AeonPage() {
                 Online
               </span>
             </div>
-            <p className="text-sm text-gray-500">Sovereign Governor — orchestrates agents, enforces axioms, and approves every execution</p>
+            <p className="text-sm text-gray-500">Sovereign Governor — delegates, coordinates, decides. Executes by delegation only.</p>
           </div>
         </div>
 
@@ -713,7 +742,7 @@ export default function AeonPage() {
               </div>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-white">2</span>
+              <span className="text-3xl font-bold text-white">4</span>
               <span className="text-lg text-gray-500">/100</span>
             </div>
           </div>

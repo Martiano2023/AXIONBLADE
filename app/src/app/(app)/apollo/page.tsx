@@ -1190,7 +1190,7 @@ export default function ApolloPage() {
             <p className="text-lg text-gray-400 mt-1">Risk Assessment Engine</p>
           </div>
           <p className="text-sm text-gray-500 max-w-2xl leading-relaxed italic">
-            &ldquo;APOLLO evaluates DeFi pools in real-time across 5 evidence families. Every risk score is minted as a verifiable proof on Solana. APOLLO never executes — it only evaluates.&rdquo;
+            &ldquo;APOLLO is the DeFi Risk Evaluator — never executes, weight capped at 40% in the risk engine. It operates 3 modules: Pool Taxonomy, MLI (Mercenary Liquidity Index), and Effective APR. Outputs flow to assessment_pda → Risk Engine (≤40%) → AEON, never directly to executors.&rdquo;
           </p>
         </div>
 
@@ -1208,7 +1208,7 @@ export default function ApolloPage() {
             },
             {
               step: "02",
-              description: "APOLLO analyzes liquidity, volatility, incentives, smart contract risk, and protocol age",
+              description: "APOLLO runs 3 modules: Pool Taxonomy (classifies pool type), MLI (Mercenary Liquidity Index), and Effective APR. Enforces axioms A0-4, A0-15, A0-16, A0-30.",
               Icon: BarChart3,
               color: "text-cyan-400",
               bgColor: "bg-cyan-500/15",
@@ -1217,7 +1217,7 @@ export default function ApolloPage() {
             },
             {
               step: "03",
-              description: "A proof is minted on-chain with the risk score. Immutable. Auditable.",
+              description: "Output is written to assessment_pda. Risk Engine reads it at ≤40% weight. AEON decides — executors never read APOLLO's PDAs directly.",
               Icon: Shield,
               color: "text-emerald-400",
               bgColor: "bg-emerald-500/15",
@@ -1266,7 +1266,7 @@ export default function ApolloPage() {
               <span className="text-lg text-gray-500 font-medium">Risk Evaluator</span>
             </div>
             <p className="text-sm text-gray-400 mt-1 max-w-xl">
-              Continuous risk evaluation — every score backed by on-chain proof
+              DeFi Risk Evaluator — never executes, weight capped at 40% in risk engine
             </p>
           </div>
         </div>
@@ -1544,7 +1544,7 @@ export default function ApolloPage() {
           },
           {
             name: "MLI Scoring",
-            description: "Multi-Layered Incentive analysis for 23 pools",
+            description: "Mercenary Liquidity Index — detects unsustainable incentive-driven liquidity across 23 pools",
             Icon: BarChart3,
             borderColor: "border-l-cyan-400",
             iconColor: "text-cyan-400",

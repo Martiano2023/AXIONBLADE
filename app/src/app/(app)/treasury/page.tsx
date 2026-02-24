@@ -259,7 +259,7 @@ function ReserveGauge({ ratio, threshold }: { ratio: number; threshold: number }
       </div>
       <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-gray-400">
         <ShieldCheck className="w-3 h-3" />
-        Axiom<InfoTooltip term="Axiom" /> A0-3: Min {threshold}%
+        Reserve ratio<InfoTooltip term="Reserve Ratio" /> must stay ≥{threshold}% · daily spend ≤3% of free balance
       </span>
     </div>
   );
@@ -512,7 +512,7 @@ export default function TreasuryPage() {
             {
               step: "01",
               icon: <ArrowDownRight className="w-5 h-5 text-purple-400" />,
-              description: "Revenue flows in from APOLLO proof fees, HERMES subscriptions, and API payments",
+              description: "Revenue flows exclusively from real usage: paid services (APOLLO, HERMES), APIs, and A2A marketplace. Every service must cover its cost or be discontinued after 90 days.",
             },
             {
               step: "02",
@@ -522,7 +522,7 @@ export default function TreasuryPage() {
             {
               step: "03",
               icon: <Heart className="w-5 h-5 text-purple-400" />,
-              description: "Donations flow to a separate vault with anti-masquerade protection (Axiom A0-25)",
+              description: "Donations go to a separate Donation PDA, swept daily to Treasury — bypassing the CCS split entirely. Conditional donations are rejected (anti-masquerade rule).",
             },
           ].map((item, i) => (
             <motion.div
@@ -1300,7 +1300,7 @@ export default function TreasuryPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-white">Founder/Creator Share</p>
-              <p className="text-xs text-gray-500">Fixed 15% of all revenue — capped by Axiom A0-27</p>
+              <p className="text-xs text-gray-500">Fixed 15% of all revenue — CCS: cap 15%, floor 4%, stipend cap 5%</p>
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-amber-400">15%</p>
@@ -1323,7 +1323,7 @@ export default function TreasuryPage() {
           <div className="flex items-center gap-2 bg-amber-400/10 border border-amber-400/20 rounded-lg px-4 py-2.5">
             <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
             <p className="text-xs text-amber-400">
-              Axiom A0-27: Total creator capture capped at 15%, floor 4%, stipend cap 5%
+              CCS (Cost-Contribution Split): total creator capture capped at 15%, floor 4%, stipend cap 5%. Donations bypass CCS entirely — swept daily from Donation PDA to Treasury.
             </p>
           </div>
 

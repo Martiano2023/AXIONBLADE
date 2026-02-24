@@ -11,23 +11,23 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 const KEY_AXIOMS = [
   {
     id: "A0-1",
-    description: "LLMs never make final decisions",
+    description: "Only AEON creates agents (depth = 1, hard cap 100)",
   },
   {
     id: "A0-5",
-    description: "Only AEON creates agents (hard cap: 100)",
-  },
-  {
-    id: "A0-8",
     description: "log_decision mandatory before any execution",
   },
   {
-    id: "A0-10",
-    description: "Minimum 2 independent evidence families required",
+    id: "A0-3",
+    description: "Reserve ratio >= 25% at all times",
   },
   {
-    id: "A0-22",
-    description: "Reserve ratio >= 25%",
+    id: "A0-17",
+    description: "Execution requires >= 2 independent evidence families",
+  },
+  {
+    id: "A0-4",
+    description: "Evaluation and execution never in same agent for same domain",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function SecurityPage() {
         className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-2">
-          29 axioms enforced at smart contract level
+          50 axioms enforced at smart contract level
         </h2>
         <p className="text-sm text-gray-400 leading-relaxed mb-5">
           Axioms are immutable rules that cannot be changed without contract
@@ -86,7 +86,7 @@ export default function SecurityPage() {
           href="/axioms"
           className="inline-flex items-center gap-1.5 text-sm text-[#00D4FF] hover:text-[#00D4FF] transition-colors duration-200"
         >
-          View all 29 axioms
+          View all 50 axioms
           <ArrowRight size={14} />
         </Link>
       </motion.div>
@@ -144,11 +144,136 @@ export default function SecurityPage() {
         </div>
       </motion.div>
 
-      {/* Section 3: Audit Status */}
+      {/* Section 3: Circuit Breaker */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+      >
+        <h2 className="text-lg font-semibold text-white mb-2">
+          Circuit Breaker
+        </h2>
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          The circuit breaker protects the execution chain by halting or
+          restricting operations when anomalous conditions are detected. It
+          operates in three modes determined by on-chain risk signals.
+        </p>
+
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
+            <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#10B981]/15 text-[#10B981]">
+              NORMAL
+            </span>
+            <div>
+              <p className="text-sm text-gray-300">Normal</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                All operations proceed. Risk engine active. Execution
+                unrestricted.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
+            <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#F59E0B]/15 text-[#F59E0B]">
+              DEGRADED
+            </span>
+            <div>
+              <p className="text-sm text-gray-300">Degraded / Cautious</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Reduced execution budget. Requires higher evidence confidence
+                thresholds. AEON approval mandatory for high-value actions.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]">
+            <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#EF4444]/15 text-[#EF4444]">
+              HALTED
+            </span>
+            <div>
+              <p className="text-sm text-gray-300">Halted</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                All execution suspended. Assessments continue in ALERT-ONLY
+                mode. Manual governance intervention required to resume.
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Section 4: Evidence Families */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+      >
+        <h2 className="text-lg font-semibold text-white mb-2">
+          Evidence Families
+        </h2>
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          Risk assessments require a minimum of 2 independent evidence families
+          (Axiom A0-10). Assessments drawing from fewer than 2 families are
+          flagged as ALERT-ONLY and cannot trigger execution.
+        </p>
+
+        <div className="space-y-3">
+          {[
+            {
+              id: "A",
+              label: "Price / Volume",
+              description:
+                "On-chain price feeds, trade volume, and slippage indicators.",
+            },
+            {
+              id: "B",
+              label: "Liquidity",
+              description:
+                "Pool depth, TVL composition, and liquidity concentration metrics.",
+            },
+            {
+              id: "C",
+              label: "Behavior",
+              description:
+                "Historical actor patterns, wallet clustering, and anomaly detection.",
+            },
+            {
+              id: "D",
+              label: "Incentive",
+              description:
+                "Reward structures, emission schedules, and incentive alignment signals.",
+            },
+            {
+              id: "E",
+              label: "Protocol",
+              description:
+                "Smart contract versioning, audit history, and governance posture.",
+            },
+          ].map((family) => (
+            <div
+              key={family.id}
+              className="flex items-start gap-3 py-2 px-3 rounded-lg bg-[#0A0E17] border border-[#1A2235]"
+            >
+              <span className="shrink-0 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-mono font-medium bg-[#1A2235] text-[#00D4FF]">
+                {family.id}
+              </span>
+              <div>
+                <p className="text-sm text-gray-300">{family.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {family.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Section 5: Audit Status */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.25 }}
         className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">Audit Status</h2>
@@ -185,11 +310,11 @@ export default function SecurityPage() {
         </div>
       </motion.div>
 
-      {/* Section 4: Proof Verification */}
+      {/* Section 6: Proof Verification */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
         className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
       >
         <h2 className="text-lg font-semibold text-white mb-4">

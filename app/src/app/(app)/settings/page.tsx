@@ -348,7 +348,7 @@ export default function SettingsPage() {
           enabled={axiomViolationAlerts}
           onToggle={toggleAxiomViolationAlerts}
           label="Axiom Violation Alerts"
-          description="Notify when any of the 29 active axioms detects a violation"
+          description="Notify when any of the 50 axioms (49 active) detects a violation"
         />
 
         <Toggle
@@ -406,7 +406,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between gap-4 py-4">
           <div className="min-w-0">
             <p className="text-xs text-gray-500 mb-1">Version</p>
-            <p className="text-sm font-semibold text-gray-200">v3.2.3</p>
+            <p className="text-sm font-semibold text-gray-200">v3.4.0</p>
           </div>
           <span className="inline-flex items-center rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/30 px-2.5 py-0.5 text-xs font-medium text-[#00D4FF]">
             Latest

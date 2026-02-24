@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 // ── Glossary of key terms ──────────────────────────────────
 export const GLOSSARY: Record<string, string> = {
   CCS: "Cost-Contribution Split — how revenue is divided between creators and treasury. Separate from the base 15% creator allocation in the revenue split",
-  Axiom: "One of 29 active immutable rules (A0-1 through A0-30, with A0-2 deprecated) enforced at the smart contract level that cannot be changed without contract redeployment",
+  Axiom: "One of 50 immutable rules (A0-1 through A0-50, with A0-2 deprecated — 49 active) enforced at the smart contract level that cannot be changed without contract redeployment",
   "Evidence Family": "A category of data used to evaluate risk (e.g., liquidity, volatility)",
   "Brier Score": "Measures prediction accuracy — lower is better, 0 is perfect",
   HTL: "Hit-to-Loss ratio: percentage of risk predictions that correctly identified the outcome",

@@ -27,6 +27,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Cpu,
 } from "lucide-react";
 import { useTierStore } from "@/stores/useTierStore";
 import { UpgradeModal } from "@/components/organisms/UpgradeModal";
@@ -47,39 +48,32 @@ interface NavSection {
 
 const navSections: NavSection[] = [
   {
-    label: "Core",
+    label: "Agents",
+    icon: Bot,
     items: [
-      { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { label: "AI Agents", href: "/agents", icon: Bot, badge: "v3.3" },
+      { label: "APOLLO", href: "/apollo", icon: Shield, badge: "Assess Risk" },
+      { label: "HERMES", href: "/hermes", icon: Zap, badge: "Review Intel" },
+      { label: "AEON", href: "/aeon", icon: Crown },
+      { label: "KRONOS", href: "/agents", icon: Cpu, badge: "Scheduler" },
+    ],
+  },
+  {
+    label: "Analytics",
+    items: [
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { label: "Activity", href: "/activity", icon: Activity },
+      { label: "Economics", href: "/economics", icon: BarChart3 },
     ],
   },
   {
-    label: "AEON Guardian",
-    icon: Crown,
-    color: "amber",
-    items: [
-      { label: "Wallet Scanner", href: "/wallet-scanner", icon: ScanSearch, badge: "0.05 SOL" },
-      { label: "Alerts", href: "/alerts", icon: Bell },
-      { label: "Security", href: "/security", icon: ShieldCheck },
-    ],
-  },
-  {
-    label: "APOLLO Analyst",
-    icon: Shield,
+    label: "Tools",
     color: "blue",
     items: [
-      { label: "Pool Analyzer", href: "/pool-analyzer", icon: Droplet, badge: "0.005" },
       { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01" },
       { label: "Token Deep Dive", href: "/token-deep-dive", icon: Coins, badge: "0.012" },
-    ],
-  },
-  {
-    label: "HERMES Executor",
-    icon: Zap,
-    color: "purple",
-    items: [
+      { label: "Wallet Scanner", href: "/wallet-scanner", icon: ScanSearch, badge: "0.05 SOL" },
       { label: "Yield Optimizer", href: "/yield-optimizer", icon: TrendingUp, badge: "0.008" },
+      { label: "Pool Analyzer", href: "/pool-analyzer", icon: Droplet, badge: "0.005" },
     ],
   },
   {
@@ -90,6 +84,7 @@ const navSections: NavSection[] = [
       { label: "Axioms", href: "/axioms", icon: ScrollText },
       { label: "Settings", href: "/settings", icon: Settings },
       { label: "Integrations", href: "/integrations", icon: Plug },
+      { label: "Alerts", href: "/alerts", icon: Bell },
     ],
   },
 ];
@@ -336,10 +331,10 @@ export function NavigationSidebar() {
       {/* Footer */}
       <div className="border-t border-white/[0.06] px-4 py-3">
         {collapsed && !isMobile ? (
-          <p className="text-[10px] text-gray-600 text-center">v3.3</p>
+          <p className="text-[10px] text-gray-600 text-center">v3.4</p>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-xs text-gray-600">AXIONBLADE v3.3.0</p>
+            <p className="text-xs text-gray-600">AXIONBLADE v3.4.0</p>
             <div className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               <span className="text-[9px] text-gray-500">Live</span>

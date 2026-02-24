@@ -79,7 +79,7 @@ interface ComparisonPoolData {
 // Constants — Free tier allowlist
 // ---------------------------------------------------------------------------
 
-const FREE_REPORT_TYPES: ReportType[] = ["RiskDecomposition"];
+const FREE_REPORT_TYPES: ReportType[] = ["PoolComparison"];
 const FREE_REPORT_LIMIT = 2;
 
 // ---------------------------------------------------------------------------
@@ -249,11 +249,11 @@ const COMPARISON_POOLS: ComparisonPoolData[] = [
 ];
 
 const SERVICE_STATUS = [
-  { name: "Risk Decomposition", Icon: FileSearch, active: true, freeVisible: true },
-  { name: "Yield Trap Detector", Icon: AlertOctagon, active: true, freeVisible: false },
-  { name: "Pool Comparison", Icon: GitCompareArrows, active: true, freeVisible: false },
-  { name: "Effective APR Analysis", Icon: TrendingUp, active: true, freeVisible: false },
-  { name: "Protocol Health Monitor", Icon: HeartPulse, active: true, freeVisible: false },
+  { name: "Pool Comparison", Icon: GitCompareArrows, active: true, freeVisible: true },
+  { name: "Effective APR Calculator", Icon: TrendingUp, active: true, freeVisible: false },
+  { name: "Risk Decomposition Vector", Icon: FileSearch, active: true, freeVisible: false },
+  { name: "Yield Trap Intelligence", Icon: AlertOctagon, active: true, freeVisible: false },
+  { name: "Protocol Health Snapshot", Icon: HeartPulse, active: true, freeVisible: false },
 ];
 
 // ---------------------------------------------------------------------------
@@ -566,7 +566,7 @@ const HOW_IT_WORKS = [
   {
     step: "01",
     title: "Monitor",
-    description: "HERMES continuously monitors on-chain data, price feeds, and protocol metrics",
+    description: "HERMES continuously monitors on-chain data, price feeds, and protocol metrics — for external intelligence output only",
     Icon: Radio,
     borderColor: "border-l-cyan-400",
     iconColor: "text-cyan-400",
@@ -575,7 +575,7 @@ const HOW_IT_WORKS = [
   {
     step: "02",
     title: "Analyze",
-    description: "It generates intelligence reports: Risk Decomposition, Yield Trap Detection, Pool Comparison, Effective APR Analysis",
+    description: "5 services: Pool Comparison, Effective APR Calculator, Risk Decomposition Vector, Yield Trap Intelligence, Protocol Health Snapshot. Enforces axioms A0-22, A0-29, A0-35.",
     Icon: FileSearch,
     borderColor: "border-l-purple-400",
     iconColor: "text-purple-400",
@@ -583,8 +583,8 @@ const HOW_IT_WORKS = [
   },
   {
     step: "03",
-    title: "Verify",
-    description: "Reports are hashed and timestamped. Every insight is traceable.",
+    title: "Deliver",
+    description: "All outputs are terminal — for external consumption only. HERMES never feeds the risk engine or execution pipeline. Reports are hashed and timestamped for full auditability.",
     Icon: Fingerprint,
     borderColor: "border-l-emerald-400",
     iconColor: "text-emerald-400",
@@ -616,7 +616,7 @@ const TIER_CARDS: {
     previewLabel: "Free Preview — limited analysis for evaluation purposes",
     features: [
       "2 reports per day",
-      "RiskDecomposition type only",
+      "Pool Comparison service only",
       "No downloads",
       "24h delay on new reports",
       "Basic confidence only",
@@ -628,12 +628,12 @@ const TIER_CARDS: {
     id: "pro",
     name: "PRO",
     price: "0.5 SOL/month",
-    priceNote: "Launch price — unlimited reports, all types, real-time",
+    priceNote: "Launch price — unlimited reports, all 5 services, real-time",
     launchPrice: true,
     afterLaunch: "After launch: ~1-3 SOL/month",
     features: [
       "Unlimited reports",
-      "All 5 report types",
+      "All 5 services (Pool Comparison, Effective APR Calculator, Risk Decomposition Vector, Yield Trap Intelligence, Protocol Health Snapshot)",
       "Real-time delivery",
       "Downloads (JSON)",
       "Custom watchlist with alerts",
@@ -722,12 +722,12 @@ export default function HermesPage() {
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-bold text-white inline-flex items-center">HERMES<InfoTooltip term="HERMES" /></h1>
-                <span className="text-lg text-gray-500 font-medium">Intelligence &amp; Data Layer</span>
+                <span className="text-lg text-gray-500 font-medium">DeFi Intelligence</span>
               </div>
               <p className="text-sm text-gray-400 mt-1 max-w-2xl leading-relaxed">
-                HERMES collects, processes, and delivers intelligence reports on DeFi protocols.
-                It feeds APOLLO with data and provides actionable insights to users.
-                HERMES observes — it never acts.
+                DeFi Intelligence — 5 services for external consumption, never enters execution chain.
+                HERMES generates terminal outputs only: pool comparisons, APR analysis, risk decomposition, yield trap detection, and protocol health snapshots.
+                It observes and reports — it never feeds the execution pipeline.
               </p>
             </div>
           </div>
