@@ -428,8 +428,7 @@ function SecondaryAgentCard({ agent }: { agent: (typeof secondaryAgents)[0] }) {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={() => {
                     router.push(agent.href!);
                   }}
                 >

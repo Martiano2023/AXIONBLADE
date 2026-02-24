@@ -76,13 +76,14 @@ interface RevenueDataPoint {
 // Mock data
 // ---------------------------------------------------------------------------
 
-const TREASURY_BALANCE = 42.5371;
+// noumen_treasury not yet deployed on mainnet — values are projections per axioms
+const TREASURY_BALANCE = 0;
 const USD_PRICE = 149.85;
-const FREE_BALANCE = 31.9;
-const RESERVED = 10.6;
-const RESERVE_PCT = 25;
-const DAILY_LIMIT = 1.28;
-const DAILY_LIMIT_PCT = 3;
+const FREE_BALANCE = 0;
+const RESERVED = 0;
+const RESERVE_PCT = 25;  // A0-3: reserve ratio floor (enforced on-chain once deployed)
+const DAILY_LIMIT = 0;
+const DAILY_LIMIT_PCT = 3; // A0-6: daily spend cap (enforced on-chain once deployed)
 
 const RESERVE_RATIO = 32;
 const RESERVE_THRESHOLD = 25;
@@ -479,6 +480,17 @@ export default function TreasuryPage() {
       animate="show"
       className="space-y-6"
     >
+      {/* Mainnet pending banner */}
+      <motion.div variants={staggerItem}>
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+          <span className="text-lg">⏳</span>
+          <div>
+            <span className="font-semibold">noumen_treasury not yet deployed.</span>
+            <span className="text-amber-400/70 ml-2">Values below reflect axiom-enforced parameters (A0-3, A0-6). Live data will populate after deploy (~2.3 SOL).</span>
+          </div>
+        </div>
+      </motion.div>
+
       {/* ================================================================= */}
       {/* Hero Section                                                      */}
       {/* ================================================================= */}

@@ -84,21 +84,21 @@ type TabType = (typeof TABS)[number];
 // Mock Data
 // ---------------------------------------------------------------------------
 
+// On-chain agents — mainnet noumen_core (4 registered)
 const MOCK_AGENTS: Agent[] = [
-  { id: 1, name: "APOLLO", type: "Evaluator", status: "Active", depth: 1, budgetPct: 52, ttl: "Active for 3d", lastHeartbeat: "30s ago" },
-  { id: 2, name: "HERMES", type: "Service", status: "Active", depth: 1, budgetPct: 39, ttl: "Active for 3d", lastHeartbeat: "45s ago" },
-  { id: 3, name: "KRONOS", type: "Crank", status: "Active", depth: 1, budgetPct: 21, ttl: "Active for 3d", lastHeartbeat: "1m ago" },
-  { id: 4, name: "Monitor-01", type: "Monitor", status: "Active", depth: 1, budgetPct: 15, ttl: "Active for 1d", lastHeartbeat: "2m ago" },
-  { id: 5, name: "Executor-01", type: "Executor", status: "Standby", depth: 1, budgetPct: 0, ttl: "Active for 2d", lastHeartbeat: "5m ago" },
-  { id: 6, name: "Backup-01", type: "Monitor", status: "Inactive", depth: 1, budgetPct: 0, ttl: "Expired", lastHeartbeat: "N/A" },
+  { id: 1, name: "AEON",   type: "Executor",  status: "Active", depth: 1, budgetPct: 0, ttl: "2 years", lastHeartbeat: "Feb 24" },
+  { id: 2, name: "APOLLO", type: "Evaluator", status: "Active", depth: 1, budgetPct: 0, ttl: "2 years", lastHeartbeat: "Feb 24" },
+  { id: 3, name: "HERMES", type: "Evaluator", status: "Active", depth: 1, budgetPct: 0, ttl: "2 years", lastHeartbeat: "Feb 24" },
+  { id: 4, name: "KRONOS", type: "Executor",  status: "Active", depth: 1, budgetPct: 0, ttl: "2 years", lastHeartbeat: "Feb 24" },
 ];
 
+// Real on-chain events — mainnet 2026-02-24
 const MOCK_HEARTBEAT_LOG: TimelineEvent[] = [
-  { id: 1, label: "Heartbeat #4712 confirmed", time: "60s ago", type: "normal" },
-  { id: 2, label: "Heartbeat #4711 confirmed", time: "2m ago", type: "normal" },
-  { id: 3, label: "Heartbeat #4710 confirmed", time: "3m ago", type: "normal" },
-  { id: 4, label: "Heartbeat #4709 - minor delay", time: "4m ago", type: "warning" },
-  { id: 5, label: "Heartbeat #4708 confirmed", time: "5m ago", type: "normal" },
+  { id: 1, label: "propose_policy_change #1 — Layer 2 Operational, 24h timelock", time: "Feb 24", type: "normal" },
+  { id: 2, label: "update_agent KRONOS — daily_cap set to 5,000,000 lamports",    time: "Feb 24", type: "normal" },
+  { id: 3, label: "record_heartbeat — keeper timestamp confirmed on-chain",        time: "Feb 24", type: "normal" },
+  { id: 4, label: "create_agent ×4 — AEON · APOLLO · HERMES · KRONOS active",     time: "Feb 24", type: "normal" },
+  { id: 5, label: "initialize_aeon — governance config PDA created",               time: "Feb 24", type: "normal" },
 ];
 
 const MOCK_POLICY_LAYERS: PolicyLayer[] = [

@@ -46,14 +46,13 @@ const chartDataSets: Record<string, ReturnType<typeof generateChartData>> = {
   "90d": generateChartData(90),
 };
 
+// Real on-chain events — mainnet 2026-02-24
 const recentActivity = [
-  { agent: "AEON", description: "Delegated pool assessment to APOLLO", time: "2m ago" },
-  { agent: "KRONOS", description: "Crank cycle executed: epoch #4,218 settled", time: "3m ago" },
-  { agent: "APOLLO", description: "Risk evaluation complete: RAY-USDC", time: "5m ago" },
-  { agent: "HERMES", description: "Intelligence report published", time: "15m ago" },
-  { agent: "AEON", description: "Policy parameter updated", time: "1h ago" },
-  { agent: "KRONOS", description: "Keeper heartbeat confirmed on-chain", time: "1h ago" },
-  { agent: "APOLLO", description: "Yield trap alert: BONK-SOL", time: "2h ago" },
+  { agent: "AEON",   description: "propose_policy_change #1 — Layer 2 Operational, 24h timelock (Pending)", time: "Feb 24" },
+  { agent: "AEON",   description: "update_agent KRONOS — daily budget cap set to 5,000,000 lamports",       time: "Feb 24" },
+  { agent: "KRONOS", description: "record_heartbeat — on-chain timestamp confirmed (noumen_core)",           time: "Feb 24" },
+  { agent: "AEON",   description: "create_agent ×4 — AEON · APOLLO · HERMES · KRONOS registered on-chain",  time: "Feb 24" },
+  { agent: "AEON",   description: "initialize_aeon — governance config created (aeon_config PDA)",           time: "Feb 24" },
 ];
 
 // --- Custom tooltip ---
@@ -149,7 +148,7 @@ export default function DashboardPage() {
           <p className="text-gray-400 text-lg">Real-time system overview and agent performance</p>
           <LiveBadge />
         </div>
-        <p className="text-xs text-gray-600 mt-1">AXIONBLADE v3.4.0 — Devnet Beta</p>
+        <p className="text-xs text-gray-600 mt-1">AXIONBLADE v3.4.0 — Mainnet Alpha · noumen_core live</p>
       </div>
 
       {/* Row 1: Hero metrics */}
@@ -189,17 +188,17 @@ export default function DashboardPage() {
               {/* Health Checks */}
               <div className="bg-[#0F1420]/60 backdrop-blur border border-white/5 rounded-lg p-4 space-y-2">
                 {[
-                  { name: "All agents responding (4/4)", status: true },
-                  { name: "Treasury reserve >= 25%", status: true },
-                  { name: "Axioms 49/50 active", status: true },
-                  { name: "Circuit breaker: Normal", status: true },
-                  { name: "Proof chain intact", status: true },
-                  { name: "KRONOS keeper synced", status: true },
+                  { name: "All agents responding (4/4)", status: "pass" },
+                  { name: "Treasury — noumen_treasury pending", status: "pending" },
+                  { name: "Axioms 49/50 active", status: "pass" },
+                  { name: "Circuit breaker: Normal", status: "pass" },
+                  { name: "Proof chain — noumen_proof pending", status: "pending" },
+                  { name: "KRONOS heartbeat on-chain", status: "pass" },
                 ].map((check) => (
                   <div key={check.name} className="flex items-center justify-between">
                     <span className="text-xs text-gray-400">{check.name}</span>
-                    <span className={`text-xs font-semibold ${check.status ? "text-emerald-400" : "text-red-400"}`}>
-                      {check.status ? "✓ PASS" : "✗ FAIL"}
+                    <span className={`text-xs font-semibold ${check.status === "pass" ? "text-emerald-400" : check.status === "pending" ? "text-amber-400" : "text-red-400"}`}>
+                      {check.status === "pass" ? "✓ PASS" : check.status === "pending" ? "⏳ PENDING" : "✗ FAIL"}
                     </span>
                   </div>
                 ))}
@@ -221,23 +220,13 @@ export default function DashboardPage() {
                   <Activity className="w-6 h-6 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider">Proofs Today</p>
-                  <p className="text-2xl font-bold text-white"><AnimatedStat value="47" /></p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wider">Proofs On-Chain</p>
+                  <p className="text-2xl font-bold text-white">0</p>
                 </div>
               </div>
-              <p className="text-sm text-emerald-400 mb-3">↑ +12% vs yesterday</p>
-              <div className="h-16">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={proofsSparkData}>
-                    <defs>
-                      <linearGradient id="sparkCyan" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#00D4FF" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#00D4FF" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="v" stroke="#00D4FF" strokeWidth={2} fill="url(#sparkCyan)" dot={false} />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <p className="text-sm text-amber-400 mb-3">⏳ noumen_proof not yet deployed</p>
+              <div className="h-16 flex items-center justify-center">
+                <p className="text-xs text-gray-600 text-center">Proof logging becomes available<br/>after noumen_proof deploy (~1.7 SOL)</p>
               </div>
             </div>
           </GlassCard>
@@ -258,20 +247,10 @@ export default function DashboardPage() {
                 <TrendingUp className="w-5 h-5 text-amber-400" />
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Treasury Balance</p>
               </div>
-              <p className="text-3xl font-bold text-white mb-2"><AnimatedStat value="42.5 SOL" /></p>
-              <p className="text-sm text-emerald-400">+1.2 SOL (24h)</p>
-              <div className="mt-4 h-12">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={revenueSparkData}>
-                    <defs>
-                      <linearGradient id="sparkAmber" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#F59E0B" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="v" stroke="#F59E0B" strokeWidth={2} fill="url(#sparkAmber)" dot={false} />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <p className="text-3xl font-bold text-gray-500 mb-2">—</p>
+              <p className="text-sm text-amber-400">⏳ noumen_treasury pending</p>
+              <div className="mt-4 h-12 flex items-center">
+                <p className="text-xs text-gray-600">Treasury vault deploys with noumen_treasury (~2.3 SOL)</p>
               </div>
             </div>
           </GlassCard>
@@ -289,8 +268,8 @@ export default function DashboardPage() {
                 <Zap className="w-5 h-5 text-purple-400" />
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Active Assessments</p>
               </div>
-              <p className="text-3xl font-bold text-white mb-2"><AnimatedStat value="23" /></p>
-              <p className="text-sm text-gray-400">8 pools monitored</p>
+              <p className="text-3xl font-bold text-gray-500 mb-2">0</p>
+              <p className="text-sm text-amber-400">⏳ noumen_apollo pending</p>
             </div>
           </GlassCard>
         </motion.div>
@@ -348,12 +327,12 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Delegations today</span>
-                  <span className="text-white font-semibold">12</span>
+                  <span className="text-gray-400">Agents created</span>
+                  <span className="text-white font-semibold">4 / 100</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Policy proposals</span>
-                  <span className="text-white font-semibold">0 pending</span>
+                  <span className="text-amber-400 font-semibold">1 pending</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Circuit breaker</span>
@@ -361,7 +340,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Last heartbeat</span>
-                  <span className="text-gray-500">14s ago</span>
+                  <span className="text-gray-500">Feb 24 21:53 UTC</span>
                 </div>
               </div>
             </div>
@@ -383,19 +362,19 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Assessments today</span>
-                  <span className="text-white font-semibold">47</span>
+                  <span className="text-gray-500 font-semibold">0</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Pools monitored</span>
-                  <span className="text-white font-semibold">8</span>
+                  <span className="text-gray-500 font-semibold">0</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Avg confidence</span>
-                  <span className="text-white font-semibold">87.3%</span>
+                  <span className="text-gray-400">Program status</span>
+                  <span className="text-amber-400 font-semibold">Pending deploy</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Last assessment</span>
-                  <span className="text-gray-500">2m ago</span>
+                  <span className="text-gray-400">Agent manifest</span>
+                  <span className="text-emerald-400 font-semibold">On-chain ✓</span>
                 </div>
               </div>
             </div>
@@ -417,19 +396,19 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Reports today</span>
-                  <span className="text-white font-semibold">23</span>
+                  <span className="text-gray-500 font-semibold">0</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Active subscribers</span>
-                  <span className="text-white font-semibold">14</span>
+                  <span className="text-gray-500 font-semibold">0</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">API requests (24h)</span>
-                  <span className="text-white font-semibold">1,247</span>
+                  <span className="text-gray-400">Program status</span>
+                  <span className="text-amber-400 font-semibold">Pending deploy</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Last report</span>
-                  <span className="text-gray-500">5m ago</span>
+                  <span className="text-gray-400">Agent manifest</span>
+                  <span className="text-emerald-400 font-semibold">On-chain ✓</span>
                 </div>
               </div>
             </div>
@@ -450,20 +429,20 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Crank cycles today</span>
-                  <span className="text-white font-semibold">318</span>
+                  <span className="text-gray-400">Crank cycles</span>
+                  <span className="text-gray-500 font-semibold">0</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Epochs settled</span>
-                  <span className="text-white font-semibold">4,218</span>
+                  <span className="text-gray-400">Daily budget cap</span>
+                  <span className="text-white font-semibold">5,000,000 lamps</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Keeper status</span>
-                  <span className="text-emerald-400 font-semibold">Synced</span>
+                  <span className="text-emerald-400 font-semibold">Heartbeat ✓</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Last heartbeat</span>
-                  <span className="text-gray-500">8s ago</span>
+                  <span className="text-gray-500">Feb 24 21:53 UTC</span>
                 </div>
               </div>
             </div>
@@ -579,7 +558,9 @@ export default function DashboardPage() {
       {/* Disclaimer */}
       <div className="relative z-10 border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-xs text-gray-600 leading-relaxed">
-          Dashboard data is from devnet beta. Metrics, balances, and agent statuses may differ from mainnet deployment.
+          AXIONBLADE is live on Solana mainnet-beta with <strong className="text-gray-500">noumen_core</strong> deployed.
+          4 agents registered on-chain. Programs pending deploy: noumen_proof, noumen_treasury, noumen_apollo, noumen_hermes, noumen_auditor, noumen_service.
+          Agent metrics marked ⏳ will activate after their respective program deploys.
           AXIONBLADE does not provide financial advice. All risk assessments are informational only.
         </p>
       </div>
