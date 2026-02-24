@@ -259,7 +259,7 @@ function generateScanResult(wallet: string): WalletScanResult {
         ((wallet.charCodeAt(i % wallet.length) + i * 17) % 16).toString(16)
       ).join(""),
     timestamp: Date.now(),
-    source: "axionblade-v3.2.3-wallet-scanner",
+    source: "axionblade-v3.4.0-wallet-scanner",
     scanDuration: Date.now() - startTime,
   };
 }

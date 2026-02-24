@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
 // ---------------------------------------------------------------------------
-// Program IDs (devnet deployments)
+// Program IDs (mainnet — noumen_core live 2026-02-24)
 // ---------------------------------------------------------------------------
 
 export const PROGRAM_IDS = {
@@ -19,11 +19,35 @@ export const PROGRAM_IDS = {
 // ---------------------------------------------------------------------------
 
 export const DEVNET_RPC =
-  process.env.NEXT_PUBLIC_RPC_URL ?? "https://api.devnet.solana.com";
+  process.env.NEXT_PUBLIC_RPC_URL ?? "https://api.mainnet-beta.solana.com";
 
-export const CLUSTER = (process.env.NEXT_PUBLIC_CLUSTER ?? "devnet") as
+export const CLUSTER = (process.env.NEXT_PUBLIC_CLUSTER ?? "mainnet-beta") as
   | "devnet"
   | "mainnet-beta";
+
+// ---------------------------------------------------------------------------
+// Mainnet on-chain state (initialized 2026-02-24)
+// ---------------------------------------------------------------------------
+
+export const AEON_CONFIG_PDA = new PublicKey(
+  process.env.NEXT_PUBLIC_AEON_CONFIG_PDA ??
+    "2mdu4o1p2isEHQeZ2KYHYFnnDdHd183p7HzKQ3Nh8pN3"
+);
+
+export const MAINNET_STATUS = {
+  deployedPrograms: ["noumen_core"] as string[],
+  pendingPrograms: [
+    "noumen_proof",
+    "noumen_treasury",
+    "noumen_apollo",
+    "noumen_hermes",
+    "noumen_auditor",
+    "noumen_service",
+  ] as string[],
+  activeAgentCount: 4,
+  agentCap: 100,
+  deployDate: "2026-02-24",
+} as const;
 
 // ---------------------------------------------------------------------------
 // PDA seeds matching the on-chain programs

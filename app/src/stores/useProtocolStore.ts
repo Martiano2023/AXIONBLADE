@@ -13,8 +13,8 @@ interface ProtocolState {
 
 export const useProtocolStore = create<ProtocolState>((set) => ({
   treasuryBalance: 0,
-  activeAgents: 2,
-  totalDecisions: 1247,
+  activeAgents: 4,
+  totalDecisions: 0,
   activeServices: 4,
   setTreasuryBalance: (v) => set({ treasuryBalance: v }),
   setActiveAgents: (v) => set({ activeAgents: v }),

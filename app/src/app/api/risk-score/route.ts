@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
         Math.floor(Math.random() * 16).toString(16)
       ).join(""),
     timestamp: Date.now(),
-    source: "axionblade-v3.2.3",
+    source: "axionblade-v3.4.0",
   };
 
   const responseHeaders = {
