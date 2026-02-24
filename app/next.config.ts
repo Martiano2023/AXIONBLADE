@@ -15,12 +15,23 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https: wss:",
+              "frame-ancestors 'none'",
+            ].join("; "),
+          },
         ],
       },
       {
         source: "/api/(.*)",
         headers: [
-          { key: "Access-Control-Allow-Origin", value: "" },
           { key: "Access-Control-Allow-Methods", value: "GET, OPTIONS" },
           {
             key: "Access-Control-Allow-Headers",

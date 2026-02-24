@@ -4,6 +4,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, ChevronDown, ChevronUp, ArrowRight, Clock, Activity } from 'lucide-react';
 import { Badge } from '@/components/atoms/Badge';
@@ -50,7 +51,7 @@ function PulsingDot({ color }: { color: string }) {
 // ---------------------------------------------------------------------------
 function FirewallChain() {
   const steps = [
-    { label: 'APOLLO', sub: 'DeFi Risk Evaluator', color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/30' },
+    { label: 'APOLLO', sub: 'DeFi Risk Evaluator', color: 'text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/30' },
     { label: 'assessment_pda', sub: 'On-chain proof', color: 'text-gray-300', bg: 'bg-white/5 border-white/10' },
     { label: 'Risk Engine', sub: 'Weight ≤ 40%', color: 'text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/30' },
     { label: 'AEON', sub: 'Sovereign Governor', color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/30' },
@@ -88,6 +89,7 @@ function FirewallChain() {
 // ---------------------------------------------------------------------------
 function KRONOSCard() {
   const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
 
   return (
     <GlassCard gradient="amber" glow>
@@ -209,10 +211,10 @@ function KRONOSCard() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={() => (window.location.href = '/economics')}>
+          <Button variant="outline" size="sm" onClick={() => router.push('/economics')}>
             View Economics Dashboard
           </Button>
-          <Button variant="outline" size="sm" onClick={() => (window.location.href = '/token')}>
+          <Button variant="outline" size="sm" onClick={() => router.push('/token')}>
             View Token Status
           </Button>
         </div>
@@ -262,13 +264,13 @@ const secondaryAgents = [
     role: 'DeFi Risk Evaluator',
     tagline: 'Evaluates — never executes',
     description:
-      'APOLLO runs 3 risk modules: Pool Taxonomy, MLI (Multi-Level Intelligence), and Effective APR. Its output feeds the Risk Engine at a weight capped at 40%. APOLLO never executes — its assessments are deposited into PDAs and audited.',
+      'APOLLO runs 3 risk modules: Pool Taxonomy, MLI (Mercenary Liquidity Index), and Effective APR. Its output feeds the Risk Engine at a weight capped at 40%. APOLLO never executes — its assessments are deposited into PDAs and audited.',
     status: 'Evaluating',
     statusVariant: 'info' as const,
-    dotColor: 'bg-purple-400',
-    gradient: 'purple' as const,
-    accentColor: 'text-purple-400',
-    tagColor: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    dotColor: 'bg-cyan-400',
+    gradient: 'cyan' as const,
+    accentColor: 'text-cyan-400',
+    tagColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
     lastActionSecs: 180,
     metrics: [
       { label: 'Pools Assessed', value: '128' },
@@ -295,10 +297,10 @@ const secondaryAgents = [
       'HERMES provides 5 external intelligence services: market data aggregation, protocol monitoring, on-chain analytics, sentiment feeds, and A2A intelligence marketplace. All outputs are terminal — they are consumed externally and never enter the execution chain.',
     status: 'Monitoring',
     statusVariant: 'warning' as const,
-    dotColor: 'bg-cyan-400',
-    gradient: 'cyan' as const,
-    accentColor: 'text-cyan-400',
-    tagColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+    dotColor: 'bg-purple-400',
+    gradient: 'purple' as const,
+    accentColor: 'text-purple-400',
+    tagColor: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
     lastActionSecs: 45,
     metrics: [
       { label: 'Active Services', value: '5' },
@@ -322,6 +324,7 @@ const secondaryAgents = [
 // ---------------------------------------------------------------------------
 function SecondaryAgentCard({ agent }: { agent: (typeof secondaryAgents)[0] }) {
   const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
 
   const IllustrationMap: Record<string, React.FC> = {
     aeon: AEONIllustration,
@@ -427,7 +430,7 @@ function SecondaryAgentCard({ agent }: { agent: (typeof secondaryAgents)[0] }) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = agent.href!;
+                    router.push(agent.href!);
                   }}
                 >
                   {agent.hrefLabel}
@@ -445,6 +448,7 @@ function SecondaryAgentCard({ agent }: { agent: (typeof secondaryAgents)[0] }) {
 // Page
 // ---------------------------------------------------------------------------
 export default function AgentsPage() {
+  const router = useRouter();
   return (
     <div className="space-y-8 relative">
       {/* Background gradients */}
@@ -545,7 +549,7 @@ export default function AgentsPage() {
         <GlassCard
           gradient="purple"
           hover
-          onClick={() => (window.location.href = '/economics')}
+          onClick={() => router.push('/economics')}
           className="cursor-pointer"
         >
           <div className="p-6">
@@ -557,7 +561,7 @@ export default function AgentsPage() {
         <GlassCard
           gradient="amber"
           hover
-          onClick={() => (window.location.href = '/token')}
+          onClick={() => router.push('/token')}
           className="cursor-pointer"
         >
           <div className="p-6">
@@ -569,7 +573,7 @@ export default function AgentsPage() {
         <GlassCard
           gradient="emerald"
           hover
-          onClick={() => (window.location.href = '/airdrop')}
+          onClick={() => router.push('/airdrop')}
           className="cursor-pointer"
         >
           <div className="p-6">

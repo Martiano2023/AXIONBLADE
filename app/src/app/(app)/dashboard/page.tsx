@@ -174,9 +174,9 @@ export default function DashboardPage() {
 
               <div className="flex items-center gap-4 mb-4 flex-wrap">
                 {[
-                  { name: "AEON", color: "bg-purple-400" },
+                  { name: "AEON", color: "bg-rose-400" },
                   { name: "APOLLO", color: "bg-cyan-400" },
-                  { name: "HERMES", color: "bg-rose-400" },
+                  { name: "HERMES", color: "bg-purple-400" },
                   { name: "KRONOS", color: "bg-amber-400" },
                 ].map(({ name, color }) => (
                   <div key={name} className="flex items-center gap-1.5">
@@ -340,11 +340,11 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <GlassCard gradient="purple" hover>
+          <GlassCard gradient="rose" hover>
             <div className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <span className="w-3 h-3 rounded-full bg-purple-400 animate-pulse" />
-                <p className="text-xs text-purple-400 font-semibold uppercase tracking-wider">AEON — Governance</p>
+                <span className="w-3 h-3 rounded-full bg-rose-400 animate-pulse" />
+                <p className="text-xs text-rose-400 font-semibold uppercase tracking-wider">AEON — Governance</p>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
@@ -408,11 +408,11 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <GlassCard gradient="rose" hover>
+          <GlassCard gradient="purple" hover>
             <div className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <span className="w-3 h-3 rounded-full bg-rose-400 animate-pulse" />
-                <p className="text-xs text-rose-400 font-semibold uppercase tracking-wider">HERMES — Intelligence</p>
+                <span className="w-3 h-3 rounded-full bg-purple-400 animate-pulse" />
+                <p className="text-xs text-purple-400 font-semibold uppercase tracking-wider">HERMES — Intelligence</p>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
@@ -550,9 +550,9 @@ export default function DashboardPage() {
             <div className="space-y-0">
               {recentActivity.map((event, i) => {
                 const agentColor: Record<string, string> = {
-                  AEON: "text-purple-400",
+                  AEON: "text-rose-400",
                   APOLLO: "text-cyan-400",
-                  HERMES: "text-rose-400",
+                  HERMES: "text-purple-400",
                   KRONOS: "text-amber-400",
                 };
                 return (
