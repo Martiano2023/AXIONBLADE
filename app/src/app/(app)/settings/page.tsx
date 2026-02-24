@@ -467,8 +467,8 @@ export default function SettingsPage() {
       {/* Disclaimer */}
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Settings are stored locally in your browser. AXIONBLADE is currently on devnet beta.
-          Configuration changes take effect immediately but may behave differently on mainnet.
+          Settings are stored locally in your browser. AXIONBLADE is live on Solana mainnet-beta.
+          Configuration changes take effect immediately.
           AXIONBLADE does not provide financial advice. All risk assessments are informational only.
         </p>
       </div>

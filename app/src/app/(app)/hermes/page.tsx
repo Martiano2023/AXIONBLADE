@@ -1168,7 +1168,7 @@ export default function HermesPage() {
           Intelligence reports are informational only. AXIONBLADE does not provide financial advice. All analysis is algorithmic and deterministic — no LLM makes final decisions.
         </p>
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Devnet Beta — report data uses simulated sources and may differ from mainnet conditions. AI-adjusted pricing may vary.
+          Mainnet Alpha — noumen_hermes not yet deployed. Report data uses simulated sources pending program deploy. AI-adjusted pricing may vary.
         </p>
       </div>
     </div>

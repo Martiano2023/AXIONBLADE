@@ -589,7 +589,7 @@ export default function AlertsPage() {
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
           Alert thresholds are configurable at Policy Layer 2 (24h delay). Critical alerts trigger immediate notification.
-          Alert data shown is from devnet beta and may differ from mainnet conditions.
+          Alert data is simulated pending full mainnet program deploy (noumen_apollo, noumen_proof).
         </p>
       </div>
     </div>

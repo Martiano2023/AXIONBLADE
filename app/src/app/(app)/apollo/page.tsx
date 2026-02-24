@@ -1510,7 +1510,7 @@ export default function ApolloPage() {
                   </div>
                 </div>
                 <a
-                  href={`https://solscan.io/tx/${proofResult.hash}?cluster=devnet`}
+                  href={`https://solscan.io/tx/${proofResult.hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors shrink-0"
@@ -1898,7 +1898,7 @@ export default function ApolloPage() {
           AI-adjusted pricing may vary based on pool complexity and network conditions — check current price before confirming any transaction.
         </p>
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Devnet Beta — assessment data uses simulated sources and may differ from mainnet conditions. Past accuracy metrics do not guarantee future performance.
+          Mainnet Alpha — noumen_apollo not yet deployed. Assessment data uses simulated sources pending program deploy. Past accuracy metrics do not guarantee future performance.
         </p>
       </div>
 

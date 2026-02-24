@@ -14,8 +14,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col min-w-0">
         <TopBar />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
-          <div className="fixed top-2 right-2 z-30 bg-slate-700/50 border border-slate-600/40 rounded-full px-3 py-1 text-[10px] font-medium text-slate-300">
-            Devnet Beta
+          <div className="fixed top-2 right-2 z-30 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 text-[10px] font-medium text-emerald-400">
+            Mainnet Alpha
           </div>
           <div className="max-w-7xl mx-auto px-0 sm:px-2 lg:px-4">
             <AnimatePresence mode="wait">

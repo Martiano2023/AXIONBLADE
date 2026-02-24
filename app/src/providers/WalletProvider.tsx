@@ -82,7 +82,7 @@ function useSuppressSolanaWsErrors(endpoint: string) {
 
 export function WalletProvider({ children }: Props) {
   const endpoint =
-    process.env.NEXT_PUBLIC_RPC_URL || "https://api.devnet.solana.com";
+    process.env.NEXT_PUBLIC_RPC_URL || "https://api.mainnet-beta.solana.com";
 
   // Suppress Solana WebSocket errors when running against a local endpoint
   // that has no validator. This prevents "ws error: undefined" in the console.

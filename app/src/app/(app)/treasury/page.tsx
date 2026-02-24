@@ -1366,7 +1366,7 @@ export default function TreasuryPage() {
       {/* Disclaimers */}
       <div className="border-t border-white/[0.04] pt-6 mt-8 space-y-2">
         <p className="text-[10px] text-gray-600 leading-relaxed">
-          Treasury data shown is from devnet beta. Balances, revenue projections, and reserve ratios may differ from mainnet deployment.
+          noumen_treasury not yet deployed on Solana mainnet-beta. Balances shown are zero until the program is deployed. Reserve ratio (≥25%) and daily spend cap (≤3%) are enforced on-chain by axioms A0-3 and A0-6 once live.
           All financial operations are governed by immutable axioms enforced at the smart contract level.
         </p>
       </div>
