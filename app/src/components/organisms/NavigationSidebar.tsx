@@ -60,9 +60,10 @@ const navSections: NavSection[] = [
   {
     label: "Analytics",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { label: "Activity", href: "/activity", icon: Activity },
-      { label: "Economics", href: "/economics", icon: BarChart3 },
+      { label: "Dashboard",  href: "/dashboard",  icon: LayoutDashboard },
+      { label: "Analytics",  href: "/analytics",  icon: BarChart3 },
+      { label: "Activity",   href: "/activity",   icon: Activity },
+      { label: "Economics",  href: "/economics",  icon: TrendingUp },
     ],
   },
   {
