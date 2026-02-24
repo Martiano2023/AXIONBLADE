@@ -138,13 +138,13 @@ const MOCK_WALLET_ADDRESS = "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy";
 const MOCK_BALANCE = "42.5";
 
 const PROGRAMS = [
-  { name: "AEON Governor",      address: "AEoN1111111111111111111111111111111111111111" },
-  { name: "APOLLO Risk Engine", address: "APoL1111111111111111111111111111111111111111" },
-  { name: "HERMES Intelligence",address: "HrMs1111111111111111111111111111111111111111" },
-  { name: "Treasury PDA",       address: "TrSy1111111111111111111111111111111111111111" },
-  { name: "Donation PDA",       address: "DnTn1111111111111111111111111111111111111111" },
-  { name: "Decision Logger",    address: "DcLg1111111111111111111111111111111111111111" },
-  { name: "Circuit Breaker",    address: "CrBk1111111111111111111111111111111111111111" },
+  { name: "AEON Governor (noumen_core)",      address: "9jNGhtBFjLFcUKdDdxgwpbKMj6Z6iQw2oBGCeaVBj8gE" },
+  { name: "APOLLO Risk Engine (noumen_apollo)", address: "92WeuJoJdh3o1jLcvSLKuTUitQMnUhMRzoTYaSzgo3Ee" },
+  { name: "HERMES Intelligence (noumen_hermes)",address: "Hfv5AS3sydnniyqgF8dwXgN76NU4aKAysgcQJ3uncmTj" },
+  { name: "Treasury (noumen_treasury)",       address: "EMNF5A4cpqusBuUajMv3FUzjbwR7GQMFyJ7JDi4FjLFu" },
+  { name: "Service Layer (noumen_service)",   address: "9ArzMqH6jSWVwvQyYfsdtUQ595wCQXFQAQzXxcoM4LbY" },
+  { name: "Proof Logger (noumen_proof)",      address: "3SNcx2kAf5NXNJd68eLK5gZ3cUvvMEUkC8F4N1ZSUZqV" },
+  { name: "Auditor (noumen_auditor)",         address: "CGLy91mAXwz761z6soTnap2pNVVA8d8zfsGZjLkqwvTe" },
 ];
 
 /* ------------------------------------------------------------------ */

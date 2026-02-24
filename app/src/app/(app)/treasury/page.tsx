@@ -819,7 +819,7 @@ export default function TreasuryPage() {
         {/* Reserve Ratio Compliance */}
         <motion.div variants={staggerItem}>
           <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 flex flex-col items-center">
-            <h3 className="text-sm font-semibold text-white mb-4">Reserve Ratio (A0-17)</h3>
+            <h3 className="text-sm font-semibold text-white mb-4">Reserve Ratio (A0-3)</h3>
             <div className="relative">
               <svg width={140} height={80} viewBox="0 0 140 80">
                 <path d="M 10 70 A 55 55 0 0 1 130 70" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={10} strokeLinecap="round" />
@@ -1238,7 +1238,7 @@ export default function TreasuryPage() {
                 </div>
                 <div>
                   <span className="text-gray-600">Sweep Frequency:</span>{" "}
-                  <span className="text-gray-400">Daily (per Axiom A0-21)</span>
+                  <span className="text-gray-400">Daily (per Axiom A0-24)</span>
                 </div>
                 <div>
                   <span className="text-gray-600">Last Sweep Block:</span>{" "}

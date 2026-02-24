@@ -163,9 +163,9 @@ export default function LandingPage() {
                     <AEONIllustration />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">AEON</h3>
-                  <p className="text-sm text-rose-400 font-semibold mb-3">Guardian</p>
+                  <p className="text-sm text-rose-400 font-semibold mb-3">Sovereign Governor</p>
                   <p className="text-sm text-gray-400">
-                    24/7 monitoring, threat detection, and auto-defensive actions to protect your positions.
+                    Delegates authority, coordinates agents, and decides policy. Never executes directly — proof-before-action at every layer.
                   </p>
                 </div>
               </GlassCard>
@@ -178,15 +178,15 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <GlassCard gradient="purple" glow hover>
+              <GlassCard gradient="cyan" glow hover>
                 <div className="p-6">
                   <div className="w-32 h-32 mx-auto mb-4">
                     <APOLLOIllustration />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">APOLLO</h3>
-                  <p className="text-sm text-purple-400 font-semibold mb-3">Analyst</p>
+                  <p className="text-sm text-cyan-400 font-semibold mb-3">DeFi Risk Evaluator</p>
                   <p className="text-sm text-gray-400">
-                    Deep risk analysis with template-based AI reports and multi-evidence validation.
+                    Evaluates pools using Pool Taxonomy, MLI, and Effective APR modules. Never executes — weight capped at 40% in the risk engine.
                   </p>
                 </div>
               </GlassCard>
@@ -199,15 +199,15 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <GlassCard gradient="cyan" glow hover>
+              <GlassCard gradient="purple" glow hover>
                 <div className="p-6">
                   <div className="w-32 h-32 mx-auto mb-4">
                     <HERMESIllustration />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">HERMES</h3>
-                  <p className="text-sm text-cyan-400 font-semibold mb-3">Executor</p>
+                  <p className="text-sm text-purple-400 font-semibold mb-3">DeFi Intelligence</p>
                   <p className="text-sm text-gray-400">
-                    Autonomous trading, rebalancing, and DCA with permission-based execution.
+                    5 services for external consumption — Pool Comparison, Effective APR, Risk Decomposition, Yield Trap Intel, Protocol Health. Never enters the execution chain.
                   </p>
                 </div>
               </GlassCard>

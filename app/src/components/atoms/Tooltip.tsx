@@ -15,7 +15,7 @@ export const GLOSSARY: Record<string, string> = {
   PDA: "Program Derived Address — a deterministic account on Solana owned by a program",
   MLI: "Multi-Layered Incentive — analysis framework for evaluating yield sustainability",
   TTL: "Time-To-Live — how long before an agent or data point expires",
-  "Reserve Ratio": "Percentage of treasury held in reserve — minimum 25% per Axiom A0-17",
+  "Reserve Ratio": "Percentage of treasury held in reserve — minimum 25% per Axiom A0-3",
   "Circuit Breaker": "Emergency mechanism that halts execution when anomalies are detected",
 
   // Evidence families - explain what each measures
@@ -36,10 +36,10 @@ export const GLOSSARY: Record<string, string> = {
   "Yield Trap": "A pool where headline APR significantly exceeds effective APR, misleading participants about true returns",
   "Proof Hash": "SHA-256 hash of the assessment data stored on-chain, enabling cryptographic verification of the result",
   "Assessment PDA": "Program Derived Address storing the immutable risk assessment record on Solana",
-  "Treasury Reserve": "30% of revenue held as protocol safety net (minimum 25% reserve ratio per Axiom A0-17)",
+  "Treasury Reserve": "30% of revenue held as protocol safety net (minimum 25% reserve ratio per Axiom A0-3)",
   "Development Fund": "15% of revenue allocated to future protocol development and improvements",
   "Operations": "40% of revenue allocated to compute, RPC nodes, storage, and infrastructure costs",
-  "Creator Allocation": "15% of revenue allocated to protocol founder/creator (capped by Axiom A0-27)",
+  "Creator Allocation": "15% of revenue allocated to protocol founder/creator (capped by Axiom A0-28)",
   "Confidence Level": "Percentage of data fields available for the assessment. Higher confidence = more complete data input",
   "AEON": "Sovereign governor agent — delegates tasks, coordinates agents, makes governance decisions. Never executes directly",
   "APOLLO": "DeFi risk evaluator agent with 3 modules: Pool Taxonomy, Multi-Layered Incentive (MLI), and Effective APR",
