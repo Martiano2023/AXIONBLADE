@@ -24,7 +24,7 @@ import {
   PieChart,
   Activity,
 } from 'lucide-react';
-import { Card } from '@/components/atoms/Card';
+import { GlassCard } from '@/components/atoms/GlassCard';
 import { Badge } from '@/components/atoms/Badge';
 
 interface EconomyData {
@@ -112,10 +112,10 @@ export default function EconomyPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Economy Dashboard</h1>
-        <p className="text-gray-400">
-          Real-time protocol economics and service performance monitoring
-        </p>
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-amber-400 bg-clip-text text-transparent">
+          Economy Dashboard
+        </h1>
+        <p className="text-gray-400 text-lg">Real-time protocol economics and service performance</p>
       </div>
 
       {/* Key Metrics */}
@@ -177,7 +177,7 @@ export default function EconomyPage() {
       )}
 
       {/* Revenue Distribution */}
-      <Card className="p-6">
+      <GlassCard gradient="cyan" hover><div className="p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <PieChart className="w-5 h-5 text-purple-400" />
           Revenue Distribution (4-Way Split)
@@ -231,10 +231,10 @@ export default function EconomyPage() {
             <div className="font-semibold text-amber-400">{data.revenueByCategory.creator.toFixed(3)} SOL</div>
           </div>
         </div>
-      </Card>
+      </div></GlassCard>
 
       {/* Service Performance Table */}
-      <Card className="p-6">
+      <GlassCard gradient="cyan" hover><div className="p-6">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-cyan-400" />
           Service Performance (Last 7 Days)
@@ -280,10 +280,10 @@ export default function EconomyPage() {
             </tbody>
           </table>
         </div>
-      </Card>
+      </div></GlassCard>
 
       {/* Volume Discounts Analytics */}
-      <Card className="p-6">
+      <GlassCard gradient="cyan" hover><div className="p-6">
         <h3 className="text-lg font-semibold mb-4">Volume Discounts Analytics</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -314,7 +314,7 @@ export default function EconomyPage() {
             </div>
           </div>
         </div>
-      </Card>
+      </div></GlassCard>
     </div>
   );
 }
@@ -339,7 +339,7 @@ function MetricCard({
   color: string;
 }) {
   return (
-    <Card className="p-4">
+    <GlassCard gradient="amber" hover><div className="p-4">
       <div className="flex items-center gap-2 mb-2">
         <Icon className={`w-4 h-4 ${color}`} />
         <span className="text-sm text-gray-400">{label}</span>
@@ -359,7 +359,7 @@ function MetricCard({
           Target: {target}%
         </div>
       )}
-    </Card>
+    </div></GlassCard>
   );
 }
 

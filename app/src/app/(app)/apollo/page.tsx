@@ -23,6 +23,7 @@ import {
   X,
   Check,
   Search,
+  Lock,
 } from "lucide-react";
 import {
   BarChart,
@@ -1589,6 +1590,18 @@ export default function ApolloPage() {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* ================================================================== */}
+      {/* Privacy notice                                                     */}
+      {/* ================================================================== */}
+      <div className="flex items-start gap-3 rounded-xl bg-[#0F1420] border border-cyan-500/10 px-4 py-3">
+        <Lock size={13} className="text-cyan-500/60 shrink-0 mt-0.5" />
+        <p className="text-xs text-gray-500 leading-relaxed">
+          <span className="text-gray-400 font-medium">Dados de demonstração.</span>{" "}
+          Os assessments gerados pela sua conta são privados e visíveis apenas na sua sessão.
+          Outros utilizadores nunca têm acesso às avaliações realizadas por si.
+        </p>
+      </div>
 
       {/* ================================================================== */}
       {/* Section 2: Pool Risk Assessment Cards                              */}

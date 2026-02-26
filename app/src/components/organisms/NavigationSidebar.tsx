@@ -28,6 +28,7 @@ import {
   Menu,
   X,
   Cpu,
+  Lock,
 } from "lucide-react";
 import { useTierStore } from "@/stores/useTierStore";
 import { UpgradeModal } from "@/components/organisms/UpgradeModal";
@@ -37,6 +38,7 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   badge?: string;
+  gated?: boolean;
 }
 
 interface NavSection {
@@ -51,10 +53,10 @@ const navSections: NavSection[] = [
     label: "Agents",
     icon: Bot,
     items: [
-      { label: "APOLLO", href: "/apollo", icon: Shield, badge: "Assess Risk" },
-      { label: "HERMES", href: "/hermes", icon: Zap, badge: "Review Intel" },
-      { label: "AEON", href: "/aeon", icon: Crown },
-      { label: "KRONOS", href: "/agents", icon: Cpu, badge: "Scheduler" },
+      { label: "APOLLO", href: "/apollo", icon: Shield, badge: "Risk" },
+      { label: "HERMES", href: "/hermes", icon: Zap, badge: "Intel" },
+      { label: "AEON", href: "/aeon", icon: Crown, badge: "Gov" },
+      { label: "KRONOS", href: "/agents", icon: Cpu, badge: "Keeper" },
     ],
   },
   {
@@ -70,22 +72,21 @@ const navSections: NavSection[] = [
     label: "Tools",
     color: "blue",
     items: [
-      { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01" },
-      { label: "Token Deep Dive", href: "/token-deep-dive", icon: Coins, badge: "0.012" },
-      { label: "Wallet Scanner", href: "/wallet-scanner", icon: ScanSearch, badge: "0.05 SOL" },
-      { label: "Yield Optimizer", href: "/yield-optimizer", icon: TrendingUp, badge: "0.008" },
-      { label: "Pool Analyzer", href: "/pool-analyzer", icon: Droplet, badge: "0.005" },
+      { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01 SOL", gated: true },
+      { label: "Token Deep Dive",  href: "/token-deep-dive",  icon: Coins,       badge: "0.012 SOL", gated: true },
+      { label: "Wallet Scanner",   href: "/wallet-scanner",   icon: ScanSearch,  badge: "0.05 SOL",  gated: true },
+      { label: "Yield Optimizer",  href: "/yield-optimizer",  icon: TrendingUp,  badge: "0.008 SOL", gated: true },
+      { label: "Pool Analyzer",    href: "/pool-analyzer",    icon: Droplet,     badge: "0.005 SOL", gated: true },
     ],
   },
   {
     label: "System",
     items: [
-      { label: "Treasury", href: "/treasury", icon: Wallet },
-      { label: "Economy", href: "/economy", icon: BarChart3 },
-      { label: "Axioms", href: "/axioms", icon: ScrollText },
-      { label: "Settings", href: "/settings", icon: Settings },
+      { label: "Treasury",     href: "/treasury",     icon: Wallet },
+      { label: "Axioms",       href: "/axioms",       icon: ScrollText },
+      { label: "Settings",     href: "/settings",     icon: Settings },
       { label: "Integrations", href: "/integrations", icon: Plug },
-      { label: "Alerts", href: "/alerts", icon: Bell },
+      { label: "Alerts",       href: "/alerts",       icon: Bell },
     ],
   },
 ];
@@ -310,7 +311,13 @@ export function NavigationSidebar() {
                           <span className="truncate flex-1">{item.label}</span>
                         )}
                         {(!collapsed || isMobile) && item.badge && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/[0.05] text-gray-500">
+                          <span className={cn(
+                            "text-[9px] px-1.5 py-0.5 rounded flex items-center gap-1",
+                            item.gated
+                              ? "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20"
+                              : "bg-white/[0.05] text-gray-500"
+                          )}>
+                            {item.gated && <Lock size={8} className="shrink-0" />}
                             {item.badge}
                           </span>
                         )}

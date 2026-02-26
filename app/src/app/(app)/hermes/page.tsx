@@ -17,6 +17,7 @@ import {
   Fingerprint,
   Download,
   CheckCircle2,
+  Lock,
 } from "lucide-react";
 import {
   BarChart,
@@ -979,6 +980,18 @@ export default function HermesPage() {
             </button>
           );
         })}
+      </div>
+
+      {/* ================================================================== */}
+      {/* Privacy notice                                                     */}
+      {/* ================================================================== */}
+      <div className="flex items-start gap-3 rounded-xl bg-[#0F1420] border border-cyan-500/10 px-4 py-3">
+        <Lock size={13} className="text-cyan-500/60 shrink-0 mt-0.5" />
+        <p className="text-xs text-gray-500 leading-relaxed">
+          <span className="text-gray-400 font-medium">Dados de demonstração.</span>{" "}
+          Os resultados gerados pela sua conta são privados e visíveis apenas na sua sessão.
+          Outros utilizadores nunca têm acesso às pesquisas realizadas por si.
+        </p>
       </div>
 
       {/* ================================================================== */}
