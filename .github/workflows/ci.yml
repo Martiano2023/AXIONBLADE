@@ -1,0 +1,149 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+      - "fix/**"
+      - "refactor/**"
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Frontend — type-check, lint, build
+  # ─────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # Provide stub values so Next.js build does not fail on missing env vars.
+          # Real secrets are never stored in CI; the build validates config structure only.
+          NEXT_PUBLIC_RPC_ENDPOINT: "https://api.devnet.solana.com"
+          NEXT_PUBLIC_NETWORK: "devnet"
+
+  # ─────────────────────────────────────────────────────────────
+  # Contracts — cargo check, clippy, format
+  # ─────────────────────────────────────────────────────────────
+  contracts:
+    name: Contracts (Rust / Anchor)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+
+      - name: cargo check
+        run: cargo check --workspace
+
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+
+  # ─────────────────────────────────────────────────────────────
+  # Security — verify no secrets committed, no .env files staged
+  # ─────────────────────────────────────────────────────────────
+  security-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect secrets with gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify no .env files committed
+        run: |
+          if git ls-files | grep -E '^(app/)?\.env(\.[a-z]+)?$' | grep -v '\.example$'; then
+            echo "ERROR: .env file(s) found in repository. Remove them and rotate any secrets."
+            exit 1
+          fi
+          echo "OK: no .env files committed."
+
+      - name: Verify no keypair files committed
+        run: |
+          if git ls-files | grep -E '\.(json|pem|key)$' | grep -vE '(package(-lock)?|tsconfig|anchor|components)\.json$' | grep -E '(key|keypair|wallet|secret|private)'; then
+            echo "ERROR: potential keypair files found. Verify and remove if sensitive."
+            exit 1
+          fi
+          echo "OK: no suspicious keypair files detected."
+
+  # ─────────────────────────────────────────────────────────────
+  # Summary gate — all jobs must pass for the PR to be mergeable
+  # ─────────────────────────────────────────────────────────────
+  ci-pass:
+    name: CI Pass
+    runs-on: ubuntu-latest
+    needs: [frontend, contracts, security-scan]
+    if: always()
+
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.frontend.result }}" != "success" ]]; then
+            echo "Frontend job failed."
+            exit 1
+          fi
+          if [[ "${{ needs.contracts.result }}" != "success" ]]; then
+            echo "Contracts job failed."
+            exit 1
+          fi
+          if [[ "${{ needs.security-scan.result }}" != "success" ]]; then
+            echo "Security scan failed."
+            exit 1
+          fi
+          echo "All CI checks passed."

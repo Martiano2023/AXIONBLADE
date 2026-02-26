@@ -1,42 +1,97 @@
-# Dependencies
+# ─── Dependencies ───────────────────────────────────────────────────────────
 node_modules/
 
-# Next.js
+# ─── Next.js ────────────────────────────────────────────────────────────────
 .next/
 out/
-
-# Build
-build/
-target/
-dist/
-
-# Env files
-.env
-.env.*
-!.env.example
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-*.pem
-
-# TypeScript
-*.tsbuildinfo
 next-env.d.ts
 
-# Vercel
-.vercel
+# ─── Build artifacts ────────────────────────────────────────────────────────
+build/
+dist/
+target/
 
-# Anchor
+# ─── Rust / Anchor ──────────────────────────────────────────────────────────
+# Anchor test validator state — regenerated on each test run
 test-ledger/
+# Anchor cache
+.anchor/
 
-# IDE
+# ─── Environment files ──────────────────────────────────────────────────────
+# Never commit .env files with real secrets.
+# Commit only *.example files as configuration templates.
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.*
+!.env.example
+!.env.local.example
+!.env.production.example
+
+# ─── Keys and keypairs ──────────────────────────────────────────────────────
+# Authority keypairs must never be committed.
+# Use contracts/keys/.gitkeep to preserve the directory structure.
+contracts/keys/*.json
+contracts/keys/*.pem
+!contracts/keys/.gitkeep
+
+# ─── Logs ───────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+mcp_audit.log
+mcp_docker.log
+
+# ─── TypeScript ─────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── OS artifacts ───────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ─── IDE and editor ─────────────────────────────────────────────────────────
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
 
-# Archives
+# ─── Vercel ─────────────────────────────────────────────────────────────────
+.vercel
+
+# ─── Archives ───────────────────────────────────────────────────────────────
 *.zip
+*.tar.gz
+*.tgz
+
+# ─── Coverage ───────────────────────────────────────────────────────────────
+coverage/
+lcov.info
+.nyc_output/
+
+# ─── Certificates and sensitive keys ────────────────────────────────────────
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+
+# ─── Deployment artifacts ───────────────────────────────────────────────────
+# Generated program ID JSON from deploy scripts
+scripts/mainnet-program-ids.json
+
+# ─── Claude Code ────────────────────────────────────────────────────────────
+.claude/
