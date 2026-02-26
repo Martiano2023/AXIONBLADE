@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Bell, Share2, ChevronDown, Rss, AlertTriangle, Info, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Bell, Share2, ChevronDown, Rss, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -461,7 +461,7 @@ export default function AlertsPage() {
             return (
               <div
                 key={h}
-                className={`flex-1 rounded-sm ${hasCritical ? "bg-red-400/60" : count > 0 ? "bg-[#00D4FF]/80/40" : "bg-white/[0.04]"}`}
+                className={`flex-1 rounded-sm ${hasCritical ? "bg-red-400/60" : count > 0 ? "bg-[#00D4FF]/40" : "bg-white/[0.04]"}`}
                 style={{ height: `${height}px` }}
                 title={`${h}h ago: ${count} alerts`}
               />

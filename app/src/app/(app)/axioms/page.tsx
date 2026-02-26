@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ScrollText, CheckCircle2, Shield } from "lucide-react";
+import { ScrollText, CheckCircle2, Shield, Search } from "lucide-react";
 import { InfoTooltip } from "@/components/atoms/Tooltip";
 import { GlassCard } from "@/components/atoms/GlassCard";
 import { Badge } from "@/components/atoms/Badge";
@@ -226,11 +226,20 @@ function ComplianceGauge() {
 
 export default function AxiomsPage() {
   const [activeCategory, setActiveCategory] = useState<AxiomCategory | "all">("all");
+  const [search, setSearch] = useState("");
 
-  const filteredAxioms =
-    activeCategory === "all"
-      ? AXIOMS
-      : AXIOMS.filter((a) => a.category === activeCategory);
+  const filteredAxioms = useMemo(() => {
+    let result = activeCategory === "all" ? AXIOMS : AXIOMS.filter((a) => a.category === activeCategory);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((a) =>
+        a.number.toLowerCase().includes(q) ||
+        a.description.toLowerCase().includes(q) ||
+        a.rationale.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [activeCategory, search]);
 
   return (
     <div className="space-y-8 relative">
@@ -255,6 +264,9 @@ export default function AxiomsPage() {
             </h1>
             <p className="text-gray-400 text-lg mt-1">
               50 immutable rules — the constitution of AXIONBLADE
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              49 active · 1 deprecated (A0-2) · 100% compliant · enforced at contract level
             </p>
           </div>
         </div>
@@ -376,13 +388,40 @@ export default function AxiomsPage() {
         <p className="text-[10px] text-gray-600 text-center mt-2">49/49 axioms compliant for 30 consecutive days</p>
       </motion.div>
 
-      {/* ---- Section 3: Category Filter Chips ---- */}
+      {/* ---- Section 3: Search + Category Filter ---- */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.4 }}
-        className="flex flex-wrap gap-2"
+        className="space-y-3"
       >
+        {/* Search */}
+        <div className="relative">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search axioms by number, description, or rationale..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={cn(
+              "h-10 w-full rounded-xl border border-[#1A2235] bg-[#0F1420]",
+              "pl-10 pr-4 text-sm text-gray-300 placeholder:text-gray-600",
+              "focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/40 focus:border-[#00D4FF]/40",
+              "hover:bg-[#1A2235] transition-colors duration-200"
+            )}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        {/* Category chips */}
+        <div className="flex flex-wrap gap-2">
         {FILTER_CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat.key;
           const meta = cat.key !== "all" ? CATEGORY_META[cat.key] : null;
@@ -417,9 +456,36 @@ export default function AxiomsPage() {
             </button>
           );
         })}
+        </div>
+
+        {/* Results count */}
+        {(search || activeCategory !== "all") && (
+          <p className="text-xs text-gray-500">
+            Showing <span className="text-gray-300 font-medium">{filteredAxioms.length}</span> axiom{filteredAxioms.length !== 1 ? "s" : ""}
+            {search && <span className="text-gray-600"> matching &ldquo;{search}&rdquo;</span>}
+          </p>
+        )}
       </motion.div>
 
       {/* ---- Section 4: Axiom Cards Grid ---- */}
+      {filteredAxioms.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="py-16 text-center"
+        >
+          <div className="w-14 h-14 rounded-xl bg-[#0F1420] border border-[#1A2235] flex items-center justify-center mx-auto mb-4">
+            <Search size={22} className="text-gray-600" />
+          </div>
+          <p className="text-gray-500 text-sm mb-2">No axioms match your search</p>
+          <button
+            onClick={() => { setSearch(""); setActiveCategory("all"); }}
+            className="text-xs text-[#00D4FF] hover:text-[#00D4FF]/80 transition-colors"
+          >
+            Clear search
+          </button>
+        </motion.div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredAxioms.map((axiom, index) => {
           const meta = CATEGORY_META[axiom.category];

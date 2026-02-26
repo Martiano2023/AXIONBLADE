@@ -620,7 +620,7 @@ export default function AeonPage() {
 
           {/* Title + Subtitle */}
           <div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-rose-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent mb-2">
               AEON
             </h1>
             <p className="text-xl text-gray-300">Sovereign Governance</p>
