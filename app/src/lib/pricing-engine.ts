@@ -34,19 +34,19 @@ export interface PricingResult {
 // Goal: Increase volume 5x to offset 70% average price reduction
 // All prices must maintain cost + 20% minimum margin (A0-8)
 
-// Base prices = cost × 1.4 (business floor: cost + 40% margin)
-// Axiom A0-8 requires minimum 20%; protocol policy sets floor at 40%.
+// Base prices = cost × 2.0 (business floor: cost + 100% margin)
+// Axiom A0-8 requires minimum 20%; protocol policy sets floor at 100%.
 const BASE_PRICES = {
-  walletScan:      0.0042,   // cost 0.003  × 1.4
-  basic:           0.00056,  // cost 0.0004 × 1.4
-  pro:             0.0056,   // cost 0.004  × 1.4
-  institutional:   0.042,    // cost 0.03   × 1.4
-  poolAnalyzer:    0.00056,  // cost 0.0004 × 1.4
-  protocolAuditor: 0.00112,  // cost 0.0008 × 1.4
-  yieldOptimizer:  0.00084,  // cost 0.0006 × 1.4
-  tokenDeepDive:   0.0014,   // cost 0.001  × 1.4
-  aeonMonthly:     0.021,    // cost 0.015  × 1.4
-  hermesPerTx:     0.00112,  // cost 0.0008 × 1.4
+  walletScan:      0.006,    // cost 0.003  × 2.0
+  basic:           0.0008,   // cost 0.0004 × 2.0
+  pro:             0.008,    // cost 0.004  × 2.0
+  institutional:   0.06,     // cost 0.03   × 2.0
+  poolAnalyzer:    0.0008,   // cost 0.0004 × 2.0
+  protocolAuditor: 0.0016,   // cost 0.0008 × 2.0
+  yieldOptimizer:  0.0012,   // cost 0.0006 × 2.0
+  tokenDeepDive:   0.002,    // cost 0.001  × 2.0
+  aeonMonthly:     0.030,    // cost 0.015  × 2.0
+  hermesPerTx:     0.0016,   // cost 0.0008 × 2.0
 } as const;
 
 // Cost estimates per operation (in SOL) — measured real costs
@@ -372,7 +372,7 @@ export function calculateRevenueSplit(grossAmount: number, cost: number = 0) {
  * Estimate cost for a given base price (inverse of price = cost × 1.4)
  */
 export function estimateCostFromPrice(price: number): number {
-  return price / 1.4;
+  return price / 2.0;
 }
 
 // ---------------------------------------------------------------------------
