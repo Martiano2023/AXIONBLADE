@@ -17,14 +17,15 @@ import { Badge } from "@/components/atoms/Badge";
 
 export default function EconomicsPage() {
   // SAMPLE DATA - Replace with real on-chain data fetching
+  // Prices = cost × 1.4 (cost + 40% margin floor). Split on NET (revenue - cost).
   const currentPrices = [
-    { service: "Basic Analysis", price: "0.008 SOL", margin: "165%", updated: "12 min ago" },
-    { service: "Wallet Scanner", price: "0.08 SOL", margin: "158%", updated: "12 min ago" },
-    { service: "Pool Analyzer", price: "0.008 SOL", margin: "170%", updated: "12 min ago" },
-    { service: "Protocol Auditor", price: "0.015 SOL", margin: "152%", updated: "12 min ago" },
-    { service: "Yield Optimizer", price: "0.015 SOL", margin: "148%", updated: "12 min ago" },
-    { service: "Pro Analysis", price: "0.15 SOL", margin: "180%", updated: "12 min ago" },
-    { service: "Institutional", price: "3.0 SOL", margin: "200%", updated: "12 min ago" },
+    { service: "Wallet Scanner",   price: "0.0042 SOL",  margin: "40%", updated: "12 min ago" },
+    { service: "Pool Analyzer",    price: "0.00056 SOL", margin: "40%", updated: "12 min ago" },
+    { service: "Protocol Auditor", price: "0.00112 SOL", margin: "40%", updated: "12 min ago" },
+    { service: "Yield Optimizer",  price: "0.00084 SOL", margin: "40%", updated: "12 min ago" },
+    { service: "Token Deep Dive",  price: "0.0014 SOL",  margin: "40%", updated: "12 min ago" },
+    { service: "HERMES (per call)",price: "0.00112 SOL", margin: "40%", updated: "12 min ago" },
+    { service: "AEON (monthly)",   price: "0.021 SOL",   margin: "40%", updated: "12 min ago" },
   ];
 
   return (

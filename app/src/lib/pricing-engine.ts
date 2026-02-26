@@ -34,24 +34,19 @@ export interface PricingResult {
 // Goal: Increase volume 5x to offset 70% average price reduction
 // All prices must maintain cost + 20% minimum margin (A0-8)
 
+// Base prices = cost × 1.4 (business floor: cost + 40% margin)
+// Axiom A0-8 requires minimum 20%; protocol policy sets floor at 40%.
 const BASE_PRICES = {
-  // Wallet Scanner (10x cheaper than original 0.5 SOL)
-  walletScan: 0.05,
-
-  // Analysis Packages (3-4x cheaper)
-  basic: 0.005,        // was 0.02 → 4x cheaper
-  pro: 0.05,           // was 0.15 → 3x cheaper
-  institutional: 0.5,  // was 2.0 → 4x cheaper
-
-  // New DeFi Services (v3.3.0)
-  poolAnalyzer: 0.005,
-  protocolAuditor: 0.01,
-  yieldOptimizer: 0.008,
-  tokenDeepDive: 0.012,
-
-  // Agent Services (new in v3.3.0)
-  aeonMonthly: 0.02,   // AEON Guardian: 24/7 monitoring
-  hermesPerTx: 0.001,  // HERMES Executor: 0.1% per tx (min 0.001)
+  walletScan:      0.0042,   // cost 0.003  × 1.4
+  basic:           0.00056,  // cost 0.0004 × 1.4
+  pro:             0.0056,   // cost 0.004  × 1.4
+  institutional:   0.042,    // cost 0.03   × 1.4
+  poolAnalyzer:    0.00056,  // cost 0.0004 × 1.4
+  protocolAuditor: 0.00112,  // cost 0.0008 × 1.4
+  yieldOptimizer:  0.00084,  // cost 0.0006 × 1.4
+  tokenDeepDive:   0.0014,   // cost 0.001  × 1.4
+  aeonMonthly:     0.021,    // cost 0.015  × 1.4
+  hermesPerTx:     0.00112,  // cost 0.0008 × 1.4
 } as const;
 
 // Cost estimates per operation (in SOL) — measured real costs
@@ -358,15 +353,26 @@ export function getAllServiceIds(): Array<keyof typeof BASE_PRICES> {
 }
 
 /**
- * Calculate revenue split for a payment amount
- * 40% Operations, 45% Treasury, 15% Creator
+ * Calculate revenue split on NET (gross - cost).
+ * Split is applied AFTER deducting operational cost:
+ *   net = grossAmount - cost
+ *   Operations 40% | Treasury 45% | Creator 15%
  */
-export function calculateRevenueSplit(amount: number) {
+export function calculateRevenueSplit(grossAmount: number, cost: number = 0) {
+  const net = Math.max(grossAmount - cost, 0);
   return {
-    operations: amount * 0.40,
-    treasury: amount * 0.45,
-    creator: amount * 0.15,
+    net,
+    operations: net * 0.40,
+    treasury: net * 0.45,
+    creator: net * 0.15,
   };
+}
+
+/**
+ * Estimate cost for a given base price (inverse of price = cost × 1.4)
+ */
+export function estimateCostFromPrice(price: number): number {
+  return price / 1.4;
 }
 
 // ---------------------------------------------------------------------------

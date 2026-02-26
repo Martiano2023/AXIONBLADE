@@ -15,11 +15,10 @@ export default function TokenPage() {
   ];
 
   const vestingSchedules = [
-    { allocation: "Team", percent: "20%", amount: "200M", cliff: "6 months", vest: "2 years" },
-    { allocation: "Treasury", percent: "30%", amount: "300M", cliff: "0", vest: "Controlled by AEON" },
+    { allocation: "Team", percent: "20%", amount: "200M", cliff: "3 months", vest: "2 years" },
+    { allocation: "Treasury", percent: "40%", amount: "400M", cliff: "0", vest: "Controlled by AEON (includes Reserve)" },
     { allocation: "Community", percent: "30%", amount: "300M", cliff: "0", vest: "Airdrop via C3" },
     { allocation: "Liquidity", percent: "10%", amount: "100M", cliff: "0", vest: "LP provision" },
-    { allocation: "Reserve", percent: "10%", amount: "100M", cliff: "0", vest: "Emergency fund" },
   ];
 
   const isLaunched = false; // Check TokenVaultConfig.launch_status

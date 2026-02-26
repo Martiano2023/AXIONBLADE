@@ -500,7 +500,7 @@ export default function TreasuryPage() {
             {
               step: "02",
               icon: <PieChartIcon className="w-5 h-5 text-purple-400" />,
-              description: "Revenue split: 40% Operations + 45% Treasury + 15% Creator",
+              description: "Revenue split on NET (gross − costs): 40% Operations + 45% Treasury + 15% Creator. Price floor: cost + 40%.",
             },
             {
               step: "03",
@@ -870,7 +870,7 @@ export default function TreasuryPage() {
           {/* Revenue Split — 3 colored bars */}
           <div className="space-y-3">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Revenue Split</p>
-            <p className="text-xs text-gray-500">AI-adjusted pricing guarantees minimum 45% treasury allocation on every transaction</p>
+            <p className="text-xs text-gray-500">Split applied on NET revenue (gross − costs). Price floor: cost + 40%. AI Pricing Stabilizer enforces these margins automatically.</p>
             <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between mb-1">
@@ -913,8 +913,8 @@ export default function TreasuryPage() {
           <div className="border-t border-[#1A2235] pt-4">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Margin Enforcement</p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              Every paid transaction enforces minimum allocation: 45% to Treasury, 15% to Creator wallet.
-              If AI calculates a price below cost threshold, the pricing engine auto-adjusts UP to maintain margins.
+              Every service is priced at cost + 40% minimum margin. The NET (gross − cost) is then split: 40% Operations, 45% Treasury, 15% Creator wallet.
+              If the AI Pricing Stabilizer calculates a price below the cost floor, it auto-adjusts UP to preserve the 40% margin and the NET split.
             </p>
           </div>
 
