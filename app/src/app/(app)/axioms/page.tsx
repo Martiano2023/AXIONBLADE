@@ -494,11 +494,10 @@ export default function AxiomsPage() {
             <motion.div
               key={axiom.number}
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.4,
-                delay: index * 0.04,
+                delay: Math.min(index * 0.04, 0.8),
                 ease: [0.25, 0.46, 0.45, 0.94],
               }}
             >
