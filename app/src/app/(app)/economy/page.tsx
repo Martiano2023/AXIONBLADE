@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 // Comprehensive economic monitoring:
 // - Total revenue, costs, margins
-// - 4-way revenue split (Operations 50%, Reserve 25%, Dev Fund 15%, Creator 10%)
+// - 4-way revenue split (Operations 50%, Reserve 25%, Treasury 15%, Creator 10%)
 // - Service performance tracking
 // - Dynamic pricing alerts
 // - Volume discount analytics
