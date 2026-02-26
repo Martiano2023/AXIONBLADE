@@ -48,11 +48,11 @@ const chartDataSets: Record<string, ReturnType<typeof generateChartData>> = {
 
 // Real on-chain events — mainnet 2026-02-24
 const recentActivity = [
-  { agent: "AEON",   description: "initialize_proof — proof_config PDA created, keeper_authority set (noumen_proof)", time: "Feb 24" },
-  { agent: "AEON",   description: "propose_policy_change #1 — Layer 2 Operational, 24h timelock (Pending)",           time: "Feb 24" },
-  { agent: "AEON",   description: "update_agent KRONOS — daily budget cap set to 5,000,000 lamports",                 time: "Feb 24" },
-  { agent: "KRONOS", description: "record_heartbeat — on-chain timestamp confirmed (noumen_core)",                     time: "Feb 24" },
-  { agent: "AEON",   description: "create_agent ×4 — AEON · APOLLO · HERMES · KRONOS registered on-chain",            time: "Feb 24" },
+  { agent: "AEON",   description: "execute_policy_change #1 — Layer 2 Operational executed · status Pending → Executed", time: "Feb 25" },
+  { agent: "AEON",   description: "initialize_proof — proof_config PDA created, keeper_authority set (noumen_proof)",   time: "Feb 24" },
+  { agent: "AEON",   description: "propose_policy_change #1 — Layer 2 Operational, 24h timelock",                       time: "Feb 24" },
+  { agent: "AEON",   description: "update_agent KRONOS — daily budget cap set to 5,000,000 lamports",                   time: "Feb 24" },
+  { agent: "KRONOS", description: "record_heartbeat — on-chain timestamp confirmed (noumen_core)",                       time: "Feb 24" },
 ];
 
 // --- Custom tooltip ---
@@ -332,7 +332,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Policy proposals</span>
-                  <span className="text-amber-400 font-semibold">1 pending</span>
+                  <span className="text-emerald-400 font-semibold">1 executed ✓</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Circuit breaker</span>
