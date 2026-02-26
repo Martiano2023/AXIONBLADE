@@ -36,7 +36,7 @@ export interface PricingResult {
 
 // Base prices = cost × 3.0 (target: cost + 200% margin)
 // Floor = cost × 2.0 (minimum: cost + 100% margin)
-// AI Pricing Stabilizer reajusts every 4h between floor and target based on demand.
+// AI Pricing Stabilizer reajusts daily between floor and target based on demand.
 const BASE_PRICES = {
   walletScan:      0.009,    // cost 0.003  × 3.0
   basic:           0.0012,   // cost 0.0004 × 3.0

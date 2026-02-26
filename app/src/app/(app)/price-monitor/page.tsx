@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// AXIONBLADE Price Monitor — Autonomous 4-hour AI Price Adjustment Engine
+// AXIONBLADE Price Monitor — Autonomous Daily AI Price Adjustment Engine
 // ---------------------------------------------------------------------------
 // Displays the live status of the AI pricing engine: current prices for all
 // services, demand signals, next adjustment countdown, and recent adjustment
@@ -323,7 +323,7 @@ export default function PriceMonitorPage() {
               </h1>
             </div>
             <p className="text-gray-400 text-lg">
-              Autonomous 4-hour reajustment cycle
+              Autonomous daily reajustment cycle
             </p>
             <p className="text-xs text-gray-600 mt-1">
               Prices adjust between floor (cost&nbsp;&times;&nbsp;2.0) and target (cost&nbsp;&times;&nbsp;3.0) based on 24h demand signals
@@ -648,7 +648,7 @@ export default function PriceMonitorPage() {
                   No adjustments in the last 24h yet.
                 </p>
                 <p className="text-gray-700 text-xs mt-1">
-                  The cron job runs every 4 hours. First adjustment
+                  The cron job runs once daily. First adjustment
                   will appear after the initial Vercel invocation.
                 </p>
               </div>
@@ -743,7 +743,7 @@ export default function PriceMonitorPage() {
             },
             {
               title:  "Safety Envelope",
-              body:   "Price can never go below floor — equivalent to axiom A0-8 (cost + 20% minimum). The 4h cron runs as a Vercel scheduled function secured by CRON_SECRET.",
+              body:   "Price can never go below floor — equivalent to axiom A0-8 (cost + 20% minimum). The daily cron runs as a Vercel scheduled function secured by CRON_SECRET.",
               color:  "text-amber-400",
             },
           ].map((info) => (

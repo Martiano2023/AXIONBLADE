@@ -78,7 +78,7 @@ const navSections: NavSection[] = [
     items: [
       { label: "Treasury",      href: "/treasury",      icon: Wallet },
       { label: "Axioms",        href: "/axioms",        icon: ScrollText },
-      { label: "Price Monitor", href: "/price-monitor", icon: Activity, badge: "4h" },
+      { label: "Price Monitor", href: "/price-monitor", icon: Activity, badge: "daily" },
       { label: "Settings",      href: "/settings",      icon: Settings },
       { label: "Integrations",  href: "/integrations",  icon: Plug },
       { label: "Alerts",        href: "/alerts",        icon: Bell },

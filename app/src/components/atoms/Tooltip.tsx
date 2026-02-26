@@ -49,7 +49,7 @@ export const GLOSSARY: Record<string, string> = {
   "Launch Price": "Introductory pricing for the first 30 days of protocol operation. Prices may adjust after the launch period based on the AI Pricing Stabilizer",
   "AI Pricing Stabilizer": "Automated pricing engine with 3 phases: Launch (fixed), Calibration (±10%/week), Stable (±5%/week). Ensures protocol sustainability",
   "Smart Safeguards": "Automatic rules that protect protocol economics: treasury reserve monitoring, volume-based pricing, SOL volatility adjustment",
-  "Revenue Split": "Split applied on NET revenue (gross − costs): 40% Operations, 45% Treasury, 15% Creator. Target margin: +200% (floor: +100%). AI reajusts every 4h.",
+  "Revenue Split": "Split applied on NET revenue (gross − costs): 40% Operations, 45% Treasury, 15% Creator. Target margin: +200% (floor: +100%). AI reajusts daily.",
 };
 
 // ── Base Tooltip ───────────────────────────────────────────
