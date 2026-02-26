@@ -683,17 +683,16 @@ export default function AeonPage() {
       </motion.div>
 
       {/* ================================================================= */}
-      {/* Header                                                            */}
+      {/* Header (address + status strip)                                  */}
       {/* ================================================================= */}
-      <motion.div variants={staggerItem} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <motion.div variants={staggerItem} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00D4FF]/15 border border-[#00D4FF]/20">
-            <Crown className="w-5 h-5 text-[#00D4FF]" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#00D4FF]/15 border border-[#00D4FF]/20">
+            <Crown className="w-4 h-4 text-[#00D4FF]" />
           </div>
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-white">AEON</h1>
-              {/* Online pulse */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-white">Sovereign Governor</span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -702,7 +701,7 @@ export default function AeonPage() {
                 Online
               </span>
             </div>
-            <p className="text-sm text-gray-500">Sovereign Governor — delegates, coordinates, decides. Executes by delegation only.</p>
+            <p className="text-xs text-gray-500">Delegates, coordinates, decides. Executes by delegation only.</p>
           </div>
         </div>
 

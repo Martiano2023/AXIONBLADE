@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Bell, Share2, ChevronDown, Rss } from "lucide-react";
+import { Bell, Share2, ChevronDown, Rss, AlertTriangle, Info, TrendingUp, CheckCircle2 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -24,11 +24,18 @@ interface Alert {
 /*  Severity config                                                    */
 /* ------------------------------------------------------------------ */
 
-const severityConfig: Record<Severity, { color: string; label: string }> = {
-  critical: { color: "bg-[#EF4444]", label: "Critical" },
-  warning:  { color: "bg-[#F59E0B]", label: "Warning" },
-  info:     { color: "bg-[#00D4FF]", label: "Info" },
-  stable:   { color: "bg-[#10B981]", label: "Stable" },
+const severityConfig: Record<Severity, {
+  dot: string;
+  label: string;
+  bg: string;
+  text: string;
+  border: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+}> = {
+  critical: { dot: "bg-red-400",     label: "Critical", bg: "bg-red-500/8",     text: "text-red-400",     border: "border-red-500/20",     icon: AlertTriangle },
+  warning:  { dot: "bg-amber-400",   label: "Warning",  bg: "bg-amber-500/8",   text: "text-amber-400",   border: "border-amber-500/20",   icon: AlertTriangle },
+  info:     { dot: "bg-[#00D4FF]",   label: "Info",     bg: "bg-[#00D4FF]/8",   text: "text-[#00D4FF]",   border: "border-[#00D4FF]/20",   icon: Info },
+  stable:   { dot: "bg-emerald-400", label: "Stable",   bg: "bg-emerald-500/8", text: "text-emerald-400", border: "border-emerald-500/20", icon: CheckCircle2 },
 };
 
 /* ------------------------------------------------------------------ */
@@ -327,33 +334,44 @@ export default function AlertsPage() {
   }, [severityFilter, poolFilter]);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl relative">
+      {/* Background gradients */}
+      <div className="absolute top-0 -left-40 w-96 h-96 bg-red-500/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-60 -right-40 w-96 h-96 bg-amber-500/8 rounded-full blur-3xl pointer-events-none" />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="relative z-10"
       >
-        <div>
-          <h1 className="text-2xl font-bold text-white">Risk Alerts</h1>
-          <p className="text-sm text-gray-400">
-            Real-time risk changes across monitored pools
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg bg-[#00D4FF] px-4 py-2 text-sm font-medium text-white hover:bg-[#00B8D9] transition-colors duration-200">
-            <Bell size={14} />
-            Subscribe to Alerts
-          </button>
-          <button
-            disabled
-            className="inline-flex items-center gap-1.5 text-sm text-gray-600 cursor-not-allowed transition-colors duration-200"
-            title="RSS Feed coming soon"
-          >
-            <Rss size={14} />
-            RSS Feed
-          </button>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent mb-2">
+              Risk Alerts
+            </h1>
+            <p className="text-gray-400 text-lg">
+              Real-time risk changes across monitored DeFi pools
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              Critical alerts trigger ALERT-ONLY mode when evidence families &lt; 2 (A0-42)
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <button className="inline-flex items-center gap-2 rounded-xl bg-[#00D4FF] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#00B8D9] transition-colors duration-200">
+              <Bell size={14} />
+              Subscribe
+            </button>
+            <button
+              disabled
+              className="inline-flex items-center gap-1.5 text-sm text-gray-600 cursor-not-allowed border border-[#1A2235] rounded-xl px-4 py-2.5"
+              title="RSS Feed coming soon"
+            >
+              <Rss size={14} />
+              RSS
+            </button>
+          </div>
         </div>
       </motion.div>
 
@@ -362,19 +380,22 @@ export default function AlertsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.03 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+        className="grid grid-cols-2 sm:grid-cols-4 gap-3 relative z-10"
       >
-        {[
-          { label: "Critical", count: MOCK_ALERTS.filter(a => a.severity === "critical").length, color: "text-red-400", bg: "bg-red-400/10" },
-          { label: "Warning", count: MOCK_ALERTS.filter(a => a.severity === "warning").length, color: "text-yellow-400", bg: "bg-yellow-400/10" },
-          { label: "Info", count: MOCK_ALERTS.filter(a => a.severity === "info").length, color: "text-[#00D4FF]", bg: "bg-[#00D4FF]/80/10" },
-          { label: "Stable", count: MOCK_ALERTS.filter(a => a.severity === "stable").length, color: "text-emerald-400", bg: "bg-emerald-400/10" },
-        ].map((stat) => (
-          <div key={stat.label} className={`${stat.bg} border border-white/[0.06] rounded-lg p-3 text-center`}>
-            <p className={`text-2xl font-bold ${stat.color}`}>{stat.count}</p>
-            <p className="text-[10px] text-gray-500 mt-0.5">{stat.label}</p>
-          </div>
-        ))}
+        {(["critical", "warning", "info", "stable"] as Severity[]).map((sev) => {
+          const cfg = severityConfig[sev];
+          const Icon = cfg.icon;
+          const count = MOCK_ALERTS.filter(a => a.severity === sev).length;
+          return (
+            <div key={sev} className={`${cfg.bg} border ${cfg.border} rounded-xl p-4`}>
+              <div className="flex items-center justify-between mb-2">
+                <Icon size={14} className={cfg.text} />
+                <span className={`text-[10px] font-semibold uppercase tracking-wider ${cfg.text}`}>{cfg.label}</span>
+              </div>
+              <p className={`text-3xl font-bold ${cfg.text}`}>{count}</p>
+            </div>
+          );
+        })}
       </motion.div>
 
       {/* Most Affected Pools */}
@@ -382,7 +403,7 @@ export default function AlertsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.07 }}
-        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-4 relative z-10"
       >
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Most Affected Pools</h3>
         <div className="space-y-2">
@@ -504,50 +525,60 @@ export default function AlertsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.1 }}
+        className="space-y-2"
       >
-        {filteredAlerts.map((alert) => {
+        {filteredAlerts.map((alert, index) => {
           const config = severityConfig[alert.severity];
+          const Icon = config.icon;
 
           return (
-            <div
+            <motion.div
               key={alert.id}
-              className="border-b border-[#1A2235] py-4 flex items-start gap-3"
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.02 }}
+              className={`bg-[#0F1420] border ${config.border} rounded-xl p-4 hover:border-opacity-40 transition-all duration-200 group`}
             >
-              {/* Severity dot */}
-              <div className="mt-1.5 shrink-0">
-                <div className={`w-2 h-2 rounded-full ${config.color}`} />
-              </div>
+              <div className="flex items-start gap-3">
+                {/* Severity icon */}
+                <div className={`mt-0.5 shrink-0 w-6 h-6 rounded-lg ${config.bg} flex items-center justify-center`}>
+                  <Icon size={12} className={config.text} />
+                </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-white">{alert.text}</p>
-                <p className="text-xs text-gray-500 mt-1">{alert.detail}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-400">
-                    {alert.pool}
-                  </span>
-                  <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-500">
-                    {alert.protocol}
-                  </span>
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-sm text-white font-medium leading-snug">{alert.text}</p>
+                    <span className="text-xs text-gray-600 shrink-0 tabular-nums">
+                      {formatTimeAgo(alert.timestamp)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{alert.detail}</p>
+                  <div className="flex items-center justify-between mt-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${config.bg} ${config.text} border ${config.border}`}>
+                        {config.label}
+                      </span>
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-400 border border-white/5">
+                        {alert.pool}
+                      </span>
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-[#1A2235] text-gray-500 border border-white/5">
+                        {alert.protocol}
+                      </span>
+                    </div>
+                    <a
+                      href={twitterShareUrl(alert.text)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] text-gray-600 hover:text-gray-400 transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                    >
+                      <Share2 size={10} />
+                      Share
+                    </a>
+                  </div>
                 </div>
               </div>
-
-              {/* Right side */}
-              <div className="shrink-0 flex flex-col items-end gap-2">
-                <span className="text-xs text-gray-600">
-                  {formatTimeAgo(alert.timestamp)}
-                </span>
-                <a
-                  href={twitterShareUrl(alert.text)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-gray-600 hover:text-gray-400 transition-colors duration-200"
-                >
-                  <Share2 size={10} />
-                  Share
-                </a>
-              </div>
-            </div>
+            </motion.div>
           );
         })}
 

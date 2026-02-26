@@ -25,6 +25,7 @@ import {
   X,
   Cpu,
   Lock,
+  AlertTriangle,
 } from "lucide-react";
 import { useTierStore } from "@/stores/useTierStore";
 import { UpgradeModal } from "@/components/organisms/UpgradeModal";
@@ -68,17 +69,19 @@ const navSections: NavSection[] = [
     label: "Tools",
     color: "blue",
     items: [
-      { label: "Services Hub", href: "/services", icon: Plug, badge: "9 services" },
+      { label: "Services Hub",        href: "/services",             icon: Plug,          badge: "9 services" },
+      { label: "Liquidation Scanner", href: "/liquidation-scanner",  icon: AlertTriangle, badge: "0.006 SOL", gated: true },
     ],
   },
   {
     label: "System",
     items: [
-      { label: "Treasury",     href: "/treasury",     icon: Wallet },
-      { label: "Axioms",       href: "/axioms",       icon: ScrollText },
-      { label: "Settings",     href: "/settings",     icon: Settings },
-      { label: "Integrations", href: "/integrations", icon: Plug },
-      { label: "Alerts",       href: "/alerts",       icon: Bell },
+      { label: "Treasury",      href: "/treasury",      icon: Wallet },
+      { label: "Axioms",        href: "/axioms",        icon: ScrollText },
+      { label: "Price Monitor", href: "/price-monitor", icon: Activity, badge: "4h" },
+      { label: "Settings",      href: "/settings",      icon: Settings },
+      { label: "Integrations",  href: "/integrations",  icon: Plug },
+      { label: "Alerts",        href: "/alerts",        icon: Bell },
     ],
   },
 ];

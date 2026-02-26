@@ -34,19 +34,34 @@ export interface PricingResult {
 // Goal: Increase volume 5x to offset 70% average price reduction
 // All prices must maintain cost + 20% minimum margin (A0-8)
 
-// Base prices = cost × 2.0 (business floor: cost + 100% margin)
-// Axiom A0-8 requires minimum 20%; protocol policy sets floor at 100%.
+// Base prices = cost × 3.0 (target: cost + 200% margin)
+// Floor = cost × 2.0 (minimum: cost + 100% margin)
+// AI Pricing Stabilizer reajusts every 4h between floor and target based on demand.
 const BASE_PRICES = {
-  walletScan:      0.006,    // cost 0.003  × 2.0
-  basic:           0.0008,   // cost 0.0004 × 2.0
-  pro:             0.008,    // cost 0.004  × 2.0
-  institutional:   0.06,     // cost 0.03   × 2.0
-  poolAnalyzer:    0.0008,   // cost 0.0004 × 2.0
-  protocolAuditor: 0.0016,   // cost 0.0008 × 2.0
-  yieldOptimizer:  0.0012,   // cost 0.0006 × 2.0
-  tokenDeepDive:   0.002,    // cost 0.001  × 2.0
-  aeonMonthly:     0.030,    // cost 0.015  × 2.0
-  hermesPerTx:     0.0016,   // cost 0.0008 × 2.0
+  walletScan:      0.009,    // cost 0.003  × 3.0
+  basic:           0.0012,   // cost 0.0004 × 3.0
+  pro:             0.012,    // cost 0.004  × 3.0
+  institutional:   0.09,     // cost 0.03   × 3.0
+  poolAnalyzer:    0.0012,   // cost 0.0004 × 3.0
+  protocolAuditor: 0.0024,   // cost 0.0008 × 3.0
+  yieldOptimizer:  0.0018,   // cost 0.0006 × 3.0
+  tokenDeepDive:   0.003,    // cost 0.001  × 3.0
+  aeonMonthly:     0.045,    // cost 0.015  × 3.0
+  hermesPerTx:     0.0024,   // cost 0.0008 × 3.0
+} as const;
+
+// Price floor = cost × 2.0 (hard minimum, never go below)
+const PRICE_FLOOR = {
+  walletScan:      0.006,
+  basic:           0.0008,
+  pro:             0.008,
+  institutional:   0.06,
+  poolAnalyzer:    0.0008,
+  protocolAuditor: 0.0016,
+  yieldOptimizer:  0.0012,
+  tokenDeepDive:   0.002,
+  aeonMonthly:     0.030,
+  hermesPerTx:     0.0016,
 } as const;
 
 // Cost estimates per operation (in SOL) — measured real costs
@@ -372,7 +387,11 @@ export function calculateRevenueSplit(grossAmount: number, cost: number = 0) {
  * Estimate cost for a given base price (inverse of price = cost × 1.4)
  */
 export function estimateCostFromPrice(price: number): number {
-  return price / 2.0;
+  return price / 3.0; // target is cost × 3.0
+}
+
+export function getPriceFloor(serviceId: keyof typeof PRICE_FLOOR): number {
+  return PRICE_FLOOR[serviceId];
 }
 
 // ---------------------------------------------------------------------------

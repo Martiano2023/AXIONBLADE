@@ -17,15 +17,17 @@ import { Badge } from "@/components/atoms/Badge";
 
 export default function EconomicsPage() {
   // SAMPLE DATA - Replace with real on-chain data fetching
-  // Prices = cost × 2.0 (cost + 100% margin floor). Split on NET (revenue - cost).
+  // Target: cost × 3.0 (+200% margin). Floor: cost × 2.0 (+100%).
+  // AI Pricing Stabilizer reajusts every 4h. Split on NET (gross - cost): 40/45/15.
   const currentPrices = [
-    { service: "Wallet Scanner",   price: "0.006 SOL",  margin: "100%", updated: "12 min ago" },
-    { service: "Pool Analyzer",    price: "0.0008 SOL", margin: "100%", updated: "12 min ago" },
-    { service: "Protocol Auditor", price: "0.0016 SOL", margin: "100%", updated: "12 min ago" },
-    { service: "Yield Optimizer",  price: "0.0012 SOL", margin: "100%", updated: "12 min ago" },
-    { service: "Token Deep Dive",  price: "0.002 SOL",  margin: "100%", updated: "12 min ago" },
-    { service: "HERMES (per call)",price: "0.0016 SOL", margin: "100%", updated: "12 min ago" },
-    { service: "AEON (monthly)",   price: "0.030 SOL",  margin: "100%", updated: "12 min ago" },
+    { service: "Wallet Scanner",      price: "0.009 SOL",  margin: "200%", updated: "4h cycle" },
+    { service: "Pool Analyzer",       price: "0.0012 SOL", margin: "200%", updated: "4h cycle" },
+    { service: "Protocol Auditor",    price: "0.0024 SOL", margin: "200%", updated: "4h cycle" },
+    { service: "Yield Optimizer",     price: "0.0018 SOL", margin: "200%", updated: "4h cycle" },
+    { service: "Token Deep Dive",     price: "0.003 SOL",  margin: "200%", updated: "4h cycle" },
+    { service: "Liquidation Scanner", price: "0.006 SOL",  margin: "200%", updated: "4h cycle" },
+    { service: "HERMES (per call)",   price: "0.0024 SOL", margin: "200%", updated: "4h cycle" },
+    { service: "AEON (monthly)",      price: "0.045 SOL",  margin: "200%", updated: "4h cycle" },
   ];
 
   return (

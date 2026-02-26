@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Copy, Check, Mail } from "lucide-react";
+import { Copy, Check, Mail, Plug, Code2, Globe, ArrowRight, Shield, Zap, Lock } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Copy button                                                        */
@@ -119,17 +119,56 @@ function WidgetPreview() {
 
 export default function IntegrationsPage() {
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-8 max-w-4xl relative">
+      {/* Background gradients */}
+      <div className="absolute top-0 -left-40 w-96 h-96 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-60 -right-40 w-96 h-96 bg-purple-500/8 rounded-full blur-3xl pointer-events-none" />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        className="relative z-10"
       >
-        <h1 className="text-2xl font-bold text-white">Integrate AXIONBLADE</h1>
-        <p className="text-sm text-gray-400">
-          Embed verified risk intelligence into your protocol
-        </p>
+        <div className="flex items-start gap-4 mb-2">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+            <Plug className="w-7 h-7 text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-2">
+              Integrate AXIONBLADE
+            </h1>
+            <p className="text-gray-400 text-lg">
+              Embed verifiable risk intelligence into any protocol or frontend
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              Proof-verified outputs — every response includes an on-chain proof hash (A0-32)
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Value props */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.04 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-3 relative z-10"
+      >
+        {[
+          { icon: Shield, color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20", title: "Proof-Verified", desc: "Every response includes an immutable on-chain proof hash" },
+          { icon: Zap, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", title: "Sub-Second Latency", desc: "Cached assessments served in real-time from CDN edge" },
+          { icon: Lock, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", title: "A2A Native", desc: "Designed for agent-to-agent consumption with 100% treasury routing" },
+        ].map(({ icon: Icon, color, bg, title, desc }) => (
+          <div key={title} className={`bg-[#0F1420] border rounded-xl p-4 ${bg.split(" ")[1]}`}>
+            <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center mb-3`}>
+              <Icon size={16} className={color} />
+            </div>
+            <p className={`text-sm font-semibold mb-1 ${color}`}>{title}</p>
+            <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+          </div>
+        ))}
       </motion.div>
 
       {/* Section 1: Widget Embed */}
@@ -137,11 +176,13 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
-        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200 relative z-10"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">
-          Risk Score Widget
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <Globe size={16} className="text-cyan-400" />
+          <h2 className="text-lg font-semibold text-white">Risk Score Widget</h2>
+          <span className="ml-auto text-[10px] text-gray-600 bg-[#1A2235] border border-white/5 rounded-full px-2 py-0.5">iframe embed</span>
+        </div>
 
         <p className="text-sm text-gray-400 mb-4">
           Embed a live risk score badge on your site. Replace{" "}
@@ -168,9 +209,13 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200 relative z-10"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">REST API</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <Code2 size={16} className="text-purple-400" />
+          <h2 className="text-lg font-semibold text-white">REST API</h2>
+          <span className="ml-auto text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-2 py-0.5">v1 · Active</span>
+        </div>
 
         <div className="mb-5">
           <CodeBlock code={apiExample} language="javascript" />
@@ -221,31 +266,26 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200 relative z-10"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">
-          Why Protocols Integrate
-        </h2>
+        <div className="flex items-center gap-2 mb-5">
+          <ArrowRight size={16} className="text-emerald-400" />
+          <h2 className="text-lg font-semibold text-white">Why Protocols Integrate</h2>
+        </div>
 
         <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
-            <p className="text-sm text-gray-300">
-              Users demand verified risk data before depositing
-            </p>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
-            <p className="text-sm text-gray-300">
-              Risk transparency reduces support load and community FUD
-            </p>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0" />
-            <p className="text-sm text-gray-300">
-              AXIONBLADE-verified pools projected to show higher TVL retention
-            </p>
-          </div>
+          {[
+            "Users demand verified risk data before depositing — AXIONBLADE provides cryptographic proof of assessment quality",
+            "Risk transparency reduces support load and community FUD around pool safety",
+            "AXIONBLADE-verified pools display proofs on-chain — users can verify independently without trusting the protocol",
+          ].map((text, i) => (
+            <div key={i} className="flex items-start gap-3 py-3 px-4 rounded-xl bg-[#0A0E17] hover:bg-[#1A2235] transition-colors">
+              <div className="mt-1 w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                <span className="text-[9px] font-bold text-emerald-400">{i + 1}</span>
+              </div>
+              <p className="text-sm text-gray-300 leading-relaxed">{text}</p>
+            </div>
+          ))}
         </div>
       </motion.div>
 
@@ -254,27 +294,39 @@ export default function IntegrationsPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
-        className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 hover:border-[#243049] transition-colors duration-200"
+        className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-cyan-500/20 rounded-xl p-6 relative z-10"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">
-          Integration Status
-        </h2>
-
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] shrink-0" />
-          <p className="text-sm text-gray-300">
-            Pilots in progress with Solana ecosystem protocols
-          </p>
+        <div className="flex items-center gap-2 mb-5">
+          <Mail size={16} className="text-cyan-400" />
+          <h2 className="text-lg font-semibold text-white">Integration Status</h2>
+          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-2 py-0.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            Pilots in Progress
+          </span>
         </div>
+
+        <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+          Pilots in progress with Solana ecosystem protocols. Integration is subject to AEON allowlist approval
+          per A0-36 — all external protocol integrations require governance review.
+        </p>
 
         <a
           href="mailto:integrations@axionblade.app"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#00D4FF] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00B8D9] transition-colors duration-200"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#00D4FF] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#00B8D9] transition-colors duration-200"
         >
           <Mail size={14} />
           Request Integration
         </a>
       </motion.div>
+
+      {/* Disclaimer */}
+      <div className="border-t border-white/[0.04] pt-6 mt-8 relative z-10">
+        <p className="text-[10px] text-gray-600 leading-relaxed">
+          All integrations subject to AEON allowlist governance (A0-36). A2A marketplace revenue routes 100% to Treasury (A0-33).
+          Integration requests are reviewed against all 50 axioms before approval.
+          AXIONBLADE does not provide financial advice. Risk assessments are informational only.
+        </p>
+      </div>
     </div>
   );
 }

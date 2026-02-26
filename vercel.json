@@ -1,1 +1,9 @@
-{"rootDirectory": "app"}
+{
+  "rootDirectory": "app",
+  "crons": [
+    {
+      "path": "/api/price-monitor/adjust",
+      "schedule": "0 */4 * * *"
+    }
+  ]
+}

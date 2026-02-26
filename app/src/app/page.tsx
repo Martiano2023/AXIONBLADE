@@ -93,19 +93,23 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="grid grid-cols-3 gap-8 mt-20 max-w-2xl mx-auto"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-20 max-w-3xl mx-auto"
           >
-            <div>
+            <div className="text-center">
               <div className="text-3xl font-bold text-cyan-400">4</div>
-              <div className="text-sm text-gray-400">AI Agents</div>
+              <div className="text-sm text-gray-400 mt-1">AI Agents</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-purple-400">99.8%</div>
-              <div className="text-sm text-gray-400">Success Rate</div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-400">7</div>
+              <div className="text-sm text-gray-400 mt-1">Programs</div>
             </div>
-            <div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-amber-400">50</div>
+              <div className="text-sm text-gray-400 mt-1">Axioms</div>
+            </div>
+            <div className="text-center">
               <div className="text-3xl font-bold text-emerald-400">100%</div>
-              <div className="text-sm text-gray-400">Auditable</div>
+              <div className="text-sm text-gray-400 mt-1">Auditable</div>
             </div>
           </motion.div>
         </div>

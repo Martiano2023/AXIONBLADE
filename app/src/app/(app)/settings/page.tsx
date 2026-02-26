@@ -180,15 +180,17 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center gap-3"
+        className="flex items-center gap-4"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00D4FF]/15 text-[#00D4FF]">
-          <Settings size={20} />
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D4FF]/20 to-purple-500/20 border border-[#00D4FF]/30 flex items-center justify-center shrink-0">
+          <Settings size={22} className="text-[#00D4FF]" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <p className="text-sm text-gray-400">
-            Configure your AXIONBLADE dashboard
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#00D4FF] to-purple-400 bg-clip-text text-transparent mb-1">
+            Settings
+          </h1>
+          <p className="text-gray-400">
+            Configure your AXIONBLADE dashboard preferences
           </p>
         </div>
       </motion.div>
@@ -233,8 +235,8 @@ export default function SettingsPage() {
               <div className="min-w-0">
                 <p className="text-xs text-gray-500 mb-1">Network</p>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  Localnet
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Mainnet
                 </span>
               </div>
               <button
@@ -376,23 +378,23 @@ export default function SettingsPage() {
           <div className="min-w-0">
             <p className="text-xs text-gray-500 mb-1">Current Network</p>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Localnet
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Mainnet
             </span>
           </div>
           <span className="inline-flex items-center rounded-full bg-[#1A2235] border border-[#1A2235] px-2.5 py-0.5 text-xs font-medium text-gray-400">
-            Cluster: localnet
+            Cluster: mainnet-beta
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 py-4">
           <div className="min-w-0">
-            <p className="text-xs text-gray-500 mb-1">RPC URL</p>
+            <p className="text-xs text-gray-500 mb-1">RPC Endpoint</p>
             <p className="font-mono text-sm text-gray-300">
-              http://localhost:8899
+              https://api.mainnet-beta.solana.com
             </p>
           </div>
-          <CopyButton text="http://localhost:8899" />
+          <CopyButton text="https://api.mainnet-beta.solana.com" />
         </div>
       </Section>
 

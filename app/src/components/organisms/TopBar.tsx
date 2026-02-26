@@ -32,12 +32,12 @@ const routeLabels: Record<string, string> = {
 };
 
 const tickerItems = [
-  { label: "Treasury", value: "pending", color: "bg-gray-500" },
-  { label: "Proofs", value: "0", color: "bg-[#00D4FF]" },
-  { label: "Programs", value: "2/7 live", color: "bg-cyan-400" },
-  { label: "Agents", value: "4/100", color: "bg-amber-400" },
-  { label: "Services", value: "0", color: "bg-gray-500" },
-  { label: "Axioms", value: "49/50", color: "bg-green-400" },
+  { label: "Treasury",  value: "pending",  color: "bg-amber-500" },
+  { label: "Proofs",    value: "0",        color: "bg-[#00D4FF]" },
+  { label: "Programs",  value: "2/7",      color: "bg-cyan-400"  },
+  { label: "Agents",    value: "4/100",    color: "bg-rose-400"  },
+  { label: "Services",  value: "pending",  color: "bg-gray-500"  },
+  { label: "Axioms",    value: "50/50",    color: "bg-emerald-400" },
 ];
 
 const tierConfig = {

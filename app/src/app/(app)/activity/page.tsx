@@ -38,11 +38,11 @@ interface ActivityEvent {
 /* ------------------------------------------------------------------ */
 
 const agentColors: Record<AgentId, { bg: string; text: string; dot: string }> = {
-  AEON:    { bg: "bg-purple-500/15", text: "text-purple-400", dot: "bg-purple-500" },
+  AEON:    { bg: "bg-rose-500/15",   text: "text-rose-400",   dot: "bg-rose-500"   },
   APOLLO:  { bg: "bg-cyan-500/15",   text: "text-cyan-400",   dot: "bg-cyan-500"   },
-  HERMES:  { bg: "bg-emerald-500/15",text: "text-emerald-400",dot: "bg-emerald-500" },
-  Auditor: { bg: "bg-rose-500/15",   text: "text-rose-400",   dot: "bg-rose-500"   },
-  Service: { bg: "bg-amber-500/15",  text: "text-amber-400",  dot: "bg-amber-500"  },
+  HERMES:  { bg: "bg-purple-500/15", text: "text-purple-400", dot: "bg-purple-500" },
+  Auditor: { bg: "bg-amber-500/15",  text: "text-amber-400",  dot: "bg-amber-500"  },
+  Service: { bg: "bg-emerald-500/15",text: "text-emerald-400",dot: "bg-emerald-500" },
 };
 
 const eventColors: Record<EventType, { bg: string; text: string; dot: string }> = {
@@ -220,30 +220,31 @@ export default function ActivityPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400">
-            <Activity size={20} />
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-1">
           <div>
-            <h1 className="text-2xl font-bold text-white">Activity Feed</h1>
-            <p className="text-sm text-gray-400">
-              Real-time protocol event log
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-2">
+              Activity Feed
+            </h1>
+            <p className="text-gray-400 text-lg">
+              Real-time protocol event log — decisions, executions, proofs
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              All actions require log_decision before execution (A0-5)
             </p>
           </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="flex items-center gap-2 rounded-full bg-[#1A2235] border border-[#1A2235] px-4 py-2 shrink-0"
+          >
+            <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="text-sm font-medium text-gray-300">
+              {MOCK_EVENTS.length} events
+            </span>
+          </motion.div>
         </div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="flex items-center gap-2 rounded-full bg-[#1A2235] border border-[#1A2235] px-4 py-2"
-        >
-          <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-sm font-medium text-gray-300">
-            {MOCK_EVENTS.length} events
-          </span>
-        </motion.div>
       </motion.div>
 
       {/* ---- Section 1: Filter Bar ---- */}
