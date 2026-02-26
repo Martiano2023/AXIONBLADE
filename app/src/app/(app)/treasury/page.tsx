@@ -89,8 +89,7 @@ const RESERVE_RATIO = 32;
 const RESERVE_THRESHOLD = 25;
 
 const OPERATIONS_SPLIT = 40;
-const TREASURY_RESERVE_SPLIT = 30;
-const TREASURY_SPLIT = 15;
+const TREASURY_SPLIT = 45;
 const CREATOR_SPLIT = 15;
 
 const TOTAL_DONATED = 12.5;
@@ -275,8 +274,7 @@ function CCSDonut() {
   const strokeWidth = 20;
   const circumference = 2 * Math.PI * radius;
   const operationsArc = (OPERATIONS_SPLIT / 100) * circumference;
-  const treasuryArc = (TREASURY_RESERVE_SPLIT / 100) * circumference;
-  const treasurySplitArc = (TREASURY_SPLIT / 100) * circumference;
+  const treasuryArc = (TREASURY_SPLIT / 100) * circumference;
   const creatorArc = (CREATOR_SPLIT / 100) * circumference;
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
@@ -300,7 +298,7 @@ function CCSDonut() {
             onMouseEnter={() => setHoveredSegment("operations")}
             onMouseLeave={() => setHoveredSegment(null)}
           />
-          {/* Treasury segment (emerald-500) - starts after operations */}
+          {/* Treasury segment (emerald-500) - 45%, starts after operations */}
           <motion.circle
             cx="70"
             cy="70"
@@ -317,24 +315,7 @@ function CCSDonut() {
             onMouseEnter={() => setHoveredSegment("treasury")}
             onMouseLeave={() => setHoveredSegment(null)}
           />
-          {/* Treasury segment (cyan) - starts after operations + reserve */}
-          <motion.circle
-            cx="70"
-            cy="70"
-            r={radius}
-            fill="none"
-            strokeWidth={strokeWidth}
-            strokeDasharray={`${treasurySplitArc} ${circumference - treasurySplitArc}`}
-            strokeDashoffset={-(operationsArc + treasuryArc)}
-            initial={{ strokeDasharray: `0 ${circumference}` }}
-            animate={{ strokeDasharray: `${treasurySplitArc} ${circumference - treasurySplitArc}` }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-            className="stroke-[#00D4FF]"
-            style={{ cursor: "pointer" }}
-            onMouseEnter={() => setHoveredSegment("treasury-direct")}
-            onMouseLeave={() => setHoveredSegment(null)}
-          />
-          {/* Creator segment (amber-400) - starts after operations + reserve + treasury */}
+          {/* Creator segment (amber-400) - 15%, starts after operations + treasury */}
           <motion.circle
             cx="70"
             cy="70"
@@ -342,10 +323,10 @@ function CCSDonut() {
             fill="none"
             strokeWidth={strokeWidth}
             strokeDasharray={`${creatorArc} ${circumference - creatorArc}`}
-            strokeDashoffset={-(operationsArc + treasuryArc + treasurySplitArc)}
+            strokeDashoffset={-(operationsArc + treasuryArc)}
             initial={{ strokeDasharray: `0 ${circumference}` }}
             animate={{ strokeDasharray: `${creatorArc} ${circumference - creatorArc}` }}
-            transition={{ duration: 1.3, ease: "easeOut", delay: 0.6 }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
             className="stroke-amber-400"
             style={{ cursor: "pointer" }}
             onMouseEnter={() => setHoveredSegment("creator")}
@@ -368,10 +349,7 @@ function CCSDonut() {
                 <span className="text-gray-400">Operations: {OPERATIONS_SPLIT}%</span>
               )}
               {hoveredSegment === "treasury" && (
-                <span className="text-emerald-400">Treasury Reserve: {TREASURY_RESERVE_SPLIT}%</span>
-              )}
-              {hoveredSegment === "treasury-direct" && (
-                <span className="text-[#00D4FF]">Treasury: {TREASURY_SPLIT}%</span>
+                <span className="text-emerald-400">Treasury: {TREASURY_SPLIT}%</span>
               )}
               {hoveredSegment === "creator" && (
                 <span className="text-amber-400">Creator: {CREATOR_SPLIT}%</span>
@@ -392,16 +370,9 @@ function CCSDonut() {
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-gray-400">Treasury Reserve</span>
-          </div>
-          <span className="text-emerald-400 font-medium">{TREASURY_RESERVE_SPLIT}%</span>
-        </div>
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00D4FF]" />
             <span className="text-gray-400">Treasury</span>
           </div>
-          <span className="text-[#00D4FF] font-medium">{TREASURY_SPLIT}%</span>
+          <span className="text-emerald-400 font-medium">{TREASURY_SPLIT}%</span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
@@ -529,7 +500,7 @@ export default function TreasuryPage() {
             {
               step: "02",
               icon: <PieChartIcon className="w-5 h-5 text-purple-400" />,
-              description: "Revenue split: 40% Operations + 30% Reserve + 15% Treasury + 15% Creator",
+              description: "Revenue split: 40% Operations + 45% Treasury + 15% Creator",
             },
             {
               step: "03",
@@ -896,10 +867,10 @@ export default function TreasuryPage() {
       <motion.div variants={staggerItem} className="space-y-4">
         <h2 className="text-lg font-bold text-white">Protocol Economics</h2>
         <div className="bg-[#0F1420] border border-[#1A2235] rounded-xl p-6 space-y-6">
-          {/* Revenue Split — 4 colored bars */}
+          {/* Revenue Split — 3 colored bars */}
           <div className="space-y-3">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Revenue Split</p>
-            <p className="text-xs text-gray-500">AI-adjusted pricing guarantees minimum 30% treasury allocation on every transaction</p>
+            <p className="text-xs text-gray-500">AI-adjusted pricing guarantees minimum 45% treasury allocation on every transaction</p>
             <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between mb-1">
@@ -912,20 +883,11 @@ export default function TreasuryPage() {
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400 inline-flex items-center">Treasury Reserve<InfoTooltip term="Treasury Reserve" /></span>
-                  <span className="text-xs font-medium text-emerald-400">30%</span>
-                </div>
-                <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                  <div className="h-full rounded-full bg-emerald-500" style={{ width: "30%" }} />
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-gray-400 inline-flex items-center">Treasury<InfoTooltip term="Treasury" /></span>
-                  <span className="text-xs font-medium text-[#00D4FF]">15%</span>
+                  <span className="text-xs font-medium text-emerald-400">45%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                  <div className="h-full rounded-full bg-[#00D4FF]" style={{ width: "15%" }} />
+                  <div className="h-full rounded-full bg-emerald-500" style={{ width: "45%" }} />
                 </div>
               </div>
               <div>
@@ -942,7 +904,7 @@ export default function TreasuryPage() {
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-2.5 mt-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <p className="text-xs text-emerald-400">
-                Revenue Split: 40% Operations | 30% Reserve | 15% Treasury | 15% Creator
+                Revenue Split: 40% Operations | 45% Treasury | 15% Creator
               </p>
             </div>
           </div>
@@ -951,7 +913,7 @@ export default function TreasuryPage() {
           <div className="border-t border-[#1A2235] pt-4">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Margin Enforcement</p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              Every paid transaction enforces minimum allocation: 30% to Reserve PDA, 15% to Treasury, 15% to Creator wallet.
+              Every paid transaction enforces minimum allocation: 45% to Treasury, 15% to Creator wallet.
               If AI calculates a price below cost threshold, the pricing engine auto-adjusts UP to maintain margins.
             </p>
           </div>
@@ -961,18 +923,14 @@ export default function TreasuryPage() {
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Projected Monthly Revenue</p>
             <p className="text-xs text-gray-500 mb-1">Based on daily average x 30</p>
             <p className="text-xl font-bold text-white">~246 SOL/month <span className="text-sm font-normal text-gray-500">(projected)</span></p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+            <div className="grid grid-cols-3 gap-3 mt-3">
               <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
                 <p className="text-lg font-bold text-gray-400">~98 SOL</p>
                 <p className="text-[10px] text-gray-500 uppercase tracking-wider">Operations (40%)</p>
               </div>
               <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center">
-                <p className="text-lg font-bold text-emerald-400">~74 SOL</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (30%)</p>
-              </div>
-              <div className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-lg p-3 text-center">
-                <p className="text-lg font-bold text-[#00D4FF]">~37 SOL</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (15%)</p>
+                <p className="text-lg font-bold text-emerald-400">~111 SOL</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (45%)</p>
               </div>
               <div className="bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 text-center">
                 <p className="text-lg font-bold text-amber-400">~37 SOL</p>

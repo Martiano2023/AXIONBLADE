@@ -170,21 +170,16 @@ export default function EconomicsPage() {
               <h2 className="text-xl font-bold text-white">Revenue Split (NET after costs)</h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="bg-purple-500/20 border border-purple-500/40 rounded-xl p-6 text-center">
                 <DollarSign className="w-8 h-8 text-purple-400 mb-3 mx-auto" />
                 <p className="text-xs text-gray-400 mb-2">Operations</p>
                 <p className="text-3xl font-bold text-purple-400">40%</p>
               </div>
-              <div className="bg-cyan-500/20 border border-cyan-500/40 rounded-xl p-6 text-center">
-                <TrendingUp className="w-8 h-8 text-cyan-400 mb-3 mx-auto" />
-                <p className="text-xs text-gray-400 mb-2">Treasury Reserve</p>
-                <p className="text-3xl font-bold text-cyan-400">30%</p>
-              </div>
               <div className="bg-emerald-500/20 border border-emerald-500/40 rounded-xl p-6 text-center">
-                <DollarSign className="w-8 h-8 text-emerald-400 mb-3 mx-auto" />
+                <TrendingUp className="w-8 h-8 text-emerald-400 mb-3 mx-auto" />
                 <p className="text-xs text-gray-400 mb-2">Treasury</p>
-                <p className="text-3xl font-bold text-emerald-400">15%</p>
+                <p className="text-3xl font-bold text-emerald-400">45%</p>
               </div>
               <div className="bg-amber-400/20 border border-amber-400/40 rounded-xl p-6 text-center">
                 <DollarSign className="w-8 h-8 text-amber-400 mb-3 mx-auto" />

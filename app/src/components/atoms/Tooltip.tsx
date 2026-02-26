@@ -36,8 +36,8 @@ export const GLOSSARY: Record<string, string> = {
   "Yield Trap": "A pool where headline APR significantly exceeds effective APR, misleading participants about true returns",
   "Proof Hash": "SHA-256 hash of the assessment data stored on-chain, enabling cryptographic verification of the result",
   "Assessment PDA": "Program Derived Address storing the immutable risk assessment record on Solana",
-  "Treasury Reserve": "30% of revenue held as protocol safety net (minimum 25% reserve ratio per Axiom A0-3)",
-  "Treasury": "15% of revenue routed directly to Treasury on top of the 30% Reserve allocation",
+  "Treasury Reserve": "The protocol maintains a minimum 25% reserve ratio at all times (Axiom A0-3), funded by the 45% treasury allocation",
+  "Treasury": "45% of all protocol revenue flows to the Treasury — covering reserve requirements and protocol sustainability",
   "Operations": "40% of revenue allocated to compute, RPC nodes, storage, and infrastructure costs",
   "Creator Allocation": "15% of revenue allocated to protocol founder/creator (capped by Axiom A0-28)",
   "Confidence Level": "Percentage of data fields available for the assessment. Higher confidence = more complete data input",
@@ -49,7 +49,7 @@ export const GLOSSARY: Record<string, string> = {
   "Launch Price": "Introductory pricing for the first 30 days of protocol operation. Prices may adjust after the launch period based on the AI Pricing Stabilizer",
   "AI Pricing Stabilizer": "Automated pricing engine with 3 phases: Launch (fixed), Calibration (±10%/week), Stable (±5%/week). Ensures protocol sustainability",
   "Smart Safeguards": "Automatic rules that protect protocol economics: treasury reserve monitoring, volume-based pricing, SOL volatility adjustment",
-  "Revenue Split": "Protocol revenue is split: 40% Operations, 30% Reserve, 15% Treasury, 15% Creator Allocation",
+  "Revenue Split": "Protocol revenue is split: 40% Operations, 45% Treasury, 15% Creator Allocation",
 };
 
 // ── Base Tooltip ───────────────────────────────────────────

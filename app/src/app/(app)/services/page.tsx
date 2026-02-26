@@ -427,17 +427,15 @@ export default function ServicesPage() {
       >
         <p className="text-xs text-gray-600 text-center mb-3">Revenue distribution per service payment</p>
         <div className="flex items-center gap-0 rounded-xl overflow-hidden h-3 mb-3 max-w-lg mx-auto">
-          <div className="h-full bg-blue-500" style={{ width: '50%' }} title="Operations 50%" />
-          <div className="h-full bg-green-500" style={{ width: '25%' }} title="Reserve 25%" />
-          <div className="h-full bg-purple-500" style={{ width: '15%' }} title="Treasury 15%" />
-          <div className="h-full bg-amber-500" style={{ width: '10%' }} title="Creator 10%" />
+          <div className="h-full bg-blue-500" style={{ width: '40%' }} title="Operations 40%" />
+          <div className="h-full bg-emerald-500" style={{ width: '45%' }} title="Treasury 45%" />
+          <div className="h-full bg-amber-500" style={{ width: '15%' }} title="Creator 15%" />
         </div>
         <div className="flex items-center justify-center gap-6 text-[10px] text-gray-500">
           {[
-            { label: 'Operations', pct: '50%', color: 'bg-blue-500' },
-            { label: 'Reserve',    pct: '25%', color: 'bg-green-500' },
-            { label: 'Treasury',   pct: '15%', color: 'bg-purple-500' },
-            { label: 'Creator',    pct: '10%', color: 'bg-amber-500' },
+            { label: 'Operations', pct: '40%', color: 'bg-blue-500' },
+            { label: 'Treasury',   pct: '45%', color: 'bg-emerald-500' },
+            { label: 'Creator',    pct: '15%', color: 'bg-amber-500' },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className={`w-2 h-2 rounded-full ${s.color}`} />

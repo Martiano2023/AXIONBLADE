@@ -359,13 +359,12 @@ export function getAllServiceIds(): Array<keyof typeof BASE_PRICES> {
 
 /**
  * Calculate revenue split for a payment amount
- * 40% Operations, 30% Reserve, 15% Treasury, 15% Creator
+ * 40% Operations, 45% Treasury, 15% Creator
  */
 export function calculateRevenueSplit(amount: number) {
   return {
     operations: amount * 0.40,
-    reserve: amount * 0.30,
-    treasury: amount * 0.15,
+    treasury: amount * 0.45,
     creator: amount * 0.15,
   };
 }

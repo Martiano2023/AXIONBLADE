@@ -860,7 +860,7 @@ export default function HermesPage() {
         </div>
 
         <p className="text-[10px] text-gray-600 text-center">
-          Revenue split: 40% Operations | 30% Reserve | 15% Treasury | 15% Creator
+          Revenue split: 40% Operations | 45% Treasury | 15% Creator
         </p>
 
         {/* Free tier remaining counter */}

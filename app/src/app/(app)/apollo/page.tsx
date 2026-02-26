@@ -407,7 +407,7 @@ const PRICING_TIERS: PricingTierConfig[] = [
       "Priority queue processing",
       "Dedicated proof with enhanced metadata",
     ],
-    note: "AI-adjusted pricing guarantees minimum 30% treasury allocation.",
+    note: "AI-adjusted pricing guarantees minimum 45% treasury allocation.",
     aiAdjusted: true,
     launchPrice: true,
     afterLaunch: "After launch: ~3-8 SOL (AI-adjusted)",
@@ -1399,7 +1399,7 @@ export default function ApolloPage() {
               ))}
             </div>
             <p className="text-[10px] text-gray-600 mt-3 text-center">
-              Pricing is AI-adjusted to ensure protocol sustainability. Revenue split: 40% Operations | 30% Reserve | 15% Treasury | 15% Creator.
+              Pricing is AI-adjusted to ensure protocol sustainability. Revenue split: 40% Operations | 45% Treasury | 15% Creator.
             </p>
           </div>
 

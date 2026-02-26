@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 // Comprehensive economic monitoring:
 // - Total revenue, costs, margins
-// - 4-way revenue split (Operations 50%, Reserve 25%, Treasury 15%, Creator 10%)
+// - 3-way revenue split (Operations 40%, Treasury 45%, Creator 15%)
 // - Service performance tracking
 // - Dynamic pricing alerts
 // - Volume discount analytics
@@ -36,7 +36,6 @@ interface EconomyData {
   costTrend7d: number;
   revenueByCategory: {
     operations: number;
-    reserve: number;
     treasury: number;
     creator: number;
   };
@@ -185,46 +184,35 @@ export default function EconomyPage() {
 
         <div className="space-y-4">
           <RevenueSplitBar
-            label="Operations (50%)"
+            label="Operations (40%)"
             value={data.revenueByCategory.operations}
-            percentage={50}
+            percentage={40}
             color="bg-blue-500"
           />
 
           <RevenueSplitBar
-            label="Reserve (25%)"
-            value={data.revenueByCategory.reserve}
-            percentage={25}
-            color="bg-green-500"
-          />
-
-          <RevenueSplitBar
-            label="Treasury (15%)"
+            label="Treasury (45%)"
             value={data.revenueByCategory.treasury}
-            percentage={15}
-            color="bg-purple-500"
+            percentage={45}
+            color="bg-emerald-500"
           />
 
           <RevenueSplitBar
-            label="Creator (10%)"
+            label="Creator (15%)"
             value={data.revenueByCategory.creator}
-            percentage={10}
+            percentage={15}
             color="bg-amber-500"
           />
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-800 grid grid-cols-4 gap-4 text-sm">
+        <div className="mt-4 pt-4 border-t border-gray-800 grid grid-cols-3 gap-4 text-sm">
           <div className="text-center">
             <div className="text-gray-500 mb-1">Operations</div>
             <div className="font-semibold text-blue-400">{data.revenueByCategory.operations.toFixed(3)} SOL</div>
           </div>
           <div className="text-center">
-            <div className="text-gray-500 mb-1">Reserve</div>
-            <div className="font-semibold text-green-400">{data.revenueByCategory.reserve.toFixed(3)} SOL</div>
-          </div>
-          <div className="text-center">
             <div className="text-gray-500 mb-1">Treasury</div>
-            <div className="font-semibold text-purple-400">{data.revenueByCategory.treasury.toFixed(3)} SOL</div>
+            <div className="font-semibold text-emerald-400">{data.revenueByCategory.treasury.toFixed(3)} SOL</div>
           </div>
           <div className="text-center">
             <div className="text-gray-500 mb-1">Creator</div>
