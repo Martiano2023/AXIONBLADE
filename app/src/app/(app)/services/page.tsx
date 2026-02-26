@@ -1,10 +1,9 @@
 'use client';
 
 // ---------------------------------------------------------------------------
-// AXIONBLADE Services Hub — All available services in one place
+// AXIONBLADE Services Hub — Organized by category, no tabs needed
 // ---------------------------------------------------------------------------
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -20,17 +19,18 @@ import {
   Sparkles,
   ChevronRight,
   Percent,
-  Activity,
   BarChart3,
   CheckCircle2,
   Star,
+  Wrench,
+  Bot,
+  Code2,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
 
-type Category = 'all' | 'tools' | 'agents' | 'apis';
 type TierLabel = 'Free' | 'Pro' | 'Institutional';
 
 interface ServiceDef {
@@ -43,10 +43,11 @@ interface ServiceDef {
   price: string;
   priceNote: string;
   tier: TierLabel;
-  color: string;         // tailwind colour token (e.g. "cyan")
-  category: Exclude<Category, 'all'>;
+  color: string;
+  category: 'tools' | 'agents' | 'apis';
   features: string[];
   badge?: string;
+  featured?: boolean;
 }
 
 const SERVICES: ServiceDef[] = [
@@ -55,7 +56,7 @@ const SERVICES: ServiceDef[] = [
     id: 'wallet-scanner',
     name: 'Wallet Scanner',
     description: 'Deep on-chain wallet risk analysis',
-    detail: 'Scan any Solana wallet for risky token holdings, suspicious DeFi positions, and anomalous on-chain behaviour. Receive a structured risk score with actionable findings.',
+    detail: 'Scan any Solana wallet for risky token holdings, suspicious DeFi positions, and anomalous on-chain behaviour. Structured risk score with actionable findings.',
     icon: ScanSearch,
     href: '/wallet-scanner',
     price: '0.05 SOL',
@@ -63,14 +64,15 @@ const SERVICES: ServiceDef[] = [
     tier: 'Pro',
     color: 'cyan',
     category: 'tools',
-    features: ['Token risk classification', 'DeFi position exposure', 'Behavioural anomaly detection', 'Risk score (0–100)'],
+    features: ['Token risk classification', 'DeFi position exposure', 'Behavioural anomaly detection', 'Risk score 0–100'],
     badge: 'Most Used',
+    featured: true,
   },
   {
     id: 'protocol-auditor',
     name: 'Protocol Auditor',
     description: 'Instant DeFi protocol safety check',
-    detail: 'Audit any DeFi protocol against AXIONBLADE\'s 29-axiom safety framework. Verify contract addresses, liquidity health, admin privileges, and upgrade risk.',
+    detail: 'Audit any DeFi protocol against 50 active axioms. Verify contracts, liquidity health, admin privileges, and upgrade risk.',
     icon: ShieldCheck,
     href: '/protocol-auditor',
     price: '0.01 SOL',
@@ -84,7 +86,7 @@ const SERVICES: ServiceDef[] = [
     id: 'token-deep-dive',
     name: 'Token Deep Dive',
     description: 'Full token intelligence report',
-    detail: 'Comprehensive analysis of any SPL token: liquidity depth, holder distribution, wash trading signals, team wallet concentration, and tokenomics red flags.',
+    detail: 'Comprehensive SPL token analysis: holder distribution, wash trading signals, team wallet concentration, and tokenomics red flags.',
     icon: Coins,
     href: '/token-deep-dive',
     price: '0.012 SOL',
@@ -98,7 +100,7 @@ const SERVICES: ServiceDef[] = [
     id: 'yield-optimizer',
     name: 'Yield Optimizer',
     description: 'Risk-adjusted yield opportunities',
-    detail: 'Compare yield farming opportunities across Solana DeFi protocols. Each position is scored for risk-adjusted return using APOLLO\'s multi-layer intelligence framework.',
+    detail: 'Compare yield farming across Solana protocols. Each position scored for risk-adjusted return using APOLLO\'s multi-layer framework.',
     icon: TrendingUp,
     href: '/yield-optimizer',
     price: '0.008 SOL',
@@ -112,7 +114,7 @@ const SERVICES: ServiceDef[] = [
     id: 'pool-analyzer',
     name: 'Pool Analyzer',
     description: 'Liquidity pool deep analysis',
-    detail: 'Dissect any AMM liquidity pool: fee tiers, TVL stability, volume patterns, impermanent loss estimation, and whale concentration risk.',
+    detail: 'Dissect any AMM pool: fee tiers, TVL stability, volume patterns, impermanent loss estimation, and whale concentration risk.',
     icon: Droplet,
     href: '/pool-analyzer',
     price: '0.005 SOL',
@@ -122,32 +124,34 @@ const SERVICES: ServiceDef[] = [
     category: 'tools',
     features: ['TVL stability score', 'Volume/TVL ratio', 'Whale concentration', 'IL simulation'],
     badge: 'Best Value',
+    featured: true,
   },
 
   // ── AGENTS ───────────────────────────────────────────────────────────────
   {
     id: 'apollo',
     name: 'APOLLO',
-    description: 'Autonomous DeFi risk evaluator',
-    detail: 'APOLLO runs continuous 3-module risk assessment across monitored pools — Pool Taxonomy, Multi-Layer Intelligence (MLI), and Effective APR. Weight capped at 40% in the risk engine to prevent single-agent dominance.',
+    description: 'Autonomous DeFi risk evaluator — 3 modules',
+    detail: 'Continuous risk assessment across monitored pools via Pool Taxonomy, MLI, and Effective APR modules. Weight capped at 40% in the risk engine.',
     icon: Shield,
     href: '/apollo',
     price: 'Included',
-    priceNote: 'with protocol access',
+    priceNote: 'protocol access',
     tier: 'Free',
     color: 'cyan',
     category: 'agents',
-    features: ['Pool Taxonomy module', 'MLI scoring (≤40% weight)', 'Effective APR calculation', 'NEVER executes transactions'],
+    features: ['Pool Taxonomy module', 'MLI scoring (≤40% weight)', 'Effective APR calculation', 'NEVER executes'],
+    featured: true,
   },
   {
     id: 'hermes',
     name: 'HERMES',
-    description: '5 DeFi intelligence services',
-    detail: 'HERMES provides terminal intelligence output across 5 services: Pool Comparison, Effective APR Calculator, Risk Decomposition Vector, Yield Trap Intelligence, and Protocol Health Snapshot. Never feeds the execution chain.',
+    description: '5 DeFi intelligence services, terminal output',
+    detail: 'Pool Comparison, Effective APR Calculator, Risk Decomposition Vector, Yield Trap Intelligence, and Protocol Health Snapshot. Never feeds the execution chain.',
     icon: Zap,
     href: '/hermes',
     price: '0.001 SOL',
-    priceNote: 'per service call',
+    priceNote: 'per call',
     tier: 'Free',
     color: 'purple',
     category: 'agents',
@@ -157,12 +161,12 @@ const SERVICES: ServiceDef[] = [
   {
     id: 'aeon',
     name: 'AEON',
-    description: 'Sovereign governance layer',
-    detail: 'AEON is the sovereign governor of AXIONBLADE. It delegates, coordinates, and decides — but NEVER executes directly. All decisions are logged via log_decision before any action is taken.',
+    description: 'Sovereign governance — delegates, never executes',
+    detail: 'AEON is the sovereign governor. Delegates, coordinates, and decides — never executes directly. All decisions are logged via log_decision before any action.',
     icon: Crown,
     href: '/aeon',
     price: '0.02 SOL',
-    priceNote: 'monthly access',
+    priceNote: 'monthly',
     tier: 'Institutional',
     color: 'rose',
     category: 'agents',
@@ -173,8 +177,8 @@ const SERVICES: ServiceDef[] = [
   {
     id: 'risk-score-api',
     name: 'Risk Score API',
-    description: 'Embed risk scores in your app',
-    detail: 'REST API to fetch APOLLO risk scores for any Solana address. HMAC-signed responses ensure data integrity. Rate-limited by tier.',
+    description: 'Embed APOLLO risk scores in your product',
+    detail: 'REST API to fetch risk scores for any Solana address. HMAC-signed responses, webhook support, rate-limited by tier.',
     icon: BarChart3,
     href: '/integrations',
     price: '0.001 SOL',
@@ -187,8 +191,8 @@ const SERVICES: ServiceDef[] = [
   {
     id: 'effective-apr-api',
     name: 'Effective APR API',
-    description: 'Real APR after fees and IL',
-    detail: 'Programmatic access to HERMES Effective APR calculations. Returns APR, fee drag, and IL estimates for any pool on Solana. Used by trading bots and dashboards.',
+    description: 'Real APR after fees, IL, and gas',
+    detail: 'Programmatic access to HERMES Effective APR calculations. APR, fee drag, and IL estimates for any Solana pool. Used by bots and dashboards.',
     icon: Percent,
     href: '/integrations',
     price: '0.0008 SOL',
@@ -201,53 +205,43 @@ const SERVICES: ServiceDef[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Colour helpers
+// Color helpers
 // ---------------------------------------------------------------------------
 
-const colorMap: Record<string, { bg: string; border: string; text: string; glow: string; badge: string }> = {
-  cyan:    { bg: 'bg-cyan-500/10',    border: 'border-cyan-500/20',    text: 'text-cyan-400',    glow: 'hover:border-cyan-500/40',    badge: 'bg-cyan-500/20 text-cyan-300' },
-  emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', glow: 'hover:border-emerald-500/40', badge: 'bg-emerald-500/20 text-emerald-300' },
-  amber:   { bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   text: 'text-amber-400',   glow: 'hover:border-amber-500/40',   badge: 'bg-amber-500/20 text-amber-300' },
-  purple:  { bg: 'bg-purple-500/10',  border: 'border-purple-500/20',  text: 'text-purple-400',  glow: 'hover:border-purple-500/40',  badge: 'bg-purple-500/20 text-purple-300' },
-  blue:    { bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    text: 'text-blue-400',    glow: 'hover:border-blue-500/40',    badge: 'bg-blue-500/20 text-blue-300' },
-  rose:    { bg: 'bg-rose-500/10',    border: 'border-rose-500/20',    text: 'text-rose-400',    glow: 'hover:border-rose-500/40',    badge: 'bg-rose-500/20 text-rose-300' },
-  indigo:  { bg: 'bg-indigo-500/10',  border: 'border-indigo-500/20',  text: 'text-indigo-400',  glow: 'hover:border-indigo-500/40',  badge: 'bg-indigo-500/20 text-indigo-300' },
-  teal:    { bg: 'bg-teal-500/10',    border: 'border-teal-500/20',    text: 'text-teal-400',    glow: 'hover:border-teal-500/40',    badge: 'bg-teal-500/20 text-teal-300' },
+const colorMap: Record<string, { bg: string; border: string; text: string; hover: string; badge: string }> = {
+  cyan:    { bg: 'bg-cyan-500/10',    border: 'border-cyan-500/20',    text: 'text-cyan-400',    hover: 'hover:border-cyan-500/40',    badge: 'bg-cyan-500/20 text-cyan-300' },
+  emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', hover: 'hover:border-emerald-500/40', badge: 'bg-emerald-500/20 text-emerald-300' },
+  amber:   { bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   text: 'text-amber-400',   hover: 'hover:border-amber-500/40',   badge: 'bg-amber-500/20 text-amber-300' },
+  purple:  { bg: 'bg-purple-500/10',  border: 'border-purple-500/20',  text: 'text-purple-400',  hover: 'hover:border-purple-500/40',  badge: 'bg-purple-500/20 text-purple-300' },
+  blue:    { bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    text: 'text-blue-400',    hover: 'hover:border-blue-500/40',    badge: 'bg-blue-500/20 text-blue-300' },
+  rose:    { bg: 'bg-rose-500/10',    border: 'border-rose-500/20',    text: 'text-rose-400',    hover: 'hover:border-rose-500/40',    badge: 'bg-rose-500/20 text-rose-300' },
+  indigo:  { bg: 'bg-indigo-500/10',  border: 'border-indigo-500/20',  text: 'text-indigo-400',  hover: 'hover:border-indigo-500/40',  badge: 'bg-indigo-500/20 text-indigo-300' },
+  teal:    { bg: 'bg-teal-500/10',    border: 'border-teal-500/20',    text: 'text-teal-400',    hover: 'hover:border-teal-500/40',    badge: 'bg-teal-500/20 text-teal-300' },
 };
 
 const tierStyle: Record<TierLabel, string> = {
-  Free:        'bg-white/5 text-gray-400 border border-white/10',
-  Pro:         'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
+  Free:         'bg-white/5 text-gray-400 border border-white/10',
+  Pro:          'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
   Institutional:'bg-amber-500/15 text-amber-400 border border-amber-500/25',
 };
 
-const TABS: { key: Category; label: string; icon: React.ElementType }[] = [
-  { key: 'all',    label: 'All',          icon: Sparkles },
-  { key: 'tools',  label: 'Tools',        icon: ScanSearch },
-  { key: 'agents', label: 'Agents',       icon: Shield },
-  { key: 'apis',   label: 'APIs',         icon: Activity },
-];
-
 // ---------------------------------------------------------------------------
-// Components
+// Featured card (large, vertical — used for top picks)
 // ---------------------------------------------------------------------------
 
-function ServiceCard({ svc, index }: { svc: ServiceDef; index: number }) {
+function FeaturedCard({ svc, index }: { svc: ServiceDef; index: number }) {
   const c = colorMap[svc.color] ?? colorMap.cyan;
   const Icon = svc.icon;
-  const isFree = svc.tier === 'Free';
-  const isInstitutional = svc.tier === 'Institutional';
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.35 }}
-      className={`group relative flex flex-col rounded-2xl border bg-[#0A0E17] p-5 transition-all duration-300 ${c.border} ${c.glow}`}
+      transition={{ delay: index * 0.08, duration: 0.35 }}
+      className={`group relative flex flex-col rounded-2xl border bg-[#0A0E17] p-5 transition-all duration-300 ${c.border} ${c.hover}`}
     >
-      {/* Top badges */}
+      {/* Top row */}
       <div className="flex items-start justify-between mb-4">
-        <div className={`flex items-center justify-center w-11 h-11 rounded-xl ${c.bg} ${c.border} border`}>
+        <div className={`flex items-center justify-center w-11 h-11 rounded-xl ${c.bg} border ${c.border}`}>
           <Icon size={20} className={c.text} />
         </div>
         <div className="flex items-center gap-2">
@@ -262,14 +256,12 @@ function ServiceCard({ svc, index }: { svc: ServiceDef; index: number }) {
         </div>
       </div>
 
-      {/* Name + description */}
       <h3 className="text-base font-bold text-white mb-1">{svc.name}</h3>
       <p className={`text-xs font-medium ${c.text} mb-2`}>{svc.description}</p>
       <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1">{svc.detail}</p>
 
-      {/* Features */}
       <ul className="space-y-1.5 mb-5">
-        {svc.features.map((f) => (
+        {svc.features.slice(0, 4).map((f) => (
           <li key={f} className="flex items-center gap-2 text-xs text-gray-400">
             <CheckCircle2 size={11} className={`${c.text} flex-shrink-0`} />
             {f}
@@ -277,10 +269,9 @@ function ServiceCard({ svc, index }: { svc: ServiceDef; index: number }) {
         ))}
       </ul>
 
-      {/* Price + CTA */}
       <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
         <div>
-          <span className={`text-lg font-bold ${isFree ? 'text-gray-300' : c.text}`}>
+          <span className={`text-lg font-bold ${svc.tier === 'Free' ? 'text-gray-300' : c.text}`}>
             {svc.price}
           </span>
           <span className="text-[10px] text-gray-600 ml-1">{svc.priceNote}</span>
@@ -289,7 +280,7 @@ function ServiceCard({ svc, index }: { svc: ServiceDef; index: number }) {
           href={svc.href}
           className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 ${c.bg} ${c.text} hover:brightness-125 border ${c.border}`}
         >
-          {isInstitutional ? <Lock size={11} /> : null}
+          {svc.tier === 'Institutional' && <Lock size={11} />}
           Launch
           <ChevronRight size={12} />
         </Link>
@@ -299,24 +290,125 @@ function ServiceCard({ svc, index }: { svc: ServiceDef; index: number }) {
 }
 
 // ---------------------------------------------------------------------------
+// Compact horizontal row card — for regular services
+// ---------------------------------------------------------------------------
+
+function ServiceRow({ svc, index }: { svc: ServiceDef; index: number }) {
+  const c = colorMap[svc.color] ?? colorMap.cyan;
+  const Icon = svc.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.06, duration: 0.3 }}
+      className={`group flex items-center gap-4 rounded-xl border bg-[#0A0E17] px-4 py-3.5 transition-all duration-200 ${c.border} ${c.hover}`}
+    >
+      {/* Icon */}
+      <div className={`flex items-center justify-center w-9 h-9 rounded-lg ${c.bg} border ${c.border} flex-shrink-0`}>
+        <Icon size={16} className={c.text} />
+      </div>
+
+      {/* Name + description */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm font-semibold text-white">{svc.name}</span>
+          {svc.badge && (
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${c.badge}`}>
+              {svc.badge}
+            </span>
+          )}
+          <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${tierStyle[svc.tier]}`}>
+            {svc.tier}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 truncate mt-0.5">{svc.description}</p>
+      </div>
+
+      {/* Features preview — hidden on sm */}
+      <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+        {svc.features.slice(0, 2).map((f) => (
+          <span key={f} className="flex items-center gap-1 text-[10px] text-gray-600">
+            <CheckCircle2 size={9} className={c.text} />
+            {f}
+          </span>
+        ))}
+      </div>
+
+      {/* Price */}
+      <div className="text-right flex-shrink-0 hidden sm:block">
+        <p className={`text-sm font-bold ${svc.tier === 'Free' ? 'text-gray-300' : c.text}`}>{svc.price}</p>
+        <p className="text-[10px] text-gray-600">{svc.priceNote}</p>
+      </div>
+
+      {/* CTA */}
+      <Link
+        href={svc.href}
+        className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 ${c.bg} ${c.text} hover:brightness-125 border ${c.border} flex-shrink-0`}
+      >
+        {svc.tier === 'Institutional' && <Lock size={10} />}
+        Open
+        <ChevronRight size={11} />
+      </Link>
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Section header
+// ---------------------------------------------------------------------------
+
+function SectionHeader({
+  icon: Icon,
+  label,
+  count,
+  color,
+  delay = 0,
+}: {
+  icon: React.ElementType;
+  label: string;
+  count: number;
+  color: string;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay, duration: 0.25 }}
+      className="flex items-center gap-3"
+    >
+      <div className={`flex items-center justify-center w-7 h-7 rounded-lg bg-white/5 border border-white/[0.06]`}>
+        <Icon size={14} className={color} />
+      </div>
+      <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400">{label}</h2>
+      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-600 font-medium">{count}</span>
+      <div className="flex-1 h-px bg-white/[0.05]" />
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 const STATS = [
-  { label: 'Available Services', value: '9', icon: Sparkles, color: 'text-cyan-400' },
-  { label: 'Active Agents', value: '3', icon: Shield, color: 'text-purple-400' },
-  { label: 'Price Floor', value: 'Cost +20%', icon: ShieldCheck, color: 'text-emerald-400' },
-  { label: 'Max Volume Discount', value: '30%', icon: Star, color: 'text-amber-400' },
+  { label: 'Available Services', value: '9',        icon: Sparkles,   color: 'text-cyan-400' },
+  { label: 'Active Agents',      value: '4',        icon: Bot,        color: 'text-purple-400' },
+  { label: 'Price Floor',        value: 'Cost +20%',icon: ShieldCheck,color: 'text-emerald-400' },
+  { label: 'Max Discount',       value: '30%',      icon: Star,       color: 'text-amber-400' },
 ];
 
 export default function ServicesPage() {
-  const [activeTab, setActiveTab] = useState<Category>('all');
-
-  const filtered = activeTab === 'all' ? SERVICES : SERVICES.filter((s) => s.category === activeTab);
+  const featured = SERVICES.filter((s) => s.featured);
+  const tools    = SERVICES.filter((s) => s.category === 'tools'  && !s.featured);
+  const agents   = SERVICES.filter((s) => s.category === 'agents' && !s.featured);
+  const allAgents = SERVICES.filter((s) => s.category === 'agents');
+  const apis     = SERVICES.filter((s) => s.category === 'apis');
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+
+      {/* ── Header ──────────────────────────────────────────── */}
       <div>
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
@@ -331,24 +423,21 @@ export default function ServicesPage() {
           transition={{ delay: 0.1 }}
           className="text-gray-400 text-lg"
         >
-          Every service is priced to cover its cost, auditable on-chain, and subject to 50 active axioms.
+          Every service is priced above cost, auditable on-chain, and governed by 50 active axioms.
         </motion.p>
       </div>
 
-      {/* Stats strip */}
+      {/* ── Stats strip ─────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
+        transition={{ delay: 0.12 }}
         className="grid grid-cols-2 md:grid-cols-4 gap-3"
       >
         {STATS.map((s) => {
           const Icon = s.icon;
           return (
-            <div
-              key={s.label}
-              className="flex items-center gap-3 bg-[#0A0E17] border border-white/[0.06] rounded-xl px-4 py-3"
-            >
+            <div key={s.label} className="flex items-center gap-3 bg-[#0A0E17] border border-white/[0.06] rounded-xl px-4 py-3">
               <Icon size={16} className={s.color} />
               <div>
                 <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
@@ -359,11 +448,11 @@ export default function ServicesPage() {
         })}
       </motion.div>
 
-      {/* Volume discount banner */}
+      {/* ── Volume discount banner ───────────────────────────── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.18 }}
         className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/5 border border-amber-500/20"
       >
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/15 flex-shrink-0">
@@ -372,7 +461,7 @@ export default function ServicesPage() {
         <div className="flex-1">
           <p className="text-sm font-semibold text-amber-300">Volume Discounts — up to 30% off</p>
           <p className="text-xs text-gray-500">
-            10 scans/month → 10% · 50 scans → 20% · 100+ scans → 30%. Tracked on-chain per wallet.
+            10 calls/month → 10% · 50 calls → 20% · 100+ calls → 30%. Tracked on-chain per wallet.
           </p>
         </div>
         <Link
@@ -383,59 +472,64 @@ export default function ServicesPage() {
         </Link>
       </motion.div>
 
-      {/* Category tabs */}
-      <div className="flex items-center gap-1 bg-[#0A0E17] border border-white/[0.06] rounded-xl p-1 w-fit">
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const active = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                active
-                  ? 'bg-[#1A2235] text-white border border-white/10'
-                  : 'text-gray-500 hover:text-gray-300'
-              }`}
-            >
-              <Icon size={14} />
-              {tab.label}
-              <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${
-                active ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/5 text-gray-600'
-              }`}>
-                {tab.key === 'all' ? SERVICES.length : SERVICES.filter((s) => s.category === tab.key).length}
-              </span>
-            </button>
-          );
-        })}
+      {/* ── Featured: top picks ─────────────────────────────── */}
+      <div className="space-y-3">
+        <SectionHeader icon={Star} label="Top Picks" count={featured.length} color="text-amber-400" delay={0.2} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {featured.map((svc, i) => (
+            <FeaturedCard key={svc.id} svc={svc} index={i} />
+          ))}
+        </div>
       </div>
 
-      {/* Service grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filtered.map((svc, i) => (
-          <ServiceCard key={svc.id} svc={svc} index={i} />
-        ))}
+      {/* ── Tools ───────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <SectionHeader icon={Wrench} label="Tools" count={SERVICES.filter(s => s.category === 'tools').length} color="text-blue-400" delay={0.25} />
+        <div className="space-y-2">
+          {tools.map((svc, i) => (
+            <ServiceRow key={svc.id} svc={svc} index={i} />
+          ))}
+        </div>
       </div>
 
-      {/* Revenue split footer */}
+      {/* ── Agents ──────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <SectionHeader icon={Bot} label="Agents" count={allAgents.length} color="text-purple-400" delay={0.3} />
+        <div className="space-y-2">
+          {agents.map((svc, i) => (
+            <ServiceRow key={svc.id} svc={svc} index={i} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── APIs ────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <SectionHeader icon={Code2} label="APIs" count={apis.length} color="text-indigo-400" delay={0.35} />
+        <div className="space-y-2">
+          {apis.map((svc, i) => (
+            <ServiceRow key={svc.id} svc={svc} index={i} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Revenue split footer ────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.4 }}
         className="border-t border-white/[0.04] pt-6"
       >
         <p className="text-xs text-gray-600 text-center mb-3">Revenue distribution per service payment</p>
-        <div className="flex items-center gap-0 rounded-xl overflow-hidden h-3 mb-3 max-w-lg mx-auto">
-          <div className="h-full bg-blue-500" style={{ width: '40%' }} title="Operations 40%" />
-          <div className="h-full bg-emerald-500" style={{ width: '45%' }} title="Treasury 45%" />
-          <div className="h-full bg-amber-500" style={{ width: '15%' }} title="Creator 15%" />
+        <div className="flex items-center gap-0 rounded-xl overflow-hidden h-2.5 mb-3 max-w-lg mx-auto">
+          <div className="h-full bg-blue-500/70"    style={{ width: '40%' }} title="Operations 40%" />
+          <div className="h-full bg-emerald-500/70" style={{ width: '45%' }} title="Treasury 45%" />
+          <div className="h-full bg-amber-500/70"   style={{ width: '15%' }} title="Creator 15%" />
         </div>
         <div className="flex items-center justify-center gap-6 text-[10px] text-gray-500">
           {[
-            { label: 'Operations', pct: '40%', color: 'bg-blue-500' },
-            { label: 'Treasury',   pct: '45%', color: 'bg-emerald-500' },
-            { label: 'Creator',    pct: '15%', color: 'bg-amber-500' },
+            { label: 'Operations', pct: '40%', color: 'bg-blue-500/70' },
+            { label: 'Treasury',   pct: '45%', color: 'bg-emerald-500/70' },
+            { label: 'Creator',    pct: '15%', color: 'bg-amber-500/70' },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className={`w-2 h-2 rounded-full ${s.color}`} />
