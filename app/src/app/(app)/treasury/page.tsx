@@ -90,7 +90,7 @@ const RESERVE_THRESHOLD = 25;
 
 const OPERATIONS_SPLIT = 40;
 const TREASURY_RESERVE_SPLIT = 30;
-const DEV_FUND_SPLIT = 15;
+const TREASURY_SPLIT = 15;
 const CREATOR_SPLIT = 15;
 
 const TOTAL_DONATED = 12.5;
@@ -276,7 +276,7 @@ function CCSDonut() {
   const circumference = 2 * Math.PI * radius;
   const operationsArc = (OPERATIONS_SPLIT / 100) * circumference;
   const treasuryArc = (TREASURY_RESERVE_SPLIT / 100) * circumference;
-  const devFundArc = (DEV_FUND_SPLIT / 100) * circumference;
+  const treasurySplitArc = (TREASURY_SPLIT / 100) * circumference;
   const creatorArc = (CREATOR_SPLIT / 100) * circumference;
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
@@ -317,24 +317,24 @@ function CCSDonut() {
             onMouseEnter={() => setHoveredSegment("treasury")}
             onMouseLeave={() => setHoveredSegment(null)}
           />
-          {/* Dev Fund segment (blue-500) - starts after operations + treasury */}
+          {/* Treasury segment (cyan) - starts after operations + reserve */}
           <motion.circle
             cx="70"
             cy="70"
             r={radius}
             fill="none"
             strokeWidth={strokeWidth}
-            strokeDasharray={`${devFundArc} ${circumference - devFundArc}`}
+            strokeDasharray={`${treasurySplitArc} ${circumference - treasurySplitArc}`}
             strokeDashoffset={-(operationsArc + treasuryArc)}
             initial={{ strokeDasharray: `0 ${circumference}` }}
-            animate={{ strokeDasharray: `${devFundArc} ${circumference - devFundArc}` }}
+            animate={{ strokeDasharray: `${treasurySplitArc} ${circumference - treasurySplitArc}` }}
             transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
             className="stroke-[#00D4FF]"
             style={{ cursor: "pointer" }}
-            onMouseEnter={() => setHoveredSegment("devfund")}
+            onMouseEnter={() => setHoveredSegment("treasury-direct")}
             onMouseLeave={() => setHoveredSegment(null)}
           />
-          {/* Creator segment (amber-400) - starts after operations + treasury + devfund */}
+          {/* Creator segment (amber-400) - starts after operations + reserve + treasury */}
           <motion.circle
             cx="70"
             cy="70"
@@ -342,7 +342,7 @@ function CCSDonut() {
             fill="none"
             strokeWidth={strokeWidth}
             strokeDasharray={`${creatorArc} ${circumference - creatorArc}`}
-            strokeDashoffset={-(operationsArc + treasuryArc + devFundArc)}
+            strokeDashoffset={-(operationsArc + treasuryArc + treasurySplitArc)}
             initial={{ strokeDasharray: `0 ${circumference}` }}
             animate={{ strokeDasharray: `${creatorArc} ${circumference - creatorArc}` }}
             transition={{ duration: 1.3, ease: "easeOut", delay: 0.6 }}
@@ -370,8 +370,8 @@ function CCSDonut() {
               {hoveredSegment === "treasury" && (
                 <span className="text-emerald-400">Treasury Reserve: {TREASURY_RESERVE_SPLIT}%</span>
               )}
-              {hoveredSegment === "devfund" && (
-                <span className="text-[#00D4FF]">Dev Fund: {DEV_FUND_SPLIT}%</span>
+              {hoveredSegment === "treasury-direct" && (
+                <span className="text-[#00D4FF]">Treasury: {TREASURY_SPLIT}%</span>
               )}
               {hoveredSegment === "creator" && (
                 <span className="text-amber-400">Creator: {CREATOR_SPLIT}%</span>
@@ -399,9 +399,9 @@ function CCSDonut() {
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#00D4FF]" />
-            <span className="text-gray-400">Dev Fund</span>
+            <span className="text-gray-400">Treasury</span>
           </div>
-          <span className="text-[#00D4FF] font-medium">{DEV_FUND_SPLIT}%</span>
+          <span className="text-[#00D4FF] font-medium">{TREASURY_SPLIT}%</span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
@@ -529,7 +529,7 @@ export default function TreasuryPage() {
             {
               step: "02",
               icon: <PieChartIcon className="w-5 h-5 text-purple-400" />,
-              description: "Revenue split: 40% Operations + 30% Treasury + 15% Dev Fund + 15% Creator",
+              description: "Revenue split: 40% Operations + 30% Reserve + 15% Treasury + 15% Creator",
             },
             {
               step: "03",
@@ -921,7 +921,7 @@ export default function TreasuryPage() {
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-gray-400 inline-flex items-center">Development Fund<InfoTooltip term="Development Fund" /></span>
+                  <span className="text-xs text-gray-400 inline-flex items-center">Treasury<InfoTooltip term="Treasury" /></span>
                   <span className="text-xs font-medium text-[#00D4FF]">15%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
@@ -942,7 +942,7 @@ export default function TreasuryPage() {
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-2.5 mt-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <p className="text-xs text-emerald-400">
-                Revenue Split: 40% Operations | 30% Treasury | 15% Dev Fund | 15% Creator
+                Revenue Split: 40% Operations | 30% Reserve | 15% Treasury | 15% Creator
               </p>
             </div>
           </div>
@@ -951,7 +951,7 @@ export default function TreasuryPage() {
           <div className="border-t border-[#1A2235] pt-4">
             <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Margin Enforcement</p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              Every paid transaction enforces minimum allocation: 30% to Treasury PDA, 15% to Development Fund, 15% to Creator wallet.
+              Every paid transaction enforces minimum allocation: 30% to Reserve PDA, 15% to Treasury, 15% to Creator wallet.
               If AI calculates a price below cost threshold, the pricing engine auto-adjusts UP to maintain margins.
             </p>
           </div>
@@ -972,7 +972,7 @@ export default function TreasuryPage() {
               </div>
               <div className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 rounded-lg p-3 text-center">
                 <p className="text-lg font-bold text-[#00D4FF]">~37 SOL</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Dev Fund (15%)</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Treasury (15%)</p>
               </div>
               <div className="bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 text-center">
                 <p className="text-lg font-bold text-amber-400">~37 SOL</p>
