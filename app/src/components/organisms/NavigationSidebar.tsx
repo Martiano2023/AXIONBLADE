@@ -72,9 +72,10 @@ const navSections: NavSection[] = [
     label: "Tools",
     color: "blue",
     items: [
-      { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01 SOL", gated: true },
-      { label: "Token Deep Dive",  href: "/token-deep-dive",  icon: Coins,       badge: "0.012 SOL", gated: true },
+      { label: "Services Hub",     href: "/services",         icon: Plug,        badge: "9 services" },
       { label: "Wallet Scanner",   href: "/wallet-scanner",   icon: ScanSearch,  badge: "0.05 SOL",  gated: true },
+      { label: "Protocol Auditor", href: "/protocol-auditor", icon: ShieldCheck, badge: "0.01 SOL",  gated: true },
+      { label: "Token Deep Dive",  href: "/token-deep-dive",  icon: Coins,       badge: "0.012 SOL", gated: true },
       { label: "Yield Optimizer",  href: "/yield-optimizer",  icon: TrendingUp,  badge: "0.008 SOL", gated: true },
       { label: "Pool Analyzer",    href: "/pool-analyzer",    icon: Droplet,     badge: "0.005 SOL", gated: true },
     ],

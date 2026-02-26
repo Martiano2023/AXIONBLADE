@@ -183,7 +183,7 @@ export default function EconomicsPage() {
               </div>
               <div className="bg-emerald-500/20 border border-emerald-500/40 rounded-xl p-6 text-center">
                 <DollarSign className="w-8 h-8 text-emerald-400 mb-3 mx-auto" />
-                <p className="text-xs text-gray-400 mb-2">Dev Fund</p>
+                <p className="text-xs text-gray-400 mb-2">Treasury</p>
                 <p className="text-3xl font-bold text-emerald-400">15%</p>
               </div>
               <div className="bg-amber-400/20 border border-amber-400/40 rounded-xl p-6 text-center">

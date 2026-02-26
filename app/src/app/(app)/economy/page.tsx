@@ -37,7 +37,7 @@ interface EconomyData {
   revenueByCategory: {
     operations: number;
     reserve: number;
-    devFund: number;
+    treasury: number;
     creator: number;
   };
   services: ServicePerformance[];
@@ -199,8 +199,8 @@ export default function EconomyPage() {
           />
 
           <RevenueSplitBar
-            label="Dev Fund (15%)"
-            value={data.revenueByCategory.devFund}
+            label="Treasury (15%)"
+            value={data.revenueByCategory.treasury}
             percentage={15}
             color="bg-purple-500"
           />
@@ -223,8 +223,8 @@ export default function EconomyPage() {
             <div className="font-semibold text-green-400">{data.revenueByCategory.reserve.toFixed(3)} SOL</div>
           </div>
           <div className="text-center">
-            <div className="text-gray-500 mb-1">Dev Fund</div>
-            <div className="font-semibold text-purple-400">{data.revenueByCategory.devFund.toFixed(3)} SOL</div>
+            <div className="text-gray-500 mb-1">Treasury</div>
+            <div className="font-semibold text-purple-400">{data.revenueByCategory.treasury.toFixed(3)} SOL</div>
           </div>
           <div className="text-center">
             <div className="text-gray-500 mb-1">Creator</div>

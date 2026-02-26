@@ -154,11 +154,11 @@ function generateMockEconomyData() {
   const averageMargin = (totalRevenue - totalCosts) / totalRevenue;
   const monthlyProjection = (totalRevenue / 7) * 30;
 
-  // 4-way revenue split
+  // 4-way revenue split: Operations 50%, Reserve 25%, Treasury 15%, Creator 10%
   const revenueByCategory = {
     operations: totalRevenue * 0.50,
     reserve: totalRevenue * 0.25,
-    devFund: totalRevenue * 0.15,
+    treasury: totalRevenue * 0.15,
     creator: totalRevenue * 0.10,
   };
 
