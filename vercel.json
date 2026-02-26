@@ -1,9 +1,3 @@
 {
-  "rootDirectory": "app",
-  "crons": [
-    {
-      "path": "/api/price-monitor/adjust",
-      "schedule": "0 */4 * * *"
-    }
-  ]
+  "rootDirectory": "app"
 }
