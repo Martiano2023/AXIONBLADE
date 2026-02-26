@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { createHmac, timingSafeEqual as nodeTimingSafeEqual } from "crypto";
 
 // ---------------------------------------------------------------------------
 // CORS
@@ -53,30 +54,86 @@ export function checkRateLimit(key: string, tier: Tier = "free"): {
 }
 
 // ---------------------------------------------------------------------------
-// API Key Validation
+// API Key Validation — HMAC-signed keys only
+// ---------------------------------------------------------------------------
+// Key format: nk_{tier}_{16-char-random-payload}_{8-char-hmac-sig}
+// The HMAC signature is HMAC-SHA256(API_HMAC_SECRET, "nk_{tier}_{payload}").slice(0, 8)
+// This means only keys issued by the server (with knowledge of the secret) are valid.
 // ---------------------------------------------------------------------------
 
+export type Tier = "free" | "pro" | "protocol";
+
+const HMAC_SECRET = process.env.API_HMAC_SECRET ?? "";
+
+/**
+ * Timing-safe string comparison to prevent timing-based attacks.
+ * Returns true if a === b, without leaking length information via timing.
+ */
+function safeCompare(a: string, b: string): boolean {
+  // Lengths must match; use fixed-length comparison to avoid length-based leaks
+  try {
+    const aBuf = Buffer.from(a);
+    const bBuf = Buffer.from(b);
+    if (aBuf.length !== bBuf.length) return false;
+    return nodeTimingSafeEqual(aBuf, bBuf);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Compute the expected 8-char HMAC signature for the given key body.
+ */
+function computeHmacSig(body: string): string {
+  return createHmac("sha256", HMAC_SECRET).update(body).digest("hex").slice(0, 8);
+}
+
+/**
+ * Validate an API key using HMAC signature verification.
+ * Rejects any key that was not signed by our server (prevents fake keys).
+ */
 export function validateApiKey(apiKey: string | null): boolean {
   if (!apiKey) return false;
-  // API keys must be 32+ chars, alphanumeric with hyphens/underscores
-  if (apiKey.length < 32) return false;
-  if (!/^[a-zA-Z0-9\-_]+$/.test(apiKey)) return false;
-  // In production, this would check against a database of issued keys
-  // For devnet beta, accept well-formed keys
-  return true;
+
+  // Structure: nk_{tier}_{payload}_{sig8}
+  // At least 4 underscore-separated segments: nk, {tier}, {payload}, {sig}
+  const parts = apiKey.split("_");
+  if (parts.length < 4) return false;
+  if (parts[0] !== "nk") return false;
+
+  // Sig is always the last segment (8 chars)
+  const sig = parts[parts.length - 1];
+  if (sig.length !== 8) return false;
+
+  // Body is everything before the last underscore
+  const lastUnderscore = apiKey.lastIndexOf("_");
+  const body = apiKey.slice(0, lastUnderscore);
+
+  // In development without a secret set, fall back to format-only check
+  if (!HMAC_SECRET) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[middleware] API_HMAC_SECRET not set — skipping HMAC check in dev");
+      return body.length >= 24 && /^[a-zA-Z0-9_]+$/.test(body);
+    }
+    // In production without a secret, reject all keys
+    console.error("[middleware] API_HMAC_SECRET not configured in production!");
+    return false;
+  }
+
+  const expected = computeHmacSig(body);
+  return safeCompare(sig, expected);
 }
 
 // ---------------------------------------------------------------------------
 // Tier Detection
 // ---------------------------------------------------------------------------
 
-export type Tier = "free" | "pro" | "protocol";
-
 /**
  * Determine tier from key prefix convention:
  *   nk_protocol_xxx = protocol tier
  *   nk_pro_xxx      = pro tier
  *   everything else  = free tier
+ * Only called AFTER validateApiKey() has confirmed the key is authentic.
  */
 export function getTierFromKey(apiKey: string): Tier {
   if (apiKey.startsWith("nk_protocol_")) return "protocol";

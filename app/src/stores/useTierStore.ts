@@ -110,19 +110,51 @@ export const useTierStore = create<TierState>()(
       },
 
       verifyTier: async (service, txSignature) => {
-        // TODO: Implement on-chain verification by fetching the tx and
-        // confirming it was a valid service payment to the treasury vault.
-        // For now, mark as verified after basic validation.
-        if (!txSignature || txSignature.length < 32) {
+        if (!txSignature || txSignature.length < 64) {
           return false;
         }
 
-        if (service === "apollo") {
-          set({ apolloTierVerified: true });
-        } else {
-          set({ hermesTierVerified: true });
+        try {
+          // Call server-side on-chain verification endpoint.
+          // The server fetches the tx from Solana mainnet, checks treasury payment,
+          // and returns the granted tier + expiry. No client-side trust involved.
+          const response = await fetch("/api/verify-tier", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ service, txSignature }),
+          });
+
+          if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            console.error("[verifyTier] Server rejected verification:", err?.error);
+            return false;
+          }
+
+          const result = await response.json();
+          if (!result.verified || !result.tier) {
+            return false;
+          }
+
+          // Apply the server-granted tier and expiry
+          if (service === "apollo") {
+            set({
+              apolloTier: result.tier as ApolloTier,
+              apolloTierVerified: true,
+              apolloTierExpiry: result.expiry ?? 0,
+            });
+          } else {
+            set({
+              hermesTier: result.tier as HermesTier,
+              hermesTierVerified: true,
+              hermesTierExpiry: result.expiry ?? 0,
+            });
+          }
+
+          return true;
+        } catch (error) {
+          console.error("[verifyTier] Verification request failed:", error);
+          return false;
         }
-        return true;
       },
 
       isTierActive: (service) => {
@@ -141,26 +173,25 @@ export const useTierStore = create<TierState>()(
       },
 
       upgradeTier: async (service, tier, txSignature) => {
-        // Store tier as unverified initially
+        // Store the tx signature for reference; mark as unverified pending server check.
+        // Expiry is set by the server after on-chain verification — NOT computed client-side.
         if (service === "apollo") {
           set({
             apolloTier: tier as ApolloTier,
             apolloTierVerified: false,
+            apolloTierExpiry: 0,
             apolloTierTxSignature: txSignature,
-            // Paid tiers: 30 days from now; free/basic have no expiry
-            apolloTierExpiry: tier === "free" || tier === "basic" ? 0 : Math.floor(Date.now() / 1000) + 30 * 86400,
           });
         } else {
           set({
             hermesTier: tier as HermesTier,
             hermesTierVerified: false,
+            hermesTierExpiry: 0,
             hermesTierTxSignature: txSignature,
-            // Paid tiers: 30 days from now; free has no expiry
-            hermesTierExpiry: tier === "free" ? 0 : Math.floor(Date.now() / 1000) + 30 * 86400,
           });
         }
 
-        // Attempt to verify the tier immediately
+        // Server-side on-chain verification — sets tier, verified=true, expiry
         await get().verifyTier(service, txSignature);
       },
 

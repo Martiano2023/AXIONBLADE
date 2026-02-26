@@ -8,9 +8,47 @@
 // - Margin alerts
 // ---------------------------------------------------------------------------
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { validateApiKey, getTierFromKey, checkRateLimit, getCorsHeaders } from '../_shared/middleware';
 
-export async function GET() {
+export async function OPTIONS(request: NextRequest) {
+  return NextResponse.json(null, { status: 204, headers: getCorsHeaders(request) });
+}
+
+export async function GET(request: NextRequest) {
+  // ---------------------------------------------------------------------------
+  // Authentication — require a valid HMAC-signed API key
+  // Economy data is operator-sensitive (real revenue, margins, costs).
+  // Only pro+ keys may access it.
+  // ---------------------------------------------------------------------------
+  const apiKey = request.headers.get('x-api-key');
+
+  if (!validateApiKey(apiKey)) {
+    return NextResponse.json(
+      { error: 'Unauthorized — valid API key required' },
+      { status: 401, headers: getCorsHeaders(request) }
+    );
+  }
+
+  const tier = getTierFromKey(apiKey!);
+  if (tier === 'free') {
+    return NextResponse.json(
+      { error: 'Forbidden — economy data requires pro or protocol tier' },
+      { status: 403, headers: getCorsHeaders(request) }
+    );
+  }
+
+  // Rate limiting
+  const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const rateLimitKey = `economy:${apiKey!.slice(0, 16)}:${clientIp}`;
+  const { allowed, remaining } = checkRateLimit(rateLimitKey, tier);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded' },
+      { status: 429, headers: { ...getCorsHeaders(request), 'X-RateLimit-Remaining': '0' } }
+    );
+  }
+
   try {
     // In production, fetch from:
     // 1. On-chain treasury vault data
@@ -18,18 +56,19 @@ export async function GET() {
     // 3. VolumeDiscountTracker PDAs
     // 4. Historical transaction data
 
-    // Mock data for now
     const economyData = generateMockEconomyData();
 
-    return NextResponse.json(economyData);
+    return NextResponse.json(economyData, {
+      headers: {
+        ...getCorsHeaders(request),
+        'X-RateLimit-Remaining': String(remaining),
+      },
+    });
   } catch (error) {
     console.error('Economy API error:', error);
     return NextResponse.json(
-      {
-        error: 'Failed to fetch economy data',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
+      { error: 'Failed to fetch economy data' },
+      { status: 500, headers: getCorsHeaders(request) }
     );
   }
 }
