@@ -296,7 +296,7 @@ CLAUDE.md (root) says "v3.2.3" but the project is at v3.4.0 per CHANGELOG, READM
 | R13 | Auditor counter .unwrap() (A-1) — known issue | **MEDIUM** | Alpha | OPEN | Replace 2 unwrap() with .ok_or() |
 | R14 | In-memory rate limiting resets on cold start | **MEDIUM** | Gamma | OPEN | Migrate to Redis/KV for production |
 | R15 | No RPC failover between providers | **MEDIUM** | Gamma | OPEN | Implement multi-provider strategy |
-| R16 | CRON_SECRET not set in Vercel dashboard | **MEDIUM** | Gamma | OPEN | Set env var in Vercel settings |
+| R16 | CRON_SECRET not set in Vercel dashboard | **MEDIUM** | Gamma | **FIXED** | Set via Vercel CLI — Production + Development |
 | R17 | DEVNET_RPC variable name misleading (falls back to mainnet) | **LOW** | Gamma | OPEN | Rename to SOLANA_RPC |
 | R18 | Error messages expose internal details in 500 responses | **LOW** | Gamma | OPEN | Return generic errors, log details server-side |
 | R19 | Missing CORS headers on 4 paid POST routes | **LOW** | Gamma | OPEN | Apply getCorsHeaders to all responses |
@@ -360,7 +360,7 @@ Before deploying `axionblade_token_vault`:
 
 ### Priority 3 — Infrastructure (do before production)
 
-9. **Set CRON_SECRET** in Vercel dashboard environment variables.
+9. ~~**Set CRON_SECRET** in Vercel dashboard environment variables.~~ — DONE (Vercel CLI)
 
 10. **Add auth to `/api/liquidation-scanner`** — payment verification or API key + rate limiting.
 
