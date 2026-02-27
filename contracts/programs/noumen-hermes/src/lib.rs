@@ -465,6 +465,12 @@ pub struct PublishPoolComparison<'info> {
 pub struct LogAgentActionProof<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
+    #[account(
+        seeds = [b"hermes_config"],
+        bump = hermes_config.bump,
+        has_one = authority @ HermesError::Unauthorized,
+    )]
+    pub hermes_config: Account<'info, HermesConfig>,
     /// CHECK: User wallet for whom the action is being executed
     pub user_wallet: AccountInfo<'info>,
     #[account(
@@ -481,6 +487,12 @@ pub struct LogAgentActionProof<'info> {
 #[derive(Accounts)]
 pub struct ConfirmAgentActionExecuted<'info> {
     pub authority: Signer<'info>,
+    #[account(
+        seeds = [b"hermes_config"],
+        bump = hermes_config.bump,
+        has_one = authority @ HermesError::Unauthorized,
+    )]
+    pub hermes_config: Account<'info, HermesConfig>,
     #[account(
         mut,
         seeds = [b"agent_action", agent_action_record.user_wallet.as_ref(), agent_action_record.action_nonce.to_le_bytes().as_ref()],

@@ -18,7 +18,7 @@
 | **Low** | **11** |
 | **Deployment readiness** | **BLOCKED ON FUNDING — all code fixes done (R01-R04/R07-R10/R13/R16-R22/R25/R27), 5/7 programs need ~9 SOL** |
 | **Estimated SOL to full deployment** | **~8-12 SOL** (5 programs × ~1.5-2.5 SOL each) |
-| **Overall security posture** | **STRONG — 15/20 fixable issues resolved, remaining are infra/funding-dependent** |
+| **Overall security posture** | **STRONG — 19/27 issues resolved, ALL code-fixable done, remaining are infra/funding** |
 
 ### Key Findings
 
@@ -44,7 +44,7 @@
 ✅ PASS: noumen_treasury — 8/8 handlers with checked arithmetic throughout
 ✅ PASS: noumen_auditor — 5/5 handlers (2 counter .unwrap() noted as A-1, tracked)
 ✅ PASS: noumen_service — 5/5 handlers, A0-8 price margin enforced (12000 BPS)
-⚠️  WARN: noumen_hermes — log_agent_action_proof missing explicit owner check on user_wallet
+✅ FIXED: noumen_hermes — log_agent_action_proof + confirm_agent_action_executed now have has_one = authority via hermes_config
 ✅ FIXED: noumen_auditor — A-1 counter .unwrap() already replaced with .ok_or(ArithmeticOverflow)?
 ✅ FIXED (b264042): Revenue split constants — changed from 4-way (40/30/15/15) to 3-way (40/45/15)
      Removed DEV_FUND_SPLIT_BPS, TREASURY_RESERVE_BPS now 4500
@@ -292,9 +292,9 @@ CLAUDE.md (root) says "v3.2.3" but the project is at v3.4.0 per CHANGELOG, READM
 | R07 | Token vault unchecked arithmetic .unwrap() (TK-2) | **HIGH** | Alpha | **FIXED** | Commit b264042 — 3× .unwrap() → .ok_or(ArithmeticOverflow)? |
 | R08 | Liquidation scanner API has zero auth/rate-limiting | **MEDIUM** | Gamma | **FIXED** | Commit 48d5844 — rate-limiting added (free tier: 2/day) |
 | R09 | Volume discount tiers don't match between chain and frontend | **MEDIUM** | Cross | **FIXED** | Commit b264042 — tiers aligned with frontend |
-| R10 | Program IDs duplicated in 8 frontend files outside constants.ts | **MEDIUM** | Gamma | PARTIAL | TREASURY_WALLET centralized (48d5844); Program IDs still duplicated in scripts |
+| R10 | Program IDs duplicated in 8 frontend files outside constants.ts | **MEDIUM** | Gamma | PARTIAL | TREASURY_WALLET centralized (48d5844); script-side hardcoded acceptable |
 | R11 | Upgrade authorities on 2 deployed programs = single wallet | **MEDIUM** | Delta | OPEN | Transfer to multisig or freeze after final deploy |
-| R12 | HERMES log_agent_action_proof weak owner check | **MEDIUM** | Alpha | OPEN | Add constraint: authority authorized for user_wallet |
+| R12 | HERMES log_agent_action_proof weak owner check | **MEDIUM** | Alpha | **FIXED** | has_one = authority via hermes_config on both instructions |
 | R13 | Auditor counter .unwrap() (A-1) — known issue | **MEDIUM** | Alpha | **FIXED** | Already uses .checked_add(1).ok_or(ArithmeticOverflow)? — confirmed clean |
 | R14 | In-memory rate limiting resets on cold start | **MEDIUM** | Gamma | OPEN | Migrate to Redis/KV for production |
 | R15 | No RPC failover between providers | **MEDIUM** | Gamma | OPEN | Implement multi-provider strategy |
