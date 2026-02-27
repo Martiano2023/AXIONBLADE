@@ -17,8 +17,8 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, MintTo, Transfer, Burn};
 
-// Placeholder Program ID (update after deployment)
-declare_id!("AXI0nTokenVau1tProgramAddress111111111111111");
+// Placeholder Program ID (update after keygen + deployment)
+declare_id!("11111111111111111111111111111111");
 
 #[program]
 pub mod axionblade_token_vault {
@@ -50,10 +50,7 @@ pub mod axionblade_token_vault {
         growth_weeks_count: u8,
         stability_check_passed: bool,
     ) -> Result<()> {
-        require!(
-            ctx.accounts.kronos_authority.key() == ctx.accounts.vault_config.authority,
-            ErrorCode::Unauthorized
-        );
+        // Authority check enforced by has_one constraint on vault_config
 
         let conditions = &mut ctx.accounts.launch_conditions;
         conditions.treasury_usd_threshold = 100_000_000_000; // $100k (6 decimals)
@@ -140,31 +137,41 @@ pub mod axionblade_token_vault {
     pub fn release_vesting(
         ctx: Context<ReleaseVesting>,
     ) -> Result<()> {
-        let schedule = &mut ctx.accounts.vesting_schedule;
         let now = Clock::get()?.unix_timestamp;
 
-        // Check cliff passed
-        require!(
-            now >= schedule.start_time + schedule.cliff_duration,
-            ErrorCode::CliffNotReached
-        );
+        // Read schedule state before CPI (immutable borrow scope)
+        let beneficiary_key;
+        let bump;
+        let releasable;
+        {
+            let schedule = &ctx.accounts.vesting_schedule;
 
-        // Calculate vested amount
-        let time_since_start = now - schedule.start_time;
-        let vested_amount = if time_since_start >= schedule.vesting_duration {
-            schedule.total_amount
-        } else {
-            (schedule.total_amount as u128)
-                .checked_mul(time_since_start as u128)
-                .unwrap()
-                .checked_div(schedule.vesting_duration as u128)
-                .unwrap() as u64
-        };
+            // Check cliff passed
+            require!(
+                now >= schedule.start_time + schedule.cliff_duration,
+                ErrorCode::CliffNotReached
+            );
 
-        let releasable = vested_amount.saturating_sub(schedule.released_amount);
-        require!(releasable > 0, ErrorCode::NothingToRelease);
+            // Calculate vested amount
+            let time_since_start = now - schedule.start_time;
+            let vested_amount = if time_since_start >= schedule.vesting_duration {
+                schedule.total_amount
+            } else {
+                (schedule.total_amount as u128)
+                    .checked_mul(time_since_start as u128)
+                    .ok_or(ErrorCode::ArithmeticOverflow)?
+                    .checked_div(schedule.vesting_duration as u128)
+                    .ok_or(ErrorCode::ArithmeticOverflow)? as u64
+            };
 
-        // Transfer tokens
+            releasable = vested_amount.saturating_sub(schedule.released_amount);
+            require!(releasable > 0, ErrorCode::NothingToRelease);
+
+            beneficiary_key = schedule.beneficiary;
+            bump = schedule.bump;
+        }
+
+        // Transfer tokens (CPI — takes immutable borrows of accounts)
         let cpi_accounts = Transfer {
             from: ctx.accounts.vesting_token_account.to_account_info(),
             to: ctx.accounts.beneficiary_token_account.to_account_info(),
@@ -172,9 +179,9 @@ pub mod axionblade_token_vault {
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let seeds = &[
-            b"vesting_schedule",
-            schedule.beneficiary.as_ref(),
-            &[schedule.bump],
+            b"vesting_schedule" as &[u8],
+            beneficiary_key.as_ref(),
+            &[bump],
         ];
         let signer = &[&seeds[..]];
 
@@ -183,10 +190,14 @@ pub mod axionblade_token_vault {
             releasable,
         )?;
 
-        schedule.released_amount = schedule.released_amount.checked_add(releasable).unwrap();
+        // Update state after CPI (mutable borrow)
+        let schedule = &mut ctx.accounts.vesting_schedule;
+        schedule.released_amount = schedule.released_amount
+            .checked_add(releasable)
+            .ok_or(ErrorCode::ArithmeticOverflow)?;
 
         emit!(VestingReleased {
-            beneficiary: schedule.beneficiary,
+            beneficiary: beneficiary_key,
             amount: releasable,
             timestamp: now,
         });
@@ -310,9 +321,15 @@ pub struct InitializeVault<'info> {
 
 #[derive(Accounts)]
 pub struct CheckLaunchConditions<'info> {
+    #[account(mut)]
     pub kronos_authority: Signer<'info>,
 
-    #[account(mut, seeds = [b"token_vault_config"], bump)]
+    #[account(
+        mut,
+        seeds = [b"token_vault_config"],
+        bump,
+        constraint = vault_config.authority == kronos_authority.key() @ ErrorCode::Unauthorized,
+    )]
     pub vault_config: Account<'info, TokenVaultConfig>,
 
     #[account(
@@ -329,9 +346,15 @@ pub struct CheckLaunchConditions<'info> {
 
 #[derive(Accounts)]
 pub struct ExecuteTokenLaunch<'info> {
+    #[account(mut)]
     pub kronos_authority: Signer<'info>,
 
-    #[account(mut, seeds = [b"token_vault_config"], bump)]
+    #[account(
+        mut,
+        seeds = [b"token_vault_config"],
+        bump,
+        constraint = vault_config.authority == kronos_authority.key() @ ErrorCode::Unauthorized,
+    )]
     pub vault_config: Account<'info, TokenVaultConfig>,
 
     #[account(
@@ -351,6 +374,13 @@ pub struct ExecuteTokenLaunch<'info> {
 pub struct CreateVestingSchedule<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
+
+    #[account(
+        seeds = [b"token_vault_config"],
+        bump,
+        has_one = authority @ ErrorCode::Unauthorized,
+    )]
+    pub vault_config: Account<'info, TokenVaultConfig>,
 
     /// CHECK: Beneficiary address
     pub beneficiary: AccountInfo<'info>,
@@ -454,4 +484,7 @@ pub enum ErrorCode {
 
     #[msg("Nothing to release at this time")]
     NothingToRelease,
+
+    #[msg("Arithmetic overflow")]
+    ArithmeticOverflow,
 }

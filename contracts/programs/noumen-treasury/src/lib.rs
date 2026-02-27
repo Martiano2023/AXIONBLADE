@@ -5,12 +5,11 @@ use shared_types::*;
 declare_id!("EMNF5A4cpqusBuUajMv3FUzjbwR7GQMFyJ7JDi4FjLFu");
 
 // ──────────────────────────────────────────────
-// Revenue split percentages (basis points)
-// 40% Operations + 30% Treasury Reserve + 15% Dev Fund + 15% Creator = 100%
+// Revenue split percentages (basis points) — 3-way on NET revenue
+// 40% Operations + 45% Treasury Reserve + 15% Creator = 100%
 // ──────────────────────────────────────────────
 const OPERATIONS_SPLIT_BPS: u16 = 4000;    // 40%
-const TREASURY_RESERVE_BPS: u16 = 3000;    // 30%
-const DEV_FUND_SPLIT_BPS: u16 = 1500;      // 15%
+const TREASURY_RESERVE_BPS: u16 = 4500;    // 45%
 const CREATOR_SPLIT_BPS: u16 = 1500;       // 15%
 
 // ──────────────────────────────────────────────
@@ -52,7 +51,6 @@ pub mod noumen_treasury {
         vault.daily_spend_lamports = 0;
         vault.daily_spend_reset_at = now;
         vault.total_donations_swept = 0;
-        vault.dev_fund_lamports = 0;
         vault.operations_lamports = 0;
         vault.updated_at = now;
         vault.bump = ctx.bumps.treasury_vault;
@@ -144,10 +142,9 @@ pub mod noumen_treasury {
     ) -> Result<()> {
         require!(amount_lamports > 0, TreasuryError::ZeroAmount);
 
-        // ── 4-way revenue split (basis points) ──
+        // ── 3-way revenue split on NET (basis points) ──
         // Operations:        40% (4000 bps) — stays in vault for operational use
-        // Treasury Reserve:  30% (3000 bps) — marked as reserved in vault
-        // Development Fund:  15% (1500 bps) — stays in vault, tracked separately
+        // Treasury Reserve:  45% (4500 bps) — marked as reserved in vault
         // Creator:           15% (1500 bps) — transferred to creator_wallet via CPI
 
         let operations_amount = amount_lamports
@@ -162,30 +159,20 @@ pub mod noumen_treasury {
             .checked_div(10_000)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
-        let dev_fund_amount = amount_lamports
-            .checked_mul(DEV_FUND_SPLIT_BPS as u64)
-            .ok_or(TreasuryError::ArithmeticOverflow)?
-            .checked_div(10_000)
-            .ok_or(TreasuryError::ArithmeticOverflow)?;
-
         // Creator gets the remainder to absorb any truncation dust,
-        // ensuring operations + treasury_reserve + dev_fund + creator == total_amount
+        // ensuring operations + treasury_reserve + creator == total_amount
         let vault_total = operations_amount
             .checked_add(treasury_reserve_amount)
-            .ok_or(TreasuryError::ArithmeticOverflow)?
-            .checked_add(dev_fund_amount)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
         let creator_amount = amount_lamports
             .checked_sub(vault_total)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
-        // Invariant check: operations + treasury_reserve + dev_fund + creator == total_amount
+        // Invariant check: operations + treasury_reserve + creator == total_amount
         require!(
             operations_amount
                 .checked_add(treasury_reserve_amount)
-                .ok_or(TreasuryError::ArithmeticOverflow)?
-                .checked_add(dev_fund_amount)
                 .ok_or(TreasuryError::ArithmeticOverflow)?
                 .checked_add(creator_amount)
                 .ok_or(TreasuryError::ArithmeticOverflow)?
@@ -207,7 +194,7 @@ pub mod noumen_treasury {
             )?;
         }
 
-        // Transfer vault portion (operations + treasury_reserve + dev_fund) from payer -> treasury_vault PDA
+        // Transfer vault portion (operations + treasury_reserve) from payer -> treasury_vault PDA
         if vault_total > 0 {
             system_program::transfer(
                 CpiContext::new(
@@ -240,11 +227,7 @@ pub mod noumen_treasury {
             .checked_add(treasury_reserve_amount)
             .ok_or(TreasuryError::ArithmeticOverflow)?;
 
-        // Track dev fund and operations separately
-        vault.dev_fund_lamports = vault
-            .dev_fund_lamports
-            .checked_add(dev_fund_amount)
-            .ok_or(TreasuryError::ArithmeticOverflow)?;
+        // Track operations separately
         vault.operations_lamports = vault
             .operations_lamports
             .checked_add(operations_amount)
@@ -273,7 +256,6 @@ pub mod noumen_treasury {
             amount_lamports,
             creator_split: creator_amount,
             treasury_reserve_split: treasury_reserve_amount,
-            dev_fund_split: dev_fund_amount,
             operations_split: operations_amount,
             timestamp: now,
         });
@@ -746,7 +728,6 @@ pub struct TreasuryVault {
     pub daily_spend_lamports: u64,
     pub daily_spend_reset_at: i64,
     pub total_donations_swept: u64,
-    pub dev_fund_lamports: u64,
     pub operations_lamports: u64,
     pub updated_at: i64,
     pub bump: u8,
@@ -763,7 +744,6 @@ impl TreasuryVault {
         + 8   // daily_spend_lamports
         + 8   // daily_spend_reset_at
         + 8   // total_donations_swept
-        + 8   // dev_fund_lamports
         + 8   // operations_lamports
         + 8   // updated_at
         + 1   // bump
@@ -1259,7 +1239,6 @@ pub struct ServicePaymentProcessed {
     pub amount_lamports: u64,
     pub creator_split: u64,
     pub treasury_reserve_split: u64,
-    pub dev_fund_split: u64,
     pub operations_split: u64,
     pub timestamp: i64,
 }

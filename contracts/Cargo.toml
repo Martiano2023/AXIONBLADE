@@ -9,6 +9,9 @@ members = [
     "programs/noumen-service",
     "crates/shared-types",
 ]
+exclude = [
+    "programs/axionblade-token-vault",
+]
 resolver = "2"
 
 [workspace.dependencies]

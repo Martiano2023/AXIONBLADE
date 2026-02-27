@@ -350,36 +350,37 @@ impl BurnBudgetConfig {
 // ──────────────────────────────────────────────
 
 /// Minimum prices per service tier (in lamports)
-/// Formula: price = max(cost_basis * 2.5, tier_minimum)
-/// Margin floor: 150% (cost_basis * 2.5 = 150% profit margin)
+/// Target price: cost × 3.0 (+200% margin). Floor: cost × 2.0 (+100% margin).
+/// These values match the frontend pricing-engine.ts targets.
 pub mod tier_minimums {
     use anchor_lang::solana_program::native_token::LAMPORTS_PER_SOL;
 
-    pub const BASIC_ANALYSIS: u64 = (LAMPORTS_PER_SOL as f64 * 0.008) as u64;          // 0.008 SOL
-    pub const WALLET_SCANNER: u64 = (LAMPORTS_PER_SOL as f64 * 0.08) as u64;          // 0.08 SOL
-    pub const POOL_ANALYZER: u64 = (LAMPORTS_PER_SOL as f64 * 0.008) as u64;          // 0.008 SOL
-    pub const TOKEN_DEEP_DIVE: u64 = (LAMPORTS_PER_SOL as f64 * 0.008) as u64;        // 0.008 SOL
-    pub const PROTOCOL_AUDITOR: u64 = (LAMPORTS_PER_SOL as f64 * 0.015) as u64;       // 0.015 SOL
-    pub const YIELD_OPTIMIZER: u64 = (LAMPORTS_PER_SOL as f64 * 0.015) as u64;        // 0.015 SOL
-    pub const PRO_ANALYSIS: u64 = (LAMPORTS_PER_SOL as f64 * 0.15) as u64;            // 0.15 SOL
-    pub const INSTITUTIONAL: u64 = (LAMPORTS_PER_SOL as f64 * 3.0) as u64;            // 3.0 SOL
+    pub const BASIC_ANALYSIS: u64 = (LAMPORTS_PER_SOL as f64 * 0.0012) as u64;        // 0.0012 SOL (cost 0.0004 × 3.0)
+    pub const WALLET_SCANNER: u64 = (LAMPORTS_PER_SOL as f64 * 0.009) as u64;         // 0.009 SOL  (cost 0.003 × 3.0)
+    pub const POOL_ANALYZER: u64 = (LAMPORTS_PER_SOL as f64 * 0.0012) as u64;         // 0.0012 SOL (cost 0.0004 × 3.0)
+    pub const TOKEN_DEEP_DIVE: u64 = (LAMPORTS_PER_SOL as f64 * 0.003) as u64;        // 0.003 SOL  (cost 0.001 × 3.0)
+    pub const PROTOCOL_AUDITOR: u64 = (LAMPORTS_PER_SOL as f64 * 0.0024) as u64;      // 0.0024 SOL (cost 0.0008 × 3.0)
+    pub const YIELD_OPTIMIZER: u64 = (LAMPORTS_PER_SOL as f64 * 0.0018) as u64;       // 0.0018 SOL (cost 0.0006 × 3.0)
+    pub const PRO_ANALYSIS: u64 = (LAMPORTS_PER_SOL as f64 * 0.012) as u64;           // 0.012 SOL  (cost 0.004 × 3.0)
+    pub const INSTITUTIONAL: u64 = (LAMPORTS_PER_SOL as f64 * 0.09) as u64;           // 0.09 SOL   (cost 0.03 × 3.0)
 }
 
 // ──────────────────────────────────────────────
 // VOLUME SCALING MULTIPLIERS
 // ──────────────────────────────────────────────
 
-/// Calculate volume discount multiplier based on monthly query count
-/// Never reduces margin below 100% (cost basis * 2.0)
+/// Calculate volume discount multiplier based on monthly query count.
+/// Tiers aligned with frontend pricing-engine.ts.
+/// Never reduces margin below cost × 2.0 (+100% floor).
 pub fn calculate_volume_multiplier(monthly_queries: u32) -> f64 {
-    if monthly_queries < 1000 {
-        1.0  // No discount
-    } else if monthly_queries < 10_000 {
-        0.95  // 5% discount
-    } else if monthly_queries < 100_000 {
-        0.85  // 15% discount
+    if monthly_queries < 10 {
+        1.0   // No discount
+    } else if monthly_queries < 50 {
+        0.90  // 10% discount
+    } else if monthly_queries < 100 {
+        0.80  // 20% discount
     } else {
-        0.75  // 25% discount (max)
+        0.70  // 30% discount (max)
     }
 }
 
