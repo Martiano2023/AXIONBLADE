@@ -179,7 +179,7 @@ let new_val = old_val.checked_add(delta).unwrap();
 
 The `Cargo.toml` workspace profile sets `overflow-checks = true` for release builds (defense-in-depth), but the explicit `.ok_or()` pattern is still required because panics are not recoverable errors.
 
-The one known exception is in `noumen-auditor` (Issue A-1): two counter increments still use `.unwrap()`. See `SECURITY.md` for the fix.
+Issue A-1 (`noumen-auditor` counter increments) was fixed on 2026-02-26 — all programs now use the checked pattern consistently.
 
 ---
 
@@ -250,7 +250,7 @@ These are documented and tracked. Do not mark them as fixed unless the source co
 
 | Issue | Severity | Location | Description | Status |
 |-------|----------|----------|-------------|--------|
-| A-1 | Medium | `noumen-auditor/src/lib.rs` lines 91-94, 140-144 | `.unwrap()` on counter increments instead of `.ok_or(AuditorError::ArithmeticOverflow)?` | Open |
+| A-1 | Medium | `noumen-auditor/src/lib.rs` lines 91-94, 140-144 | `.unwrap()` on counter increments — **FIXED**: now uses `.checked_add(1).ok_or(AuditorError::ArithmeticOverflow)?` | Fixed (2026-02-26) |
 | D-1 | Medium | `noumen-proof` and `noumen-auditor` init instructions | First-caller initialization gate (no super_authority requirement) | Architectural (mitigate via deployment procedure) |
 | TK-1 | High | `axionblade-token-vault` | `create_vesting_schedule` has no authority gate — any signer can create schedules | Pre-deployment, must fix before mainnet |
 | TK-2 | Medium | `axionblade-token-vault` | Vesting arithmetic uses `.unwrap()` instead of `ok_or(Error)?` | Pre-deployment, must fix before mainnet |

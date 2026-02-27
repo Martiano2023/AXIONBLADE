@@ -136,10 +136,10 @@ All programs use Rust's checked arithmetic to prevent integer overflow/underflow
 // Correct pattern (used in all programs):
 value.checked_add(delta).ok_or(Error::MathOverflow)?
 
-// Exception (noted in security review as Medium advisory):
-// noumen-auditor uses .unwrap() in two counter increments:
-config.total_truth_labels = config.total_truth_labels.checked_add(1).unwrap();
-// Fix: replace with .ok_or(AuditorError::ArithmeticOverflow)?
+// Previously A-1 (fixed 2026-02-26): noumen-auditor counter increments
+// now use the correct pattern:
+config.total_truth_labels = config.total_truth_labels.checked_add(1)
+    .ok_or(AuditorError::ArithmeticOverflow)?;
 ```
 
 The workspace-level `Cargo.toml` sets `overflow-checks = true` for release builds, which causes panics on overflow in any unchecked arithmetic (`+`, `-`, `*`, `/`). This is a defense-in-depth measure; the explicit checked arithmetic in instruction logic is the primary guard.
@@ -202,20 +202,13 @@ The 40% weight cap is the primary defense: even if APOLLO publishes maliciously 
 
 ## Known Vulnerabilities and Mitigations
 
-### Issue A-1 (Medium): noumen-auditor `.unwrap()` calls
+### Issue A-1 (Medium): noumen-auditor `.unwrap()` calls — FIXED
 
 **Location:** `noumen-auditor/src/lib.rs` lines 91-94, 140-144
 
-```rust
-config.total_truth_labels = config.total_truth_labels.checked_add(1).unwrap();
-config.total_incidents = config.total_incidents.checked_add(1).unwrap();
-```
+**Fix applied (2026-02-26):** All counter increments now use `.checked_add(1).ok_or(AuditorError::ArithmeticOverflow)?` — zero `.unwrap()` calls remain.
 
-**Risk:** At `u64::MAX` increments, causes program panic instead of clean error. Realistically never triggered.
-
-**Mitigation:** Add `MathOverflow` variant to `AuditorError`, use `.ok_or(AuditorError::MathOverflow)?`.
-
-**Status:** Open (Low operational risk, should be fixed for consistency)
+**Status:** Fixed
 
 ---
 

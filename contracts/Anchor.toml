@@ -22,6 +22,15 @@ noumen_hermes = "Hfv5AS3sydnniyqgF8dwXgN76NU4aKAysgcQJ3uncmTj"
 noumen_auditor = "CGLy91mAXwz761z6soTnap2pNVVA8d8zfsGZjLkqwvTe"
 noumen_service = "9ArzMqH6jSWVwvQyYfsdtUQ595wCQXFQAQzXxcoM4LbY"
 
+[programs.mainnet]
+noumen_core = "9jNGhtBFjLFcUKdDdxgwpbKMj6Z6iQw2oBGCeaVBj8gE"
+noumen_proof = "3SNcx2kAf5NXNJd68eLK5gZ3cUvvMEUkC8F4N1ZSUZqV"
+noumen_treasury = "EMNF5A4cpqusBuUajMv3FUzjbwR7GQMFyJ7JDi4FjLFu"
+noumen_apollo = "92WeuJoJdh3o1jLcvSLKuTUitQMnUhMRzoTYaSzgo3Ee"
+noumen_hermes = "Hfv5AS3sydnniyqgF8dwXgN76NU4aKAysgcQJ3uncmTj"
+noumen_auditor = "CGLy91mAXwz761z6soTnap2pNVVA8d8zfsGZjLkqwvTe"
+noumen_service = "9ArzMqH6jSWVwvQyYfsdtUQ595wCQXFQAQzXxcoM4LbY"
+
 [registry]
 url = "https://api.apr.dev"
 

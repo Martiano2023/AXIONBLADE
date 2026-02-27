@@ -118,34 +118,16 @@ All arithmetic operations must use `checked_add`, `checked_sub`, `checked_mul`, 
 | noumen-treasury | Yes (all CCS math, balance updates, counter increments) | No | **PASS** |
 | noumen-apollo | Yes (`checked_add` for counters) | No | **PASS** |
 | noumen-hermes | Yes (`checked_add` for `report_count`) | No | **PASS** |
-| noumen-auditor | Mostly yes | **ISSUE FOUND** (see below) | **PARTIAL** |
+| noumen-auditor | Yes (`checked_add` + `.ok_or()`) | No | **PASS** (A-1 fixed 2026-02-26) |
 | noumen-service | Yes (`checked_mul`, `checked_div`, `checked_add`) | No | **PASS** |
 
-### Issue A-1: noumen-auditor uses `.unwrap()` instead of `ok_or(Error)` (Medium)
+### Issue A-1: noumen-auditor `.unwrap()` calls — FIXED (2026-02-26)
 
-**File:** `/Users/marciano/Desktop/AXIONBLADE/contracts/programs/noumen-auditor/src/lib.rs`
-**Lines:** 93-96 and 147-150
+Both counter increments now use `.checked_add(1).ok_or(AuditorError::ArithmeticOverflow)?`. Zero `.unwrap()` calls remain in the program. The `ArithmeticOverflow` variant was already present in `AuditorError`.
 
-```rust
-// Line 93-96 (record_truth_label)
-config.total_truth_labels = config
-    .total_truth_labels
-    .checked_add(1)
-    .unwrap();
+**Status: Fixed**
 
-// Line 147-150 (register_security_incident)
-config.total_incidents = config
-    .total_incidents
-    .checked_add(1)
-    .unwrap();
-```
-
-While `checked_add(1)` on a `u64` will realistically never overflow, using `.unwrap()` will cause a program panic (unrecoverable error) rather than returning a clean Anchor error. This is inconsistent with all other programs which use `.ok_or(Error::MathOverflow)?`. A panic in a Solana program consumes compute units without a clear error message.
-
-**Severity: Medium**
-**Recommendation:** Replace `.unwrap()` with `.ok_or(AuditorError::MathOverflow)?` (note: `MathOverflow` error variant would need to be added to `AuditorError`).
-
-**Overall Check 2 Verdict: PASS (with one Medium advisory)**
+**Overall Check 2 Verdict: PASS**
 
 ---
 
@@ -466,7 +448,7 @@ Using `init_if_needed` means re-calling `allocate_agent_budget` for an existing 
 | # | Check | Verdict |
 |---|-------|---------|
 | 1 | Signer/authority constraints on all instructions | **PASS** |
-| 2 | All arithmetic uses checked operations | **PASS** (1 Medium: auditor uses `.unwrap()`) |
+| 2 | All arithmetic uses checked operations | **PASS** (A-1 fixed 2026-02-26) |
 | 3 | No double-initialization attacks | **PASS** |
 | 4 | PDA seed prefixes are unique | **PASS** |
 | 5 | Account discriminators handled by Anchor | **PASS** |
@@ -482,7 +464,7 @@ Using `init_if_needed` means re-calling `allocate_agent_budget` for an existing 
 
 | ID | Severity | Program | Description |
 |----|----------|---------|-------------|
-| A-1 | **Medium** | noumen-auditor | `checked_add(1).unwrap()` used instead of `.ok_or(Error)?` in two places (lines 96, 150). Panic instead of clean error on overflow. |
+| A-1 | ~~Medium~~ | noumen-auditor | ~~`checked_add(1).unwrap()` used instead of `.ok_or(Error)?`~~ **FIXED 2026-02-26**: now uses `.ok_or(AuditorError::ArithmeticOverflow)?` |
 | D-1 | **Medium** | noumen-proof | `log_decision` and `confirm_execution` do not verify the signer is a registered agent. Any wallet can create/confirm decision logs. |
 | B-1 | **Low** | noumen-treasury | CCS band caps (15% total, 4% floor, 5% stipend) are not enforced at runtime -- only at genesis. No update instruction exists currently, but defense-in-depth is missing. |
 | C-1 | **Low** | noumen-treasury | `reserved_lamports` is never modified by any treasury instruction after init (stays 0). Reserve ratio check may be overly conservative or broken depending on external maintenance. |
@@ -496,7 +478,7 @@ Using `init_if_needed` means re-calling `allocate_agent_budget` for an existing 
 
 ## Recommendations
 
-1. **[Medium] Fix auditor `.unwrap()` calls:** Replace with `.ok_or(AuditorError::MathOverflow)?` for consistency and clean error handling. Add `MathOverflow` to the `AuditorError` enum.
+1. ~~**[Medium] Fix auditor `.unwrap()` calls**~~ — **FIXED 2026-02-26**.
 
 2. **[Medium] Consider cross-program agent verification in noumen-proof:** Add an optional or mandatory account constraint in `LogDecision` and `ConfirmExecution` that verifies the signer against a noumen-core `AgentManifest` PDA. This prevents unauthorized wallets from creating spurious decision records.
 
