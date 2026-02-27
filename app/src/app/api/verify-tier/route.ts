@@ -18,12 +18,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { getCorsHeaders, checkRateLimit } from "../_shared/middleware";
+import { TREASURY_WALLET } from "@/lib/constants";
 
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------
-
-const TREASURY_WALLET = new PublicKey("HgThD22yumQsiv7ymLNNWnfzEsfrhKd5sG1X3ffYxNbk");
 const LAMPORTS_PER_SOL = 1_000_000_000;
 const MAX_TX_AGE_DAYS = 90; // reject tx older than 90 days
 const TIER_DURATION_DAYS = 30; // paid tier lasts 30 days

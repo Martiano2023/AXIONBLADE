@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 
-const TOKEN_VAULT_PROGRAM_ID = new PublicKey(''); // TODO: Update after deployment
+// Placeholder: use SystemProgram until token vault is deployed
+const TOKEN_VAULT_PROGRAM_ID = new PublicKey('11111111111111111111111111111111'); // TODO: Update after deployment
 
 export interface LaunchCondition {
   label: string;

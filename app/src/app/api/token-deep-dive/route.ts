@@ -234,10 +234,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Token deep dive error:', error);
     return NextResponse.json(
-      {
-        error: 'Analysis failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Analysis failed' },
       { status: 500 }
     );
   }

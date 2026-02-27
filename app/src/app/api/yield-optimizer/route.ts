@@ -178,10 +178,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Yield optimizer error:', error);
     return NextResponse.json(
-      {
-        error: 'Optimization failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Optimization failed' },
       { status: 500 }
     );
   }

@@ -178,10 +178,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Protocol auditor error:', error);
     return NextResponse.json(
-      {
-        error: 'Audit failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Audit failed' },
       { status: 500 }
     );
   }

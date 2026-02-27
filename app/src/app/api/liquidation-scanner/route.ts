@@ -11,7 +11,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { getCorsHeaders, isValidSolanaAddress } from "../_shared/middleware";
+import { getCorsHeaders, isValidSolanaAddress, checkRateLimit } from "../_shared/middleware";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -375,6 +375,17 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const corsHeaders = getCorsHeaders(request);
+
+  // Rate limit: free tier (2/day) by IP
+  const clientIp =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const { allowed } = checkRateLimit(`liq-scanner:${clientIp}`, "free");
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded" },
+      { status: 429, headers: corsHeaders }
+    );
+  }
 
   let body: { walletAddress?: string; protocol?: string };
   try {

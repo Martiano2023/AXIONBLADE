@@ -18,12 +18,20 @@ export const PROGRAM_IDS = {
 // Network configuration
 // ---------------------------------------------------------------------------
 
-export const DEVNET_RPC =
+export const SOLANA_RPC =
   process.env.NEXT_PUBLIC_RPC_URL ?? "https://api.mainnet-beta.solana.com";
 
 export const CLUSTER = (process.env.NEXT_PUBLIC_CLUSTER ?? "mainnet-beta") as
   | "devnet"
   | "mainnet-beta";
+
+// ---------------------------------------------------------------------------
+// Treasury wallet (single source of truth)
+// ---------------------------------------------------------------------------
+
+export const TREASURY_WALLET = new PublicKey(
+  "HgThD22yumQsiv7ymLNNWnfzEsfrhKd5sG1X3ffYxNbk"
+);
 
 // ---------------------------------------------------------------------------
 // Mainnet on-chain state (initialized 2026-02-24)

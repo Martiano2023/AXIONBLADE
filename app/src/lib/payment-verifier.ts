@@ -16,9 +16,9 @@
 import { Connection, PublicKey, Transaction, ParsedTransactionWithMeta } from '@solana/web3.js';
 import { createHash } from 'crypto';
 import { retryWithBackoff } from './retry-with-backoff';
+import { TREASURY_WALLET } from './constants';
 
 // MAINNET CONFIGURATION
-const TREASURY_WALLET = new PublicKey('HgThD22yumQsiv7ymLNNWnfzEsfrhKd5sG1X3ffYxNbk');
 const LAMPORTS_PER_SOL = 1_000_000_000;
 const TRANSACTION_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const MAX_REQUESTS_PER_MINUTE = 10;
